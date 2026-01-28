@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+html { scroll-behavior: smooth; }
+
+:root {
+  --color-primary: #0F83FF;
+  --color-section: #F5F5F5;
+  --color-heading: #1A1A1A;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-[10px] bg-[#0F83FF] px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 active:scale-[0.98];
+}
+
+.btn-primary-sm {
+  @apply inline-flex items-center justify-center rounded-[10px] bg-[#0F83FF] px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90 active:scale-[0.98];
+}
+
+.card-hover {
+  @apply transition hover:-translate-y-0.5 hover:shadow-md;
+}
+
+/* Subtle grid background like your screenshots */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.bg-grid-dark {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1.2px, transparent 0),
+    linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+
+.bg-grid {
+  background-image: url("/assets/bg/bg.svg");
+  background-repeat: repeat;
+  background-position: top left;
+}
+
+
