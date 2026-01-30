@@ -105,73 +105,69 @@ export default function AboutPage() {
         </div>
       </section>
     
-
-     <section className="bg-white py-16">
-  <div className="grid w-full gap-10 grid-cols-1 md:grid-cols-[minmax(0,680px)_minmax(0,1fr)] md:items-start md:gap-12">
-
-    {/* LEFT IMAGE (touch left, crop bottom, right corners radius 20px) */}
-<Reveal>
-  {/* ✅ MOBILE: break out of container padding */}
-  <div className="-mx-40 md:mx-0 md: pt-24">
-   <div
-  className="
-    relative w-full overflow-hidden bg-white shadow-sm rounded-none
-    h-[360px]
-    md:w-[780px] md:h-[720px]
-    md:rounded-tr-[20px] md:rounded-br-[20px]
-  "
->
-
-      <Image
-        src="/assets/images/about/aboutwhatwestandfors.svg"
-        alt="What we stand for"
-        fill
-        className="object-cover object-center rounded-none md:rounded-tr-[20px] md:rounded-br-[20px]"
-        priority
-        sizes="(max-width: 768px) 100vw, 780px"
-      />
-    </div>
-  </div>
-</Reveal>
-
-
-
-
-
-    {/* RIGHT CONTENT */}
-    <div className="w-full px-4 md:pl-32 md:pr-24 md:pt-27">
+<section className="bg-white py-16">
+  <div className="w-full md:mx-auto md:max-w-7xl md:px-4 lg:px-0">
+    <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,680px)_minmax(0,1fr)] md:items-start md:gap-10">
+      
+      {/* LEFT IMAGE */}
       <Reveal>
-        <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
-          What We Stand  For
-        </h2>
+        <div className="-mx-40 md:mx-0 md:pt-16 lg:pl-6">
+          <div
+            className="
+              relative overflow-hidden shadow-sm
+              rounded-none
+              h-[360px]
+              md:rounded-2xl
+              md:w-full md:max-w-[720px]
+             md:h-[710px] md:w-full md:max-w-[720px]
+
+            "
+          >
+            <Image
+              src="/assets/images/about/aboutwhatwestandfors.svg"
+              alt="What we stand for"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="(max-width: 768px) 100vw, 720px"
+            />
+          </div>
+        </div>
       </Reveal>
 
-      <div className="mt-7 space-y-3 md:space-y-5">
+      {/* RIGHT CONTENT */}
+      <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-20">
+        <Reveal>
+          <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
+            What We Stand For
+          </h2>
+        </Reveal>
 
-        {values.map((v, idx) => (
-          <Reveal key={v.title} delay={idx * 0.06}>
-            <div className="w-full max-w-[550] rounded-2xl bg-[#F5F5F5]">
-              <div className="px-[18px] py-[18px]">
-                <Image
-                  src={v.icon}
-                  alt=""
-                  width={22}
-                  height={22}
-                  className="h-[22px] w-[22px]"
-                />
-
-                <p className="mt-[10px] font-extrabold text-[#1A1A1A]">
-                  {v.title}
-                </p>
-
-                <p className="mt-[10px] text-sm text-[#1A1A1A]/70 leading-snug">
-                  {v.desc}
-                </p>
+        <div className="mt-7 space-y-4">
+          {values.map((v, idx) => (
+            <Reveal key={v.title} delay={idx * 0.06}>
+              <div className="w-full rounded-2xl bg-[#F5F5F5] lg:max-w-[620px]">
+                <div className="px-[16px] py-[16px]">
+                  <Image
+                    src={v.icon}
+                    alt=""
+                    width={22}
+                    height={22}
+                    className="h-[22px] w-[22px]"
+                  />
+                  <p className="mt-[10px] font-extrabold text-[#1A1A1A]">
+                    {v.title}
+                  </p>
+                  <p className="mt-[10px] text-sm text-[#1A1A1A]/70 leading-snug">
+                    {v.desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          </Reveal>
-        ))}
+            </Reveal>
+          ))}
+        </div>
       </div>
+
     </div>
   </div>
 </section>

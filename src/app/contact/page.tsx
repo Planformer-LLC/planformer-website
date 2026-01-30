@@ -1,6 +1,8 @@
 import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import { siteData } from "@/data/siteData";
+import Link from "next/link";
+
 import Image from "next/image";
 
 export default function ContactPage() {
@@ -8,7 +10,7 @@ export default function ContactPage() {
     <SiteLayout>
       {/* bg3.svg as real background */}
       <section
-        className="relative overflow-hidden bg-white pt-32 pb-32 md:pt-48 md:py-32"
+        className="relative overflow-hidden bg-white pt-32 pb-32 md:pt-56 md:py-32"
         style={{
           backgroundImage: "url('/assets/bg/bg3.svg')",
           backgroundRepeat: "no-repeat",
@@ -43,33 +45,77 @@ export default function ContactPage() {
           your workflow.
         </p>
       </div>
-      {/* social icons - centered on mobile */}
+  {/* social icons - centered on mobile */}
 <div className="mt-8 flex items-center justify-center gap-8 md:justify-start">
-  <Image
-    src="/assets/icons/socialmedia-icons/twitterx.svg"
-    alt="X"
-    width={22}
-    height={22}
-  />
-  <Image
-    src="/assets/icons/socialmedia-icons/insta.svg"
-    alt="Instagram"
-    width={22}
-    height={22}
-  />
-  <Image
-    src="/assets/icons/socialmedia-icons/facebook.svg"
-    alt="Facebook"
-    width={22}
-    height={22}
-  />
-  <Image
-    src="/assets/icons/socialmedia-icons/youtube.svg"
-    alt="YouTube"
-    width={22}
-    height={22}
-  />
+  <Link
+    href="https://x.com/Planformer"
+    aria-label="X"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/twitterx.svg"
+      alt="X"
+      width={22}
+      height={22}
+      className="transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
+
+  <Link
+    href="https://www.instagram.com/planformer/"
+    aria-label="Instagram"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/insta.svg"
+      alt="Instagram"
+      width={22}
+      height={22}
+      className="transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
+
+  <Link
+    href="https://www.facebook.com/profile.php?id=61584807632276"
+    aria-label="Facebook"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/facebook.svg"
+      alt="Facebook"
+      width={22}
+      height={22}
+      className="transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
+
+  <Link
+    href="https://www.youtube.com/channel/UC0dFj16ro_cHa2pd9y4Q29A"
+    aria-label="YouTube"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/youtube.svg"
+      alt="YouTube"
+      width={22}
+      height={22}
+      className="transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
 </div>
+
 
 
       {/* social icons - centered on mobile */}

@@ -33,50 +33,79 @@ export default function Footer() {
             </p>
 
             <div className="mt-6 flex items-center gap-8">
-              <Link href="#" aria-label="X" className="group">
-                <Image
-                  src="/assets/icons/socialmedia-icons/twitterx.svg"
-                  alt="X"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 transition-opacity group-hover:opacity-60"
-                  style={{ filter: "brightness(0)" }}
-                />
-              </Link>
+  {/* X (Twitter) */}
+  <Link
+    href="https://x.com/Planformer"
+    aria-label="X"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/twitterx.svg"
+      alt="X"
+      width={20}
+      height={20}
+      className="h-5 w-5 transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
 
-              <Link href="#" aria-label="Instagram" className="group">
-                <Image
-                  src="/assets/icons/socialmedia-icons/insta.svg"
-                  alt="Instagram"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 transition-opacity group-hover:opacity-60"
-                  style={{ filter: "brightness(0)" }}
-                />
-              </Link>
+  {/* Instagram */}
+  <Link
+    href="https://www.instagram.com/planformer/"
+    aria-label="Instagram"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/insta.svg"
+      alt="Instagram"
+      width={20}
+      height={20}
+      className="h-5 w-5 transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
 
-              <Link href="#" aria-label="Facebook" className="group">
-                <Image
-                  src="/assets/icons/socialmedia-icons/facebook.svg"
-                  alt="Facebook"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 transition-opacity group-hover:opacity-60"
-                  style={{ filter: "brightness(0)" }}
-                />
-              </Link>
+  {/* Facebook */}
+  <Link
+    href="https://www.facebook.com/profile.php?id=61584807632276"
+    aria-label="Facebook"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/facebook.svg"
+      alt="Facebook"
+      width={20}
+      height={20}
+      className="h-5 w-5 transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
 
-              <Link href="#" aria-label="YouTube" className="group">
-                <Image
-                  src="/assets/icons/socialmedia-icons/youtube.svg"
-                  alt="YouTube"
-                  width={20}
-                  height={20}
-                  className="h-5 w-5 transition-opacity group-hover:opacity-60"
-                  style={{ filter: "brightness(0)" }}
-                />
-              </Link>
-            </div>
+  {/* YouTube */}
+  <Link
+    href="https://www.youtube.com/channel/UC0dFj16ro_cHa2pd9y4Q29A"
+    aria-label="YouTube"
+    className="group"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <Image
+      src="/assets/icons/socialmedia-icons/youtube.svg"
+      alt="YouTube"
+      width={20}
+      height={20}
+      className="h-5 w-5 transition-opacity group-hover:opacity-60"
+      style={{ filter: "brightness(0)" }}
+    />
+  </Link>
+</div>
+
           </div>
 
           {/* CENTER */}

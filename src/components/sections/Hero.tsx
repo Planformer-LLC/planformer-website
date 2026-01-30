@@ -15,9 +15,9 @@ export default function Hero() {
 
       {/* background */}
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/assets/bg/bg3.svg')",
+          backgroundImage: "url('/assets/bg/bg.svg')",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
           backgroundSize: "cover",

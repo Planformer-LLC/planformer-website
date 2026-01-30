@@ -44,11 +44,14 @@ function DownloadCard({
         {/* buttons */}
         <div className="mt-5 flex flex-wrap gap-3">
           {buttons.map((b, idx) => (
-            <a
-              key={idx}
-              href={b.href ?? "#"}
-              className="inline-flex h-[50px] w-fit items-center gap-3 rounded-lg bg-[#0F83FF] px-4 text-sm font-semibold text-white transition hover:brightness-110"
-            >
+           <a
+  key={idx}
+  href={b.href ?? "#"}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-flex h-[50px] w-fit items-center gap-3 rounded-lg bg-[#0F83FF] px-4 text-sm font-semibold text-white transition hover:brightness-110"
+>
+
               {/* increased icon size */}
               <Image
   src={b.icon}
@@ -133,16 +136,19 @@ export default function DownloadPage() {
         description="Access your plans, check measurements, and stay connected on the go."
         image="/assets/images/download/iPhone.svg"
         heightClass="h-[574px]"
-        buttons={[
-          {
-            text: "Download on App Store",
-            icon: "/assets/icons/downloadpageicon/appstore.svg",
-          },
-          {
-            text: "Download on Play Store",
-            icon: "/assets/icons/downloadpageicon/playstore.svg",
-          },
-        ]}
+       buttons={[
+  {
+    text: "Download on App Store",
+    icon: "/assets/icons/downloadpageicon/appstore.svg",
+    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+  },
+  {
+    text: "Download on Play Store",
+    icon: "/assets/icons/downloadpageicon/playstore.svg",
+    href: "https://play.google.com/store/apps/details?id=com.planformer.app&pcampaignid=web_share",
+  },
+]}
+
       />
     </div>
   </Reveal>
@@ -159,12 +165,14 @@ export default function DownloadPage() {
                   description="Perfect for on-site reviews and quick markups with a touch-friendly experience."
                   image="/assets/images/download/iPad Pro.svg"
                   heightClass="h-[574px]"
-                  buttons={[
-                    {
-                      text: "Download on App Store",
-                      icon: "/assets/icons/downloadpageicon/appstore.svg",
-                    },
-                  ]}
+                 buttons={[
+  {
+    text: "Download on App Store",
+    icon: "/assets/icons/downloadpageicon/appstore.svg",
+    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+  },
+]}
+
                 />
               </div>
             </Reveal>
