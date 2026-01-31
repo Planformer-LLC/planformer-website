@@ -64,7 +64,7 @@ export default function AboutPage() {
     <div className="-mx-40 md:mx-0">
 
       <Image
-        src="/assets/images/about/aboutfull.svg"
+        src="/assets/images/about/aboutfull.webp"
         alt="Planformer overview"
         width={1440}
         height={560}
@@ -124,7 +124,7 @@ export default function AboutPage() {
             "
           >
             <Image
-              src="/assets/images/about/aboutwhatwestandfors.svg"
+              src="/assets/images/about/aboutwhatwestandfors.webp"
               alt="What we stand for"
               fill
               priority

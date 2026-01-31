@@ -39,7 +39,7 @@ export default function FinalCTA() {
               <div className="relative h-[540px] w-full md:h-[520px]">
                 {/* ✅ White UI image: stick to bottom on desktop */}
                 <Image
-                  src="/assets/images/home/finalcta2.svg"
+                  src="/assets/images/home/finalcta2.webp"
                   alt="Planformer detail"
                   width={640}
                   height={400}
@@ -52,7 +52,7 @@ export default function FinalCTA() {
 
                 {/* ✅ Man image: stick to bottom on desktop */}
                 <Image
-                  src="/assets/images/home/finalcta.svg"
+                  src="/assets/images/home/finalcta.webp"
                   alt="Planformer preview"
                   width={1200}
                   height={700}

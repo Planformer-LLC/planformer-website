@@ -1,8 +1,7 @@
 ﻿"use client";
 
-import React from "react";
-import { motion, type Variants } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import React, { useId } from "react";
+import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -10,28 +9,55 @@ type Props = {
   className?: string;
   delay?: number;
   y?: number;
+  duration?: number;
 };
 
-export default function Reveal({ children, className, delay = 0, y = 18 }: Props) {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.15 });
+export default function Reveal({
+  children,
+  className,
+  delay = 0,
+  y = 12,
+  duration = 0.28,
+}: Props) {
+  const reduceMotion = useReducedMotion();
+  const id = useId(); // helps avoid layout quirks in some cases
+
+  // If user prefers reduced motion OR low-power device: no animation.
+  if (reduceMotion) {
+    return <div className={cn(className)}>{children}</div>;
+  }
 
   const v: Variants = {
-    hidden: { opacity: 0, y, filter: "blur(8px)" },
+    hidden: { opacity: 0, y },
     show: {
       opacity: 1,
       y: 0,
-      filter: "blur(0px)",
-      transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1], delay },
+      transition: {
+        duration,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      },
     },
   };
 
   return (
     <motion.div
-      ref={ref}
-      className={cn(className)}
+      key={id}
+      className={cn(
+        // GPU-friendly hints
+        "transform-gpu [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform",
+        className
+      )}
       variants={v}
       initial="hidden"
-      animate={inView ? "show" : "hidden"}
+      whileInView="show"
+      viewport={{
+        once: true,
+        // lower amount = triggers earlier and reduces “pop-in”
+        amount: 0.12,
+        // margin triggers before it enters view so it feels smoother
+        margin: "0px 0px -10% 0px",
+      }}
     >
       {children}
     </motion.div>

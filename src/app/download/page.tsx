@@ -95,7 +95,7 @@ export default function DownloadPage() {
                   label="Desktop"
                   title="macOS"
                   description="Smooth, optimized experience for measuring and exporting on macOS."
-                  image="/assets/images/download/MacBook Pro mockup on a table with a plant in the background (Mockuuups Studio).svg"
+                  image="/assets/images/download/MacBook.webp"
                   heightClass="h-[574px]"
                   buttons={[
                     {
@@ -113,7 +113,7 @@ export default function DownloadPage() {
                   label="Desktop"
                   title="Windows"
                   description="Get the complete takeoff experience with smooth, reliable performance on Windows."
-                  image="/assets/images/download/Group 3.svg"
+                  image="/assets/images/download/Group 3.webp"
                   heightClass="h-[574px]"
                   buttons={[
                     {
@@ -134,7 +134,7 @@ export default function DownloadPage() {
         label="Mobile"
         title="iOS & Android"
         description="Access your plans, check measurements, and stay connected on the go."
-        image="/assets/images/download/iPhone.svg"
+        image="/assets/images/download/iPhone.webp"
         heightClass="h-[574px]"
        buttons={[
   {
@@ -163,7 +163,7 @@ export default function DownloadPage() {
                   label="Tablet"
                   title="iPad"
                   description="Perfect for on-site reviews and quick markups with a touch-friendly experience."
-                  image="/assets/images/download/iPad Pro.svg"
+                  image="/assets/images/download/iPad.webp"
                   heightClass="h-[574px]"
                  buttons={[
   {

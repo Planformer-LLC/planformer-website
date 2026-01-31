@@ -19,7 +19,7 @@ export default function SupportedTrades() {
       {
         key: "construction",
         label: "Construction & Contracting",
-        image: "/assets/images/home/supportedtrade.svg",
+        image: "/assets/images/home/supportedtrade.webp",
         title: "Construction & Contracting",
         description:
           "Measure plans, quantify materials, and estimate labor across full project scopes for commercial and residential builds.",
@@ -27,7 +27,7 @@ export default function SupportedTrades() {
       {
         key: "roofing",
         label: "Roofing",
-        image: "/assets/images/home/roofing.svg",
+        image: "/assets/images/home/roofing 1.webp",
         title: "Roofing",
         description:
           "Quickly calculate roof areas, slopes, and material needs with precision, reducing waste and speeding up bids.",
@@ -35,7 +35,7 @@ export default function SupportedTrades() {
       {
         key: "concrete",
         label: "Concrete & Asphalt",
-        image: "/assets/images/home/concrete.svg",
+        image: "/assets/images/home/concrete.webp",
         title: "Concrete & Asphalt",
         description:
           "Get volumes, square footage, and material requirements for foundations, driveways, and sitework in minutes.",
@@ -43,7 +43,7 @@ export default function SupportedTrades() {
       {
         key: "electrical",
         label: "Electrical",
-        image: "/assets/images/home/electrical.svg",
+        image: "/assets/images/home/electrical.webp",
         title: "Electrical",
         description:
           "Measure wiring lengths, conduit runs, and fixture placements from plans with ease for fast, reliable results.",
@@ -51,7 +51,7 @@ export default function SupportedTrades() {
       {
         key: "flooring",
         label: "Flooring",
-        image: "/assets/images/home/floring.svg",
+        image: "/assets/images/home/floring.webp",
         title: "Flooring",
         description:
           "Accurately measure all floor areas and calculate material needs and waste factors for tile, hardwood, carpet, and more.",
@@ -59,7 +59,7 @@ export default function SupportedTrades() {
       {
         key: "framing",
         label: "Framing & Carpentry",
-        image: "/assets/images/home/framing.svg",
+        image: "/assets/images/home/framing.webp",
         title: "Framing & Carpentry",
         description:
           "Count lumber, wall layouts, joists, studs, and other framing elements instantly to optimize material usage.",

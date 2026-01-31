@@ -44,7 +44,7 @@ export default function WhyLoveIt() {
               "
             >
               <Image
-                src="/assets/images/home/whyloveit.svg"
+                src="/assets/images/home/whyloveit.webp"
                 alt="Why contractors love Planformer"
                 width={680}
                 height={810}

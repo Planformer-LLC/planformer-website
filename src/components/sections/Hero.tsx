@@ -64,7 +64,7 @@ export default function Hero() {
 
           <div className="mx-auto max-w-6xl px-4">
             <Image
-              src="/assets/images/home/hero.svg"
+              src="/assets/images/home/hero.webp"
               alt="Planformer hero mockup"
               width={1200}
               height={640}
