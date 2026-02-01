@@ -26,7 +26,7 @@ export default function FinalCTA() {
 
               <Link
                 href="/download"
-                className="btn-primary mt-8 inline-flex h-[46px] w-full items-center justify-center gap-2 px-6 md:w-auto"
+                className="btn-primary mt-8 inline-flex h-[50px] w-full items-center justify-center gap-2 px-6 md:w-auto"
               >
                 <Download className="h-4 w-4" />
                 <span>Download now</span>
