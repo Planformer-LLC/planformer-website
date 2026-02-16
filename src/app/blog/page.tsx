@@ -4,7 +4,7 @@
 
 // type BlogPost = {
 //   id: string;
-//   slug: string; // ✅ added
+//   slug: string; // \u2705 added
 //   title: string;
 //   date: string;
 //   readTime: string;
@@ -14,7 +14,7 @@
 // const POSTS: BlogPost[] = [
 //   {
 //     id: "1",
-//     slug: "blog-post-1", // ✅ added
+//     slug: "blog-post-1", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -22,7 +22,7 @@
 //   },
 //   {
 //     id: "2",
-//     slug: "blog-post-2", // ✅ added
+//     slug: "blog-post-2", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -30,7 +30,7 @@
 //   },
 //   {
 //     id: "3",
-//     slug: "blog-post-3", // ✅ added
+//     slug: "blog-post-3", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -38,7 +38,7 @@
 //   },
 //   {
 //     id: "4",
-//     slug: "blog-post-4", // ✅ added
+//     slug: "blog-post-4", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -46,7 +46,7 @@
 //   },
 //   {
 //     id: "5",
-//     slug: "blog-post-5", // ✅ added
+//     slug: "blog-post-5", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -54,7 +54,7 @@
 //   },
 //   {
 //     id: "6",
-//     slug: "blog-post-6", // ✅ added
+//     slug: "blog-post-6", // \u2705 added
 //     title: "Blog post title",
 //     date: "Feb 5, 2026",
 //     readTime: "15 min",
@@ -66,7 +66,7 @@
 //   return (
 //     <Link href={`/blog/${post.slug}`} className="block">
 //       <article className="group">
-//         {/* ✅ White card ONLY behind image + meta + title */}
+//         {/* \u2705 White card ONLY behind image + meta + title */}
 //         <div className="rounded-2xl bg-white p-2.5 shadow-sm ring-1 ring-black/5">
 //           {/* Image */}
 //           <div className="relative w-full overflow-hidden rounded-xl">
@@ -161,3 +161,7 @@
 //     </SiteLayout>
 //   );
 // }
+
+export default function BlogPage() {
+    return null;
+}
