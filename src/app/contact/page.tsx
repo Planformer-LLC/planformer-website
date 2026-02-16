@@ -22,7 +22,7 @@ export default function ContactPage() {
           <div className="grid gap-14 md:grid-cols-2 md:items-start lg:gap-20">
   <Reveal>
     {/* MOBILE: center everything */}
-    <div className="pt-16 text-[#1A1A1A] mx-auto w-full max-w-[380px] text-center md:max-w-none md:mx-0 md:text-left">
+    <div className="pt-0 text-[#1A1A1A] mx-auto w-full max-w-[380px] text-center md:max-w-none md:mx-0 md:text-left">
       {/* main icon */}
       <div className="flex h-24 w-24 items-center justify-center mx-auto md:mx-0">
         <Image
