@@ -88,17 +88,18 @@ export default function Navbar() {
             </Link>
 
             {/* Nav links (desktop) */}
-            <nav className="hidden items-center gap-6 text-sm md:flex">
-              {navWithBlog.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="text-[#1A1A1A] transition hover:text-[#6B7280]"
-                >
-                  {n.label}
-                </Link>
-              ))}
-            </nav>
+           <nav className="hidden items-center gap-6 text-sm md:flex">
+  {navWithBlog.map((n) => (
+    <Link
+      key={n.href}
+      href={n.href}
+      className="text-[#1A1A1A] font-semibold transition hover:text-[#6B7280]"
+    >
+      {n.label}
+    </Link>
+  ))}
+</nav>
+
 
             {/* CTA Button (desktop only) */}
             <Link

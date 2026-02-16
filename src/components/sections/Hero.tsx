@@ -23,7 +23,7 @@ function Pill({ icon, label }: { icon: string; label: string }) {
 export default function Hero() {
   return (
     // ✅ No bottom spacing + hero fills the screen nicely
-    <section className="relative bg-[#F5F5F5] pt-24 pb-0 md:pt-24 md:pb-0 md:min-h-screen">
+    <section className="relative bg-[#F5F5F5] pt-24 pb-0 md:pt-27 md:pb-0 md:min-h-screen">
 
       {/* background */}
       <div

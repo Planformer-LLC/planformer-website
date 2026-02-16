@@ -77,7 +77,8 @@ export default function AboutPage() {
 
 
       {/* ✅ Boxes centered, equal left/right spacing, 32px gap */}
-      <section className="py-10">
+      <section className="pt-10 pb-0">
+
         <div className="mx-auto max-w-6xl px-4 md:px-8">
           <div className="mx-auto flex max-w-[1100px] flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
 
@@ -111,7 +112,7 @@ export default function AboutPage() {
       
       {/* LEFT IMAGE */}
       <Reveal>
-        <div className="-mx-40 md:mx-0 md:pt-16 lg:pl-6">
+        <div className="-mx-40 md:mx-0 md:pt-0 lg:pl-6">
           <div
             className="
               relative overflow-hidden shadow-sm
@@ -136,7 +137,7 @@ export default function AboutPage() {
       </Reveal>
 
       {/* RIGHT CONTENT */}
-      <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-20">
+      <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-4">
         <Reveal>
           <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
             What We Stand For
