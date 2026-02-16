@@ -3,10 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// ✅ 1) add Download icon import
 import { Download, Menu, X } from "lucide-react";
 import { siteData } from "@/data/siteData";
-
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
@@ -30,7 +28,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // lock body scroll when mobile menu is open
   useEffect(() => {
     if (!mobileOpen) return;
     const prev = document.body.style.overflow;
@@ -42,7 +39,6 @@ export default function Navbar() {
 
   const closeMobile = () => setMobileOpen(false);
 
-  // ✅ update these paths to match your public folder
   const ICONS = {
     appStore: "/assets/icons/downloadpageicon/appstore.svg",
     twitterX: "/assets/icons/socialmedia-icons/twitterx.svg",
@@ -51,18 +47,25 @@ export default function Navbar() {
     youtube: "/assets/icons/socialmedia-icons/youtube.svg",
   };
 
+  // ✅ Add Blog link
+  const navWithBlog = [...(siteData.nav || []), { label: "Blog", href: "/blog" }];
+
   return (
     <>
+      {/* ✅ White background stays with navbar on scroll */}
       <header
         className={`
-          fixed top-3 md:top-10 left-1/2 z-50 w-full -translate-x-1/2 transition-all duration-300
+          fixed top-0 left-0 z-50 w-full
+          transition-all duration-300
           ${hidden ? "pointer-events-none -translate-y-16 opacity-0" : "translate-y-0 opacity-100"}
-          bg-transparent
-          px-3 md:px-4
+          bg-white/95 backdrop-blur
+          border-b border-black/10
         `}
       >
-        <div className="mx-auto max-w-[860px]">
-          <div className="flex items-center justify-between rounded-2xl border border-black/10 bg-white/90 px-5 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] backdrop-blur">
+        <div className="mx-auto max-w-[1100px] px-4 md:px-12 lg:px-14">
+         <div className="flex items-center justify-between py-5 md:py-6">
+
+
             {/* Logo + Name */}
             <Link
               href="/"
@@ -78,12 +81,15 @@ export default function Navbar() {
                   className="object-contain"
                 />
               </span>
-              {siteData.name}
+
+              <span className="text-[22px] leading-none md:text-[26px]">
+                {siteData.name}
+              </span>
             </Link>
 
             {/* Nav links (desktop) */}
             <nav className="hidden items-center gap-6 text-sm md:flex">
-              {siteData.nav.map((n) => (
+              {navWithBlog.map((n) => (
                 <Link
                   key={n.href}
                   href={n.href}
@@ -94,21 +100,20 @@ export default function Navbar() {
               ))}
             </nav>
 
-           {/* CTA Button (desktop only) */}
-{/* ✅ CTA Button (desktop only) — with icon + fixed size */}
-<Link
-  href={siteData.cta.href}
-  className="
-    btn-primary !hidden md:!inline-flex
-    items-center justify-center gap-2
-    h-[46px] w-[170px]
-    
-    text-sm"
->
-  <Download size={18} />
-  {siteData.cta.label}
-</Link>
-
+            {/* CTA Button (desktop only) */}
+            <Link
+              href={siteData.cta.href}
+              className="
+                btn-primary !hidden md:!inline-flex
+                items-center justify-center gap-2
+                !h-[46px] w-[170px]
+                !py-0 px-6
+                text-sm leading-none
+              "
+            >
+              <Download size={18} />
+              {siteData.cta.label}
+            </Link>
 
             {/* Mobile hamburger */}
             <button
@@ -132,7 +137,6 @@ export default function Navbar() {
         `}
         aria-hidden={!mobileOpen}
       >
-        {/* ✅ make menu scrollable */}
         <div className="h-full overflow-y-auto">
           <div className="flex min-h-full flex-col">
             {/* Top bar */}
@@ -164,16 +168,15 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Links (more spacing between items) */}
+            {/* Links */}
             <nav className="px-6 pt-10">
               <ul className="flex flex-col space-y-10">
-                {siteData.nav.map((n) => (
+                {navWithBlog.map((n) => (
                   <li key={n.href}>
                     <Link
                       href={n.href}
                       onClick={closeMobile}
                       className="text-base font-semibold text-[#1A1A1A]"
-
                     >
                       {n.label}
                     </Link>
@@ -182,7 +185,7 @@ export default function Navbar() {
               </ul>
             </nav>
 
-            {/* App Store button + Contact + Socials */}
+            {/* CTA + Contact + Socials */}
             <div className="mt-auto px-6 pb-10 pt-48">
               <Link
                 href={siteData.cta.href}
@@ -213,8 +216,6 @@ export default function Navbar() {
                   >
                     sales@planformer.com
                   </a>
-
-                 
                 </div>
 
                 <div className="mt-6 flex items-center gap-6">
@@ -268,12 +269,13 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* extra space so scrolling feels natural */}
               <div className="h-6" />
             </div>
           </div>
         </div>
       </div>
+
+      {/* ✅ Removed spacer to eliminate that extra white “3rd background” strip */}
     </>
   );
 }

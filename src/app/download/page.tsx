@@ -101,7 +101,8 @@ export default function DownloadPage() {
                     {
                       text: "Download for macOS",
                       icon: "/assets/icons/downloadpageicon/apple.svg",
-                    },
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2FPlanformer.zip?alt=media&token=c7fb4c2d-ec78-4ff4-ad1c-eb95ce2aaac5",
+    },
                   ]}
                 />
               </div>
@@ -117,7 +118,7 @@ export default function DownloadPage() {
                   heightClass="h-[574px]"
                   buttons={[
                     {
-                      text: "Download for Windows",
+                      text: "Coming Soon",
                       icon: "/assets/icons/downloadpageicon/window.svg",
                     },
                   ]}
@@ -155,7 +156,7 @@ export default function DownloadPage() {
 </div>
 
 
-          {/* ROW 3 - iPad (icon changed to appstore.svg) */}
+          {/* ROW 3 - iPad (icon changed to appstore.svg)
           <div className="mt-6">
             <Reveal delay={0.06}>
               <div className="w-full lg:w-[590px]">
@@ -176,7 +177,7 @@ export default function DownloadPage() {
                 />
               </div>
             </Reveal>
-          </div>
+          </div> */}
         </div>
       </section>
     </SiteLayout>

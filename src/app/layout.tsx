@@ -16,15 +16,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${plusJakarta.className} bg-white text-[#1A1A1A] antialiased font-semibold`}>
-  {children}
-</body>
-
+      <body className={`${plusJakarta.className} text-[#1A1A1A] antialiased`}>
+        {children}
+      </body>
     </html>
   );
 }
+
