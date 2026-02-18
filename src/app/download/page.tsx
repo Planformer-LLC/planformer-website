@@ -116,11 +116,12 @@ export default function DownloadPage() {
                   description="Get the complete takeoff experience with smooth, reliable performance on Windows."
                   image="/assets/images/download/Group 3.webp"
                   heightClass="h-[574px]"
-                  buttons={[
+                 buttons={[
                     {
-                      text: "Coming Soon",
+                      text: "Download for Windows",
                       icon: "/assets/icons/downloadpageicon/window.svg",
-                    },
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2Fwindow%2Fplanformer_window.zip?alt=media&token=193d590d-bbba-41bd-a767-a214317eae6e",
+    },
                   ]}
                 />
               </div>
