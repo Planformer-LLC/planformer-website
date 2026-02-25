@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 
 const pills = [
-  { icon: "/assets/icons/hero/zap, lightning, flash.svg", label: "10% faster takeoffs" },
+  { icon: "/assets/icons/hero/zap, lightning, flash.svg", label: "100% faster takeoffs" },
   { icon: "/assets/icons/hero/ruler.svg", label: "No more manual measurements" },
-  { icon: "/assets/icons/hero/clock alert, timer.svg", label: "Accurate cost estimates in minutes" },
+  { icon: "/assets/icons/hero/clock alert, timer.svg", label: "Accurate cost estimates in seconds" },
 ];
 
 function Pill({ icon, label }: { icon: string; label: string }) {

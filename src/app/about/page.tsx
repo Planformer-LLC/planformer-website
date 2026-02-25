@@ -59,7 +59,15 @@ export default function AboutPage() {
 </section>
 
 
-      <section className="py-6">
+      <section
+        className="relative overflow-hidden bg-white py-6"
+        style={{
+          backgroundImage: "url('/assets/bg/bg3.svg')",
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
+          backgroundSize: "auto",
+        }}
+      >
   <Reveal>
     <div className="-mx-40 md:mx-0">
 
@@ -77,7 +85,15 @@ export default function AboutPage() {
 
 
       {/* ✅ Boxes centered, equal left/right spacing, 32px gap */}
-      <section className="pt-10 pb-0">
+      <section
+        className="relative overflow-hidden bg-white pt-10 pb-0"
+        style={{
+          backgroundImage: "url('/assets/bg/bg3.svg')",
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
+          backgroundSize: "auto",
+        }}
+      >
 
         <div className="mx-auto max-w-6xl px-4 md:px-8">
           <div className="mx-auto flex max-w-[1100px] flex-col items-center justify-center gap-4 md:flex-row md:gap-8">
@@ -106,7 +122,15 @@ export default function AboutPage() {
         </div>
       </section>
     
-<section className="bg-white py-16">
+<section
+  className="relative overflow-hidden bg-white py-16"
+  style={{
+    backgroundImage: "url('/assets/bg/bg3.svg')",
+    backgroundRepeat: "repeat",
+    backgroundPosition: "center",
+    backgroundSize: "auto",
+  }}
+>
   <div className="w-full md:mx-auto md:max-w-7xl md:px-4 lg:px-0">
     <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,680px)_minmax(0,1fr)] md:items-start md:gap-10">
       

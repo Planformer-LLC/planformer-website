@@ -72,7 +72,15 @@ function DownloadCard({
 export default function DownloadPage() {
   return (
     <SiteLayout>
-      <section className="py-24 pt-28 md:py-32 md:pt-56">
+      <section
+        className="relative overflow-hidden bg-white py-24 pt-28 md:py-32 md:pt-56"
+        style={{
+          backgroundImage: "url('/assets/bg/bg3.svg')",
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
+          backgroundSize: "auto",
+        }}
+      >
         <div className="mx-auto max-w-6xl px-4">
           <Reveal>
             <div className="mx-auto max-w-3xl text-center">

@@ -72,7 +72,15 @@ export default function SupportedTrades() {
   const current = trades[active];
 
   return (
-    <section className="pt-32 pb-20 md:py-32">
+    <section
+      className="relative overflow-hidden bg-white pt-32 pb-20 md:pt-32 md:py-32"
+      style={{
+        backgroundImage: "url('/assets/bg/bg3.svg')",
+        backgroundRepeat: "repeat",
+        backgroundPosition: "center",
+        backgroundSize: "auto",
+      }}
+    >
 
       <div className="mx-auto max-w-6xl px-4">
         <Reveal className="text-center">
@@ -101,7 +109,7 @@ export default function SupportedTrades() {
           <button
             key={t.key}
             type="button"
-            aria-selected={isActive}
+            aria-pressed={isActive}
             onClick={(e) => {
               setActive(idx);
 
@@ -145,7 +153,7 @@ export default function SupportedTrades() {
                   <button
                     key={t.key}
                     type="button"
-                    aria-selected={isActive}
+                    aria-pressed={isActive}
                     onClick={() => setActive(idx)}
                     className={cn(
                       "inline-flex items-center justify-start rounded-[10px] text-left text-sm transition",

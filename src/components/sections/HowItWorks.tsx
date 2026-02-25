@@ -24,7 +24,15 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="pt-32 pb-20 md:pt-80">
+    <section
+      className="relative overflow-hidden bg-white pt-24 pb-8 md:pt-32 md:pb-10"
+      style={{
+        backgroundImage: "url('/assets/bg/bg3.svg')",
+        backgroundRepeat: "repeat",
+        backgroundPosition: "center",
+        backgroundSize: "auto",
+      }}
+    >
       <div className="mx-auto max-w-6xl px-4">
         <Reveal className="text-center">
           <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">

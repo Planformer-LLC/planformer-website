@@ -28,7 +28,15 @@ const items = [
 
 export default function WhyLoveIt() {
   return (
-    <section className="bg-white pt-16 pb-0 md:py-16">
+    <section
+      className="relative overflow-hidden bg-white pt-8 pb-8 md:pt-8 md:pb-10"
+      style={{
+        backgroundImage: "url('/assets/bg/bg3.svg')",
+        backgroundRepeat: "repeat",
+        backgroundPosition: "center",
+        backgroundSize: "auto",
+      }}
+    >
       {/* ✅ reduce side padding on md+ to reduce left whitespace */}
       <div className="w-full md:mx-auto md:max-w-7xl md:px-4 lg:px-0">
         {/* ✅ slightly smaller gap so it feels tighter */}

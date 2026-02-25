@@ -30,7 +30,15 @@ export default async function BlogDetailsPage({ params }: PageProps) {
 
   return (
     <SiteLayout>
-      <main className="bg-white">
+      <main
+        className="bg-white"
+        style={{
+          backgroundImage: "url('/assets/bg/bg3.svg')",
+          backgroundRepeat: "repeat",
+          backgroundPosition: "center",
+          backgroundSize: "auto",
+        }}
+      >
         <div className="mx-auto max-w-[1240px] px-0 sm:px-4 lg:px-6 pt-32 sm:pt-40">
           {/* Mobile full-bleed image */}
           <div className="relative w-full overflow-hidden sm:rounded-sm">

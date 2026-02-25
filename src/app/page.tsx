@@ -11,8 +11,8 @@ export default function Page() {
     <SiteLayout>
       <Hero />
       <HowItWorks />
-      <WhyLoveIt />
       <SupportedTrades />
+      <WhyLoveIt />
       <Testimonials />
       <FinalCTA />
     </SiteLayout>

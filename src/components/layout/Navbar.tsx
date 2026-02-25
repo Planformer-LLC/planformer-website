@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Download, Menu, X } from "lucide-react";
+import { Download, LogIn, Menu, X } from "lucide-react";
 import { siteData } from "@/data/siteData";
 
 export default function Navbar() {
@@ -62,7 +62,7 @@ export default function Navbar() {
           border-b border-black/10
         `}
       >
-        <div className="mx-auto max-w-[1100px] px-4 md:px-12 lg:px-14">
+        <div className="mx-auto max-w-[1280px] px-3 md:px-6 lg:px-20">
          <div className="flex items-center justify-between py-5 md:py-6">
 
 
@@ -102,19 +102,35 @@ export default function Navbar() {
 
 
             {/* CTA Button (desktop only) */}
-            <Link
-              href={siteData.cta.href}
-              className="
-                btn-primary !hidden md:!inline-flex
-                items-center justify-center gap-2
-                !h-[46px] w-[170px]
-                !py-0 px-6
-                text-sm leading-none
-              "
-            >
-              <Download size={18} />
-              {siteData.cta.label}
-            </Link>
+            <div className="hidden items-center gap-3 md:flex">
+              <Link
+                href={siteData.cta.href}
+                className="
+                  inline-flex rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] text-white transition active:scale-[0.98] hover:bg-transparent hover:text-[#0F83FF]
+                  items-center justify-center gap-2
+                  h-[46px] min-w-[170px]
+                  pl-5 pr-6
+                  text-sm font-semibold leading-none
+                "
+              >
+                <Download size={18} />
+                {siteData.cta.label}
+              </Link>
+
+              <Link
+                href="/login"
+                className="
+                  inline-flex rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent text-[#0F83FF] transition active:scale-[0.98] hover:bg-[#0F83FF] hover:text-white
+                  items-center justify-center gap-2
+                  h-[46px] min-w-[100px]
+                  pl-3 pr-4
+                  text-sm font-semibold leading-none
+                "
+              >
+                <LogIn size={17} />
+                Login
+              </Link>
+            </div>
 
             {/* Mobile hamburger */}
             <button
@@ -188,22 +204,33 @@ export default function Navbar() {
 
             {/* CTA + Contact + Socials */}
             <div className="mt-auto px-6 pb-10 pt-48">
-              <Link
-                href={siteData.cta.href}
-                onClick={closeMobile}
-                className="btn-primary inline-flex w-full items-center justify-center gap-2 px-5 py-3 text-sm"
-              >
-                <span className="relative h-4 w-4">
-                  <Image
-                    src={ICONS.appStore}
-                    alt="App Store"
-                    fill
-                    sizes="16px"
-                    className="object-contain"
-                  />
-                </span>
-                Download on App store
-              </Link>
+              <div className="flex items-center justify-end gap-3">
+                <Link
+                  href={siteData.cta.href}
+                  onClick={closeMobile}
+                  className="inline-flex h-[46px] min-w-[148px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] pl-2.5 pr-3 text-sm font-semibold text-white transition active:scale-[0.98] hover:bg-transparent hover:text-[#0F83FF]"
+                >
+                  <span className="relative h-4 w-4 shrink-0">
+                    <Image
+                      src={ICONS.appStore}
+                      alt="App Store"
+                      fill
+                      sizes="16px"
+                      className="object-contain"
+                    />
+                  </span>
+                  <span>Download now</span>
+                </Link>
+
+                <Link
+                  href="/login"
+                  onClick={closeMobile}
+                  className="inline-flex h-[46px] min-w-[108px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent pl-2 pr-2.5 text-sm font-semibold text-[#0F83FF] transition active:scale-[0.98] hover:bg-[#0F83FF] hover:text-white"
+                >
+                  <LogIn size={16} className="shrink-0" />
+                  <span>Login</span>
+                </Link>
+              </div>
 
               <div className="pt-8">
                 <div className="text-sm font-medium text-[#1A1A1A]">
