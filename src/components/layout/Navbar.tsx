@@ -118,7 +118,9 @@ export default function Navbar() {
               </Link>
 
               <Link
-                href="/login"
+                href="https://app.planformer.com/onboarding_screen"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="
                   inline-flex rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent text-[#0F83FF] transition active:scale-[0.98] hover:bg-[#0F83FF] hover:text-white
                   items-center justify-center gap-2
@@ -223,7 +225,9 @@ export default function Navbar() {
                 </Link>
 
                 <Link
-                  href="/login"
+                  href="https://app.planformer.com/onboarding_screen"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={closeMobile}
                   className="inline-flex h-[46px] min-w-[108px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent pl-2 pr-2.5 text-sm font-semibold text-[#0F83FF] transition active:scale-[0.98] hover:bg-[#0F83FF] hover:text-white"
                 >
