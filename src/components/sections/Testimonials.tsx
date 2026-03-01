@@ -17,24 +17,24 @@ export default function Testimonials() {
     () => [
       {
         quote:
-          "Switching to this software cut our takeoff time dramatically. What used to take half a day now takes under an hour. Accurate, easy to use, and perfect for our estimating team.",
-        name: "James Anderson",
-        company: "Globaltech Constructions",
-        avatar: "/assets/images/home/profile.png",
+          "We moved two estimators from spreadsheets to Planformer in one week. Now our quantity takeoffs are consistent and bid prep is noticeably faster across every project.",
+        name: "Michael Rivera",
+        company: "StoneBridge Construction",
+        avatar: "/assets/images/home/reviews/reviewer-1.jpg",
       },
       {
         quote:
-          "Clean interface and smooth workflow. Our team got productive fast and the estimates feel more accurate. It’s simple to use and saves real time every week.",
-        name: "Sarah Williams",
+          "The interface is clean, the measurements are reliable, and our site managers can review estimates without extra training. It saves us several hours each week.",
+        name: "Aisha Khan",
         company: "NorthStone Builders",
-        avatar: "/assets/images/home/profile.png",
+        avatar: "/assets/images/home/reviews/reviewer-2.jpg",
       },
       {
         quote:
-          "Reliable results with less rework. It improved coordination across our team and helped us deliver faster. Great tool for estimators and project managers.",
-        name: "Daniel Carter",
+          "What I like most is fewer revisions after handoff. Our project managers and estimators stay aligned, and we submit cleaner bids with better confidence.",
+        name: "Ethan Collins",
         company: "PrimeLine Contractors",
-        avatar: "/assets/images/home/profile.png",
+        avatar: "/assets/images/home/reviews/reviewer-3.jpg",
       },
     ],
     []
