@@ -1,0 +1,41 @@
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 2
+
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: "AIzaSyDCY6RxP-TI6Rp4ZjP9WVpB6NT4kYy2o4Y"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "planformer-3408e.firebaseapp.com"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "planformer-3408e"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "planformer-3408e.firebasestorage.app"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "957370999075"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:957370999075:web:26ed97e6e15f713aceac96"
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: BLOG_PREVIEW_SECRET
+    secret: BLOG_PREVIEW_SECRET
+  - variable: BLOG_REVALIDATE_SECRET
+    secret: BLOG_REVALIDATE_SECRET

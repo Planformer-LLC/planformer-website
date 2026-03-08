@@ -109,7 +109,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for macOS",
                       icon: "/assets/icons/downloadpageicon/apple.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2Fplanformer_0.0.2.zip?alt=media&token=67398e8a-0dcc-4c49-863b-3b917632ccaf",
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2FPlanformer-0.0.7%2B14.dmg?alt=media&token=f6dd2a0d-0ae8-4ea5-a4aa-856681d9c602",
     },
                   ]}
                 />
@@ -128,7 +128,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for Windows",
                       icon: "/assets/icons/downloadpageicon/window.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2Fwindow%2Fplanformer_window.zip?alt=media&token=193d590d-bbba-41bd-a767-a214317eae6e",
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fwindows%2Fplanformer.appinstaller?alt=media",
     },
                   ]}
                 />

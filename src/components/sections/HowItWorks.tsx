@@ -1,8 +1,21 @@
+"use client";
+
+import { useRef, useState } from "react";
 import Reveal from "@/components/animations/Reveal";
-import StaggerContainer from "@/components/animations/StaggerContainer";
-import { Play } from "lucide-react";
 
 export default function HowItWorks() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
+  const thumbnailUrl =
+    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv1%2F%20how-it-works_thumbnail.png?alt=media&token=19cc5848-ba76-46ff-9916-4cbf7514df32";
+  const videoUrl =
+    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv1%2Fhow-it-works_1080p.mp4?alt=media&token=e4d02bc6-d204-4f49-a0ed-5272a4489a7b";
+
+  const handlePlay = async () => {
+    setHasStarted(true);
+    await videoRef.current?.play();
+  };
+
   const steps = [
     {
       n: "1",
@@ -34,18 +47,45 @@ export default function HowItWorks() {
         backgroundSize: "auto",
       }}
     >
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-7xl px-4">
         <Reveal className="text-center">
           <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
             How It Works
           </h2>
         </Reveal>
 
-        <div className="mt-10 grid gap-10 md:grid-cols-[0.6fr_1.3fr] md:items-center">
-          {/* Steps — stagger in from the left */}
-          <StaggerContainer className="order-2 space-y-14 md:order-1" stagger={0.1} delay={0.1}>
-            {steps.map((s) => (
-              <Reveal key={s.n} from="left">
+        <div className="mt-10 grid gap-10 md:grid-cols-[0.52fr_1.48fr] md:items-center md:gap-12">
+          <Reveal className="order-1 md:order-2">
+            <div className="relative aspect-[45/32] w-full overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.16)]">
+              <video
+                ref={videoRef}
+                className="h-full w-full object-contain"
+                controls={hasStarted}
+                playsInline
+                preload="none"
+                poster={thumbnailUrl}
+              >
+                <source src={videoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              {!hasStarted ? (
+                <button
+                  type="button"
+                  onClick={handlePlay}
+                  className="absolute inset-0 flex items-center justify-center bg-transparent"
+                  aria-label="Play how it works video"
+                >
+                  <span className="flex h-18 w-18 items-center justify-center rounded-full bg-white/92 shadow-lg backdrop-blur-sm transition-transform duration-200 hover:scale-105">
+                    <span className="ml-1 border-y-[12px] border-y-transparent border-l-[18px] border-l-[#1A1A1A]" />
+                  </span>
+                </button>
+              ) : null}
+            </div>
+          </Reveal>
+
+          <div className="order-2 space-y-14 md:order-1">
+            {steps.map((s, i) => (
+              <Reveal key={s.n} delay={i * 0.06}>
                 <div>
                   <p
                     className="text-lg font-extrabold"
@@ -60,18 +100,7 @@ export default function HowItWorks() {
                 </div>
               </Reveal>
             ))}
-          </StaggerContainer>
-
-          {/* Video placeholder — slides in from right */}
-          <Reveal className="order-1 md:order-2" from="right" duration={0.65}>
-            <div className="h-[200px] w-full overflow-hidden rounded-2xl bg-black/10 md:h-[450px]">
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
-                  <Play size={18} className="text-[#1A1A1A]" />
-                </div>
-              </div>
-            </div>
-          </Reveal>
+          </div>
         </div>
       </div>
     </section>

@@ -1,32 +1,62 @@
-import SiteLayout from "@/components/layout/SiteLayout";
-import Image from "next/image";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import SiteLayout from "@/components/layout/SiteLayout";
+import { BlogContent } from "@/components/blog/BlogContent";
+import { getPublishedBlogPostBySlug } from "@/lib/blog";
 
-export const dynamicParams = false;
-
-const POSTS = [
-  { slug: "blog-post-1", title: "Blog title 1", cover: "/assets/images/blogs/blog1.png" },
-  { slug: "blog-post-2", title: "Blog title 2", cover: "/assets/images/blogs/blog1.png" },
-  { slug: "blog-post-3", title: "Blog title 3", cover: "/assets/images/blogs/blog1.png" },
-  { slug: "blog-post-4", title: "Blog title 4", cover: "/assets/images/blogs/blog1.png" },
-  { slug: "blog-post-5", title: "Blog title 5", cover: "/assets/images/blogs/blog1.png" },
-  { slug: "blog-post-6", title: "Blog title 6", cover: "/assets/images/blogs/blog1.png" },
-];
-
-export function generateStaticParams() {
-  return POSTS.map((p) => ({ slug: p.slug }));
-}
+export const runtime = "nodejs";
 
 type PageProps = {
-  params: { slug: string } | Promise<{ slug: string }>;
+  params: Promise<{ slug: string }>;
 };
 
-export default async function BlogDetailsPage({ params }: PageProps) {
-  // ✅ works whether params is object OR promise
-  const { slug } = await Promise.resolve(params);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPublishedBlogPostBySlug(slug);
+  if (!post) {
+    return {};
+  }
 
-  const post = POSTS.find((p) => p.slug === slug);
+  return {
+    title: post.seo.metaTitle,
+    description: post.seo.metaDescription,
+    openGraph: {
+      title: post.seo.ogTitle,
+      description: post.seo.ogDescription,
+      images: post.seo.ogImage ? [{ url: post.seo.ogImage }] : [],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.seo.ogTitle,
+      description: post.seo.ogDescription,
+      images: post.seo.ogImage ? [post.seo.ogImage] : [],
+    },
+  };
+}
+
+export default async function BlogDetailsPage({ params }: PageProps) {
+  const { slug } = await params;
+  const post = await getPublishedBlogPostBySlug(slug);
   if (!post) return notFound();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishAt?.toISOString(),
+    dateModified: post.updatedAt?.toISOString(),
+    image: post.coverImage.url || undefined,
+    author: post.author?.name
+      ? {
+          "@type": "Person",
+          name: post.author.name,
+        }
+      : undefined,
+  };
 
   return (
     <SiteLayout>
@@ -39,37 +69,33 @@ export default async function BlogDetailsPage({ params }: PageProps) {
           backgroundSize: "auto",
         }}
       >
-        <div className="mx-auto max-w-[1240px] px-0 sm:px-4 lg:px-6 pt-32 sm:pt-40">
-          {/* Mobile full-bleed image */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <div className="mx-auto max-w-[1240px] px-0 pt-32 sm:px-4 sm:pt-40 lg:px-6">
           <div className="relative w-full overflow-hidden sm:rounded-sm">
-            <div className="relative w-full aspect-[4/3] sm:aspect-[16/7] md:aspect-[16/6]">
-              <Image
-                src={post.cover}
-                alt={post.title}
-                fill
-                priority
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 900px, 1240px"
-                className="object-cover"
+            <div className="relative aspect-[4/3] w-full sm:aspect-[16/7] md:aspect-[16/6]">
+              <img
+                src={post.coverImage.url}
+                alt={post.coverImage.alt || post.title}
+                className="h-full w-full object-cover"
               />
             </div>
           </div>
 
-          <div className="mx-auto max-w-3xl px-4 sm:px-0 pb-20 pt-8 sm:pb-24 sm:pt-10 md:pt-12">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black/90">
+          <div className="mx-auto max-w-3xl px-4 pb-20 pt-8 sm:px-0 sm:pb-24 sm:pt-10 md:pt-12">
+            <h1 className="text-xl font-extrabold text-black/90 sm:text-2xl md:text-3xl">
               {post.title}
             </h1>
 
-            <p className="mt-4 text-sm sm:text-base leading-relaxed text-black/55">
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry...
+            <p className="mt-4 text-sm leading-relaxed text-black/55 sm:text-base">
+              {post.excerpt}
             </p>
 
-            <div className="mt-6 overflow-hidden rounded-md bg-black/15">
-              <div className="relative w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[16/8]" />
+            <div className="mt-8">
+              <BlogContent html={post.contentHtml} />
             </div>
-
-            <p className="mt-6 text-sm sm:text-base leading-relaxed text-black/55">
-              More dummy content here...
-            </p>
           </div>
         </div>
       </main>
