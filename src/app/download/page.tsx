@@ -109,7 +109,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for macOS",
                       icon: "/assets/icons/downloadpageicon/apple.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2FPlanformer.zip?alt=media&token=c7fb4c2d-ec78-4ff4-ad1c-eb95ce2aaac5",
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2Fplanformer_0.0.2.zip?alt=media&token=67398e8a-0dcc-4c49-863b-3b917632ccaf",
     },
                   ]}
                 />
