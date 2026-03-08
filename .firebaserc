@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "planformerdev-bb2cf"
+    "default": "planformer-3408e",
+    "prod": "planformer-3408e",
+    "dev": "planformerdev-bb2cf"
   }
 }

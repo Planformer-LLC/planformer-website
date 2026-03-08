@@ -11,7 +11,7 @@
     "trailingSlash": false
   },
   "apphosting": {
-    "backendId": "planformer-website-dev",
+    "backendId": "planformer-website",
     "rootDir": ".",
     "ignore": [
       "node_modules",
