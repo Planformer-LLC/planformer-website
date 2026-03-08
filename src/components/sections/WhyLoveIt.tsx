@@ -1,4 +1,5 @@
 import Reveal from "@/components/animations/Reveal";
+import StaggerContainer from "@/components/animations/StaggerContainer";
 import Image from "next/image";
 import Link from "next/link";
 import { Download } from "lucide-react";
@@ -41,8 +42,8 @@ export default function WhyLoveIt() {
       <div className="w-full md:mx-auto md:max-w-7xl md:px-4 lg:px-0">
         {/* ✅ slightly smaller gap so it feels tighter */}
         <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,680px)_minmax(0,1fr)] md:items-start md:gap-10">
-          {/* LEFT IMAGE */}
-          <Reveal>
+          {/* LEFT IMAGE — slides in from left */}
+          <Reveal from="left" duration={0.7}>
             <div
               className="
                 overflow-hidden bg-white shadow-sm
@@ -62,20 +63,21 @@ export default function WhyLoveIt() {
             </div>
           </Reveal>
 
-         <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-0">
+          <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-0">
 
-            <Reveal>
+            <Reveal from="right">
               <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
                 Why Contractors and <span className="hidden md:inline"><br /></span>
                 Estimators Love It
               </h2>
             </Reveal>
 
-            <div className="mt-7 space-y-4">
-              {items.map((i, idx) => (
-                <Reveal key={i.title} delay={idx * 0.06}>
+            {/* Feature cards — stagger from right */}
+            <StaggerContainer className="mt-7 space-y-4" stagger={0.09} delay={0.05}>
+              {items.map((i) => (
+                <Reveal key={i.title} from="right">
                   {/* ✅ wider: allow full width on md+; cap only on very large screens */}
-                  <div className="w-full rounded-2xl bg-[#F5F5F5] lg:max-w-[620px]">
+                  <div className="w-full rounded-2xl bg-[#F5F5F5] lg:max-w-[620px] card-hover">
                     <div className="px-[16px] py-[16px]">
                       <Image
                         src={i.icon}
@@ -96,9 +98,9 @@ export default function WhyLoveIt() {
                   </div>
                 </Reveal>
               ))}
-            </div>
+            </StaggerContainer>
 
-            <Reveal>
+            <Reveal from="bottom" delay={0.1}>
               <Link
                 href="/download"
                 className="btn-primary mt-7 inline-flex h-[50px] w-full items-center justify-center gap-2 px-6 md:h-[46px] md:w-auto"

@@ -1,4 +1,5 @@
 import Reveal from "@/components/animations/Reveal";
+import StaggerContainer from "@/components/animations/StaggerContainer";
 import { Play } from "lucide-react";
 
 export default function HowItWorks() {
@@ -41,21 +42,10 @@ export default function HowItWorks() {
         </Reveal>
 
         <div className="mt-10 grid gap-10 md:grid-cols-[0.6fr_1.3fr] md:items-center">
-          {/* ✅ Video FIRST on mobile */}
-          <Reveal className="order-1 md:order-2">
-            <div className="h-[200px] w-full overflow-hidden rounded-2xl bg-black/10 md:h-[450px]">
-              <div className="flex h-full w-full items-center justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
-                  <Play size={18} className="text-[#1A1A1A]" />
-                </div>
-              </div>
-            </div>
-          </Reveal>
-
-          {/* ✅ Steps AFTER video on mobile */}
-          <div className="order-2 space-y-14 md:order-1">
-            {steps.map((s, i) => (
-              <Reveal key={s.n} delay={i * 0.06}>
+          {/* Steps — stagger in from the left */}
+          <StaggerContainer className="order-2 space-y-14 md:order-1" stagger={0.1} delay={0.1}>
+            {steps.map((s) => (
+              <Reveal key={s.n} from="left">
                 <div>
                   <p
                     className="text-lg font-extrabold"
@@ -70,7 +60,18 @@ export default function HowItWorks() {
                 </div>
               </Reveal>
             ))}
-          </div>
+          </StaggerContainer>
+
+          {/* Video placeholder — slides in from right */}
+          <Reveal className="order-1 md:order-2" from="right" duration={0.65}>
+            <div className="h-[200px] w-full overflow-hidden rounded-2xl bg-black/10 md:h-[450px]">
+              <div className="flex h-full w-full items-center justify-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-sm">
+                  <Play size={18} className="text-[#1A1A1A]" />
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

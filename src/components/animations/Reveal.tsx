@@ -4,19 +4,24 @@ import React, { useId } from "react";
 import { motion, type Variants, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+type Direction = "left" | "right" | "top" | "bottom";
+
 type Props = {
   children: React.ReactNode;
   className?: string;
+
+  // shorthand direction (auto-sets x/y)
+  from?: Direction;
 
   // timing
   delay?: number;
   duration?: number;
 
-  // motion
-  x?: number; // slide left/right
-  y?: number; // slide up/down
-  scale?: number; // subtle zoom
-  blur?: number; // subtle blur in px (e.g. 1)
+  // fine-grained overrides (used when `from` is not enough)
+  x?: number;
+  y?: number;
+  scale?: number;
+  blur?: number;
 
   // viewport controls
   once?: boolean;
@@ -24,29 +29,44 @@ type Props = {
   margin?: string;
 };
 
+/** Compute x/y based on direction shorthand */
+function directionToXY(from: Direction, distance = 28): { x: number; y: number } {
+  switch (from) {
+    case "left":   return { x: -distance, y: 0 };
+    case "right":  return { x:  distance, y: 0 };
+    case "top":    return { x: 0, y: -distance };
+    case "bottom": return { x: 0, y:  distance };
+  }
+}
+
 export default function Reveal({
   children,
   className,
 
-  delay = 0,
-  duration = 0.32,
+  from,
 
-  x = 0,
-  y = 12,
+  delay = 0,
+  duration = 0.5,
+
+  x: xProp = 0,
+  y: yProp = 12,
   scale = 1,
   blur = 0,
 
   once = true,
   amount = 0.12,
-  margin = "0px 0px -10% 0px",
+  margin = "0px 0px -8% 0px",
 }: Props) {
   const reduceMotion = useReducedMotion();
   const id = useId();
 
-  // Respect reduced motion
+  // Respect reduced motion — render children with no animation wrapper
   if (reduceMotion) {
     return <div className={cn(className)}>{children}</div>;
   }
+
+  // Direction shorthand overrides manual x/y props
+  const { x, y } = from ? directionToXY(from) : { x: xProp, y: yProp };
 
   const v: Variants = {
     hidden: {
@@ -74,7 +94,7 @@ export default function Reveal({
     <motion.div
       key={id}
       className={cn(
-        // GPU-friendly hints
+        // GPU-friendly compositing hints
         "transform-gpu [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform",
         className
       )}

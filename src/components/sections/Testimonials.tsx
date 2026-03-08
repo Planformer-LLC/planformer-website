@@ -180,9 +180,11 @@ export default function Testimonials() {
                 >
                   <span
                     className={[
-                      "rounded-full transition-all",
+                      "rounded-full transition-all duration-300",
                       "h-3 w-3 sm:h-[10px] sm:w-[10px]", // ✅ bigger dots
-                      idx === active ? "bg-[#0F83FF]" : "bg-black/10",
+                      idx === active
+                        ? "bg-[#0F83FF] scale-125 shadow-md"
+                        : "bg-black/10 hover:bg-black/20 hover:scale-110",
                     ].join(" ")}
                   />
                 </button>

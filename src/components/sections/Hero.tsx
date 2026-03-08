@@ -1,4 +1,8 @@
+"use client";
+
+import TypewriterText from "@/components/animations/TypewriterText";
 import Reveal from "@/components/animations/Reveal";
+import StaggerContainer from "@/components/animations/StaggerContainer";
 import Image from "next/image";
 import Link from "next/link";
 import { Download } from "lucide-react";
@@ -11,8 +15,8 @@ const pills = [
 
 function Pill({ icon, label }: { icon: string; label: string }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-[#1A1A1A] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white">
+    <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-[#1A1A1A] shadow-sm transition-all duration-300 hover:shadow-md hover:border-black/20 hover:-translate-y-0.5 cursor-default">
+      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white transition-transform duration-300 group-hover:scale-110">
         <Image src={icon} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
       </span>
       <span className="whitespace-nowrap">{label}</span>
@@ -42,17 +46,18 @@ export default function Hero() {
         <div className="hidden w-full md:grid grid-cols-12 items-center gap-10 lg:gap-14">
           {/* Left content */}
           <div className="col-span-6 lg:col-span-5">
-            <Reveal className="text-left">
-              <h1 className="text-[46px] leading-[1.02] font-extrabold tracking-tight text-[#1A1A1A] lg:text-[60px]">
-                <span className="whitespace-nowrap">Takeoff plans like</span>
-                <br />
-                never before
-              </h1>
+            {/* Heading — word-by-word typewriter reveal */}
+            <h1 className="text-[46px] leading-[1.02] font-extrabold tracking-tight text-[#1A1A1A] lg:text-[60px] text-left">
+              <TypewriterText text="Takeoff plans like never before" delay={0.1} stagger={0.07} />
+            </h1>
 
+            <Reveal from="bottom" delay={0.55} duration={0.45}>
               <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-[#1A1A1A]/80">
                 Measure, estimate, and plan faster with a streamlined, accurate workflow anywhere you work.
               </p>
+            </Reveal>
 
+            <Reveal from="bottom" delay={0.65} duration={0.6} scale={0.96}>
               <div className="mt-7 flex justify-start">
                 <Link
                   href="/download"
@@ -64,30 +69,31 @@ export default function Hero() {
               </div>
             </Reveal>
 
-            {/* Pills */}
+            {/* Pills — staggered bottom-up */}
             <div className="mt-8 max-w-[420px]">
-              <div className="grid grid-cols-2 gap-3">
-                <Reveal delay={0.02}>
-                  <Pill icon={pills[0].icon} label={pills[0].label} />
-                </Reveal>
-                <Reveal delay={0.07}>
-                  <Pill icon={pills[1].icon} label={pills[1].label} />
-                </Reveal>
-              </div>
-
-              <div className="mt-3">
-                <Reveal delay={0.12}>
-                  <div className="inline-flex">
-                    <Pill icon={pills[2].icon} label={pills[2].label} />
-                  </div>
-                </Reveal>
-              </div>
+              <StaggerContainer delay={0.8} stagger={0.1}>
+                <div className="grid grid-cols-2 gap-3">
+                  <Reveal from="bottom">
+                    <Pill icon={pills[0].icon} label={pills[0].label} />
+                  </Reveal>
+                  <Reveal from="bottom">
+                    <Pill icon={pills[1].icon} label={pills[1].label} />
+                  </Reveal>
+                </div>
+                <div className="mt-3">
+                  <Reveal from="bottom">
+                    <div className="inline-flex">
+                      <Pill icon={pills[2].icon} label={pills[2].label} />
+                    </div>
+                  </Reveal>
+                </div>
+              </StaggerContainer>
             </div>
           </div>
 
-          {/* Right image */}
+          {/* Right image — pops in from the right */}
           <div className="col-span-6 lg:col-span-7">
-            <Reveal>
+            <Reveal from="right" delay={0.2} duration={0.75}>
               <div className="relative">
                 <div
                   className="
@@ -113,15 +119,18 @@ export default function Hero() {
 
         {/* ✅ Mobile layout (keep same design, but remove bottom spacing) */}
         <div className="md:hidden">
-          <Reveal className="text-center">
-            <h1 className="mx-auto max-w-3xl text-[34px] leading-tight font-extrabold tracking-tight text-[#1A1A1A] sm:text-4xl">
-              Takeoff plans like never before
-            </h1>
+          {/* Heading */}
+          <h1 className="mx-auto max-w-3xl text-[34px] leading-tight font-extrabold tracking-tight text-[#1A1A1A] sm:text-4xl text-center">
+            <TypewriterText text="Takeoff plans like never before" delay={0.1} stagger={0.06} />
+          </h1>
 
-            <p className="mx-auto mt-4 max-w-2xl text-sm text-[#1A1A1A] sm:text-base">
+          <Reveal from="bottom" delay={0.55}>
+            <p className="mx-auto mt-4 max-w-2xl text-sm text-[#1A1A1A] sm:text-base text-center">
               Measure, estimate, and plan faster with a streamlined, accurate workflow anywhere you work.
             </p>
+          </Reveal>
 
+          <Reveal from="bottom" delay={0.7} scale={0.96}>
             <div className="mt-7 flex justify-center">
               <Link
                 href="/download"
@@ -136,8 +145,8 @@ export default function Hero() {
           {/* pills */}
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
             {pills.map((p, i) => (
-              <Reveal key={p.label} delay={i * 0.07}>
-                <div className="flex w-full max-w-[320px] items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-center text-xs text-[#1A1A1A] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:w-auto sm:max-w-none sm:py-2 sm:text-xs">
+              <Reveal key={p.label} from="bottom" delay={0.75 + i * 0.08}>
+                <div className="flex w-full max-w-[320px] items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-center text-xs text-[#1A1A1A] shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 sm:w-auto sm:max-w-none sm:py-2 sm:text-xs">
                   <Image src={p.icon} alt="" width={16} height={16} className="h-4 w-4" />
                   {p.label}
                 </div>
@@ -146,18 +155,20 @@ export default function Hero() {
           </div>
 
           {/* ✅ Mobile image at bottom (no extra bottom space) */}
-          <div className="mt-6 flex justify-center pb-0">
-            <div className="w-full max-w-[560px] px-2 sm:max-w-[680px]">
-              <Image
-                src="/assets/images/home/hero.webp"
-                alt="Planformer hero mockup"
-                width={1200}
-                height={640}
-                className="h-auto w-full"
-                priority
-              />
+          <Reveal from="bottom" delay={0.3} duration={0.65}>
+            <div className="mt-6 flex justify-center pb-0">
+              <div className="w-full max-w-[560px] px-2 sm:max-w-[680px]">
+                <Image
+                  src="/assets/images/home/hero.webp"
+                  alt="Planformer hero mockup"
+                  width={1200}
+                  height={640}
+                  className="h-auto w-full"
+                  priority
+                />
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
