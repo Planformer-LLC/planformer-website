@@ -7,9 +7,9 @@ export default function HowItWorks() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
   const thumbnailUrl =
-    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv1%2F%20how-it-works_thumbnail.png?alt=media&token=19cc5848-ba76-46ff-9916-4cbf7514df32";
+    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv2%2Fhowitworkthumbnail.png?alt=media&token=f2aaa944-bac2-4f7a-971c-6068cb0463cf";
   const videoUrl =
-    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv1%2Fhow-it-works_1080p.mp4?alt=media&token=e4d02bc6-d204-4f49-a0ed-5272a4489a7b";
+    "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv2%2Fhow%20it%20works%20animation.mp4?alt=media&token=4044b122-fe9d-4f95-a8bf-d2211e8e938e";
 
   const handlePlay = async () => {
     setHasStarted(true);
@@ -62,7 +62,7 @@ export default function HowItWorks() {
                 className="h-full w-full object-contain"
                 controls={hasStarted}
                 playsInline
-                preload="none"
+                preload="metadata"
                 poster={thumbnailUrl}
               >
                 <source src={videoUrl} type="video/mp4" />

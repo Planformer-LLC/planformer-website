@@ -1,11 +1,17 @@
 "use client";
 
+import { useRef, useState } from "react";
 import TypewriterText from "@/components/animations/TypewriterText";
 import Reveal from "@/components/animations/Reveal";
 import StaggerContainer from "@/components/animations/StaggerContainer";
 import Image from "next/image";
 import Link from "next/link";
-import { Download } from "lucide-react";
+import { Download, Pause, Play, Volume2, VolumeX } from "lucide-react";
+
+const heroThumbnailUrl =
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv1%2Fhero_thumbnail.png?alt=media&token=df97afd9-5030-498a-9139-3e2270325ae4";
+const heroVideoUrl =
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv1%2Fhero_video_1080p.mp4?alt=media&token=906cf5f0-b105-4537-98e5-390c03b5b335";
 
 const pills = [
   { icon: "/assets/icons/hero/zap, lightning, flash.svg", label: "100% faster takeoffs" },
@@ -20,6 +26,81 @@ function Pill({ icon, label }: { icon: string; label: string }) {
         <Image src={icon} alt="" width={16} height={16} className="h-4 w-4 object-contain" />
       </span>
       <span className="whitespace-nowrap">{label}</span>
+    </div>
+  );
+}
+
+function HeroVideo({
+  className,
+}: Readonly<{
+  className?: string;
+}>) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const togglePlayback = async () => {
+    if (!videoRef.current) {
+      return;
+    }
+
+    if (videoRef.current.paused) {
+      await videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
+  };
+
+  const toggleMute = () => {
+    if (!videoRef.current) {
+      return;
+    }
+
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  };
+
+  return (
+    <div
+      className={`relative overflow-hidden rounded-[28px] border border-black/5 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.16)] ${className ?? ""}`}
+    >
+      <video
+        ref={videoRef}
+        className="h-full w-full object-contain bg-white"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster={heroThumbnailUrl}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+      >
+        <source src={heroVideoUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      <div className="absolute right-4 bottom-4 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleMute}
+          className="inline-flex items-center gap-2 rounded-full bg-white/92 px-4 py-2 text-sm font-semibold text-[#1A1A1A] shadow-lg backdrop-blur-sm transition-transform duration-200 hover:scale-[1.02]"
+          aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
+        >
+          {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          {isMuted ? "Muted" : "Sound on"}
+        </button>
+
+        <button
+          type="button"
+          onClick={togglePlayback}
+          className="inline-flex items-center gap-2 rounded-full bg-white/92 px-4 py-2 text-sm font-semibold text-[#1A1A1A] shadow-lg backdrop-blur-sm transition-transform duration-200 hover:scale-[1.02]"
+          aria-label={isPlaying ? "Pause hero video" : "Play hero video"}
+        >
+          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+          {isPlaying ? "Pause" : "Play"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -94,24 +175,8 @@ export default function Hero() {
           {/* Right image — pops in from the right */}
           <div className="col-span-6 lg:col-span-7">
             <Reveal from="right" delay={0.2} duration={0.75}>
-              <div className="relative">
-                <div
-                  className="
-                    ml-auto mt-0 w-full
-                    md:max-w-[520px] md:mr-0
-                    lg:w-[820px] lg:max-w-none lg:-mr-20
-                    xl:w-[1000px] xl:-mr-100
-                  "
-                >
-                  <Image
-                    src="/assets/images/home/hero.webp"
-                    alt="Planformer hero mockup"
-                    width={1600}
-                    height={900}
-                    className="h-auto w-full"
-                    priority
-                  />
-                </div>
+              <div className="relative ml-auto w-full max-w-[560px] lg:max-w-[760px] xl:max-w-[860px]">
+                <HeroVideo className="aspect-[16/10] w-full" />
               </div>
             </Reveal>
           </div>
@@ -158,14 +223,7 @@ export default function Hero() {
           <Reveal from="bottom" delay={0.3} duration={0.65}>
             <div className="mt-6 flex justify-center pb-0">
               <div className="w-full max-w-[560px] px-2 sm:max-w-[680px]">
-                <Image
-                  src="/assets/images/home/hero.webp"
-                  alt="Planformer hero mockup"
-                  width={1200}
-                  height={640}
-                  className="h-auto w-full"
-                  priority
-                />
+                <HeroVideo className="aspect-[16/10] w-full" />
               </div>
             </div>
           </Reveal>
