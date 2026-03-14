@@ -128,7 +128,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for Windows",
                       icon: "/assets/icons/downloadpageicon/window.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2Fwindow%2Fbuildmetrics-windows-0.0.10.17.zip?alt=media",
+                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2Fwindow%2Fplanformer-windows-0.0.12.19.zip?alt=media",
     },
                   ]}
                 />
