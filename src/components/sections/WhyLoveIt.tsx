@@ -8,22 +8,22 @@ const items = [
   {
     title: "Speed",
     desc: "Cut takeoff time by up to 90 percent.",
-    icon: "/assets/icons/whyloveit-icons/zap, lightning, flash.svg",
+    icon: "/assets/icons/whyloveit-icons/zap-lightning-flash.svg",
   },
   {
     title: "Precision",
     desc: "Reduce manual errors and repeat work.",
-    icon: "/assets/icons/whyloveit-icons/shield, security, protection.svg",
+    icon: "/assets/icons/whyloveit-icons/shield-security-protection.svg",
   },
   {
     title: "Multiplatform",
     desc: "Use the takeoff tools across office and field.",
-    icon: "/assets/icons/whyloveit-icons/connect devices, macbook, iphone, phone.svg",
+    icon: "/assets/icons/whyloveit-icons/connect-devices-macbook-iphone-phone.svg",
   },
   {
     title: "Accessibility",
     desc: "Easy to use even on the first try.",
-    icon: "/assets/icons/whyloveit-icons/magic stick star.svg",
+    icon: "/assets/icons/whyloveit-icons/magic-stick-star.svg",
   },
 ];
 

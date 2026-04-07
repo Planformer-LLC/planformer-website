@@ -102,7 +102,7 @@ export default function Testimonials() {
             {/* Left quote */}
             <span className="absolute left-4 top-4 sm:left-6 sm:top-6">
               <Image
-                src="/assets/icons/quotas/open quote, blockquote.svg"
+                src="/assets/icons/quotas/open-quote-blockquote.svg"
                 alt="Open quote"
                 width={22}
                 height={22}
@@ -134,7 +134,7 @@ export default function Testimonials() {
                     {/* Right quote */}
                     <span className="absolute -bottom-6 right-0">
                       <Image
-                        src="/assets/icons/quotas/close quote, blockquote.svg"
+                        src="/assets/icons/quotas/close-quote-blockquote.svg"
                         alt="Close quote"
                         width={22}
                         height={22}

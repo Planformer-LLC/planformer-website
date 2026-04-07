@@ -7,22 +7,22 @@ const values = [
   {
     title: "Speed and Efficiency",
     desc: "Every feature serves one goal: help you complete takeoffs in minutes, not hours.",
-    icon: "/assets/icons/aboutwhatwestandfor-icons/zap, lightning, flash.svg", // lightning
+    icon: "/assets/icons/aboutwhatwestandfor-icons/zap-lightning-flash.svg", // lightning
   },
   {
     title: "Accuracy You Can Trust",
     desc: "Clear measurements, real-time calculations, and precise results that help you bid confidently.",
-    icon: "/assets/icons/aboutwhatwestandfor-icons/magic stick star.svg", // wand (as screenshot)
+    icon: "/assets/icons/aboutwhatwestandfor-icons/magic-stick-star.svg", // wand (as screenshot)
   },
   {
     title: "Simplicity Without Compromise",
     desc: "A modern, intuitive workflow your team can learn in minutes not in hours.So save your time for what matters.",
-    icon: "/assets/icons/aboutwhatwestandfor-icons/star 2, magic sparkle.svg", // sparkle star (as screenshot)
+    icon: "/assets/icons/aboutwhatwestandfor-icons/star-2-magic-sparkle.svg", // sparkle star (as screenshot)
   },
   {
     title: "Built for the Field",
     desc: "Contractors and estimators guided every part of our design. Real problems, real feedback, real solutions.",
-    icon: "/assets/icons/aboutwhatwestandfor-icons/shield, security, protection.svg", // shield (as screenshot)
+    icon: "/assets/icons/aboutwhatwestandfor-icons/shield-security-protection.svg", // shield (as screenshot)
   },
 ];
 

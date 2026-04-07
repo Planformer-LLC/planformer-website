@@ -14,9 +14,9 @@ const heroVideoUrl =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv1%2Fhero_video_1080p.mp4?alt=media&token=906cf5f0-b105-4537-98e5-390c03b5b335";
 
 const pills = [
-  { icon: "/assets/icons/hero/zap, lightning, flash.svg", label: "100% faster takeoffs" },
+  { icon: "/assets/icons/hero/zap-lightning-flash.svg", label: "100% faster takeoffs" },
   { icon: "/assets/icons/hero/ruler.svg", label: "No more manual measurements" },
-  { icon: "/assets/icons/hero/clock alert, timer.svg", label: "Accurate cost estimates in seconds" },
+  { icon: "/assets/icons/hero/clock-alert-timer.svg", label: "Accurate cost estimates in seconds" },
 ];
 
 function Pill({ icon, label }: { icon: string; label: string }) {
