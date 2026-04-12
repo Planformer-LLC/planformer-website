@@ -2,6 +2,9 @@ import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
 
+const MACOS_DMG_URL =
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.8%2B15%2FPlanformer.dmg?alt=media";
+
 type DownloadCardProps = {
   label: string;
   title: string;
@@ -109,7 +112,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for macOS",
                       icon: "/assets/icons/downloadpageicon/apple.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2FmacOS%2FPlanformer-0.0.7%2B14.dmg?alt=media&token=f6dd2a0d-0ae8-4ea5-a4aa-856681d9c602",
+                      href: MACOS_DMG_URL,
     },
                   ]}
                 />
