@@ -3,7 +3,7 @@ import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
 
 const MACOS_DMG_URL =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.8%2B15%2FPlanformer.dmg?alt=media";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.9%2B16%2FPlanformer.dmg?alt=media";
 
 type DownloadCardProps = {
   label: string;
