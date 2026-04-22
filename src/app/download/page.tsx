@@ -4,6 +4,8 @@ import Image from "next/image";
 
 const MACOS_DMG_URL =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.9%2B16%2FPlanformer.dmg?alt=media";
+const WINDOWS_MSIX_URL =
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fwindows%2Fdownload%2F0.0.12.21%2FPlanformer.msix?alt=media";
 
 type DownloadCardProps = {
   label: string;
@@ -131,7 +133,7 @@ export default function DownloadPage() {
                     {
                       text: "Download for Windows",
                       icon: "/assets/icons/downloadpageicon/window.svg",
-                   href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/builds%2Fwindow%2Fplanformer-windows-0.0.12.19.zip?alt=media",
+                      href: WINDOWS_MSIX_URL,
     },
                   ]}
                 />
