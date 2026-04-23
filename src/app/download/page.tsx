@@ -5,7 +5,7 @@ import Image from "next/image";
 const MACOS_DMG_URL =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.9%2B16%2FPlanformer.dmg?alt=media";
 const WINDOWS_MSIX_URL =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fwindows%2Fdownload%2F0.0.12.22%2FPlanformer.msix?alt=media";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fwindows%2Fdownload%2F0.0.13.23%2FPlanformer.msix?alt=media";
 
 type DownloadCardProps = {
   label: string;
