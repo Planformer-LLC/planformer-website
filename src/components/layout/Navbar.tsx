@@ -23,6 +23,13 @@ export default function Navbar() {
   useEffect(() => {
     let ticking = false;
 
+    // Seed from the real position. Starting at 0 meant a page that loaded
+    // already scrolled (a deep link, a restored tab) saw a huge positive delta
+    // on the first scroll event and hid the header — and since
+    // pointer-events-none applies instantly while opacity fades over 300ms,
+    // the header looked perfectly visible but ignored every click.
+    lastScrollY.current = window.scrollY;
+
     const apply = () => {
       ticking = false;
       const el = headerRef.current;
@@ -32,7 +39,8 @@ export default function Navbar() {
       const delta = current - lastScrollY.current;
       if (Math.abs(delta) < 8) return;
 
-      const hide = delta > 0 && current > 80;
+      // Near the top the header is always shown, whatever the delta says.
+      const hide = current > 80 && delta > 0;
       for (const c of HIDDEN_CLASSES) el.classList.toggle(c, hide);
 
       lastScrollY.current = current;
@@ -73,17 +81,20 @@ export default function Navbar() {
     // Only intercept when the target is on the page we are already viewing.
     if (base !== pathname) return;
 
+    // Deliberately NOT writing the hash into the URL. Doing so stamps
+    // "#try-it" onto the history entry, and because Safari hides the fragment
+    // in its address bar, reopening the tab silently jumps to the demo with no
+    // visible reason. A direct visit to /#try-it still lands there — this only
+    // stops an in-page scroll from rewriting the address.
     if (hash) {
       const el = document.querySelector(hash);
       if (!el) return;
       e.preventDefault();
       scrollToElement(el, -90);
-      window.history.replaceState(null, "", hash);
     } else {
       // "Home" or the logo while already home: go back to the top.
       e.preventDefault();
       scrollToElement(0);
-      window.history.replaceState(null, "", base);
     }
     setMobileOpen(false);
   };

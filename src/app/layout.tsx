@@ -20,8 +20,12 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(siteData.url),
   title: {
-    default:
-      "Planformer — Construction Takeoff & Estimating Software for Mac, Windows, iOS & Android",
+    // No separator after the brand: Safari strips a leading site-name prefix
+    // when it is followed by one (— | : -), which is why the tab read
+    // "Construction Takeoff…". Making "Planformer" part of the phrase keeps it.
+    // Also now 53 chars, inside Google's ~60-char display limit; the old title
+    // was 97 and was being truncated in results.
+    default: "Planformer Construction Takeoff & Estimating Software",
     template: "%s | Planformer",
   },
   description:
