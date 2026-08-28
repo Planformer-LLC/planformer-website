@@ -66,7 +66,7 @@ export default function WhyLoveIt() {
           <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-0">
 
             <Reveal from="right">
-              <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
+              <h2 className="text-2xl font-extrabold text-[#1A1A1A] md:text-3xl">
                 Why Contractors and <span className="hidden md:inline"><br /></span>
                 Estimators Love It
               </h2>

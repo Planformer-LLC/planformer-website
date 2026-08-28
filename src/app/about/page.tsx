@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import FinalCTA from "@/components/sections/FinalCTA";
@@ -25,6 +26,13 @@ const values = [
     icon: "/assets/icons/aboutwhatwestandfor-icons/shield-security-protection.svg", // shield (as screenshot)
   },
 ];
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Planformer is built by people who have done takeoffs by hand. Learn why we built construction takeoff and estimating software that works on every platform, online or off.",
+  alternates: { canonical: "/about" },
+};
 
 export default function AboutPage() {
   return (
@@ -163,7 +171,7 @@ export default function AboutPage() {
       {/* RIGHT CONTENT */}
       <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-4">
         <Reveal>
-          <h2 className="text-2xl font-black text-[#1A1A1A] md:text-3xl">
+          <h2 className="text-2xl font-extrabold text-[#1A1A1A] md:text-3xl">
             What We Stand For
           </h2>
         </Reveal>

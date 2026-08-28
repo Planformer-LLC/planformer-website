@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
@@ -73,6 +74,13 @@ function DownloadCard({
     </div>
   );
 }
+
+export const metadata: Metadata = {
+  title: "Download for Mac, Windows, iPhone, iPad & Android",
+  description:
+    "Download Planformer takeoff and estimating software. Native apps for macOS, Windows, iPhone, iPad and Android — measure and price plans anywhere, even offline.",
+  alternates: { canonical: "/download" },
+};
 
 export default function DownloadPage() {
   return (

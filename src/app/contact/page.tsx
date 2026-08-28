@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import { siteData } from "@/data/siteData";
 import Link from "next/link";
 
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Questions about Planformer takeoff and estimating software? Talk to our team about pricing, onboarding or bringing your existing assemblies across.",
+  alternates: { canonical: "/contact" },
+};
 
 export default function ContactPage() {
   return (
