@@ -3,6 +3,7 @@ import SiteLayout from "@/components/layout/SiteLayout";
 import { jsonLd, softwareApplicationSchema } from "@/lib/structuredData";
 import Hero from "@/components/sections/Hero";
 import HowItWorks from "@/components/sections/HowItWorks";
+import TryItHere from "@/components/sections/TryItHere";
 import WhyLoveIt from "@/components/sections/WhyLoveIt";
 import SupportedTrades from "@/components/sections/SupportedTrades";
 import Testimonials from "@/components/sections/Testimonials";
@@ -25,6 +26,8 @@ export default function Page() {
       />
       <Hero />
       <HowItWorks />
+      {/* Proves the workflow HowItWorks just described, while intent is highest */}
+      <TryItHere />
       <SupportedTrades />
       <WhyLoveIt />
       <Testimonials />
