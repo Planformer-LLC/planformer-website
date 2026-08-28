@@ -71,7 +71,8 @@ export default function HowItWorks() {
               posterUrl={thumbnailUrl}
               videoUrl={videoUrl}
               label="Play the How It Works video"
-              className="aspect-[45/32] w-full md:aspect-[16/9]"
+              // Source is 1280x720, so 16/9 exactly — no crop, no letterbox.
+              className="aspect-video w-full"
             />
           </div>
         </Reveal>

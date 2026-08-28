@@ -1,12 +1,18 @@
 import Link from "next/link";
 import Reveal from "@/components/animations/Reveal";
 import PosterVideo from "@/components/sections/PosterVideo";
+import WatchTakeoffButton, {
+  HERO_PLAY_EVENT,
+} from "@/components/sections/WatchTakeoffButton";
 
 // v2: re-encoded at native resolution (x264 CRF 24) — 15.7MB -> 11.2MB with no
 // visible loss on the plan linework, and the poster as WebP (347KB -> 109KB).
 // v1 is left in place untouched.
+// Poster is a real frame from the video at its exact 1920x1016, so the still
+// and the playing video occupy the same box with no letterboxing. The previous
+// thumbnail was 1440x1024 — a different aspect ratio from the video entirely.
 const heroPosterUrl =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_thumbnail.webp?alt=media&token=ac2c235a-00f2-4cf2-aabd-81d769d0152c";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_poster_1920.webp?alt=media&token=a8d4c143-9eac-412a-b9b9-e3f721955db0";
 const heroVideoUrl =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_video_1080p.mp4?alt=media&token=d1a3c46d-afc0-441b-a3f5-da252861ae14";
 
@@ -37,10 +43,12 @@ export default function Hero() {
             Takeoff &amp; Estimating · 5 Platforms
           </p>
 
-          <h1 className="mt-6 text-[38px] leading-[1.04] font-extrabold tracking-tight text-ink sm:text-5xl lg:text-[64px]">
-            Measure the plans. Price the job.
-            <br />
-            <span className="text-brand">Same afternoon.</span>
+          {/* One sentence per line at every breakpoint — letting these wrap
+              naturally left a two-word orphan on the second line. */}
+          <h1 className="mt-6 text-[30px] leading-[1.08] font-extrabold tracking-tight text-ink sm:text-[44px] lg:text-[60px] xl:text-[64px]">
+            <span className="block">Measure the plans.</span>
+            <span className="block">Price the job.</span>
+            <span className="block text-brand">Same afternoon.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink/70 lg:text-lg">
@@ -56,16 +64,12 @@ export default function Hero() {
             >
               Start free trial
             </Link>
-            <Link
-              href="#try-it"
-              className="inline-flex h-[52px] w-full items-center justify-center rounded-[10px] border border-black/10 bg-white px-8 text-base font-semibold text-ink transition-all duration-300 hover:-translate-y-[1px] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] active:scale-[0.98] sm:w-auto"
-            >
-              Watch a takeoff
-            </Link>
+            <WatchTakeoffButton />
           </div>
 
-          {/* Stat row */}
-          <dl className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-4 border-t border-black/10 pt-8 text-left sm:gap-8">
+          {/* Stat row. No divider — the section background already draws
+              grid lines, so an extra rule reads as a stray artifact. */}
+          <dl className="mx-auto mt-10 grid max-w-2xl grid-cols-3 gap-4 text-center sm:gap-8">
             {stats.map((s) => (
               <div key={s.label}>
                 <dt className="sr-only">{s.label}</dt>
@@ -86,11 +90,15 @@ export default function Hero() {
         <Reveal from="bottom" delay={0.1} duration={0.6}>
           <div className="mt-14 md:mt-16">
             <PosterVideo
+              id="hero-video"
               posterUrl={heroPosterUrl}
               videoUrl={heroVideoUrl}
               label="Play the Planformer takeoff demo video"
               priority
-              className="aspect-[16/10] w-full md:aspect-[16/9]"
+              playOnEvent={HERO_PLAY_EVENT}
+              // Matches the source exactly (1920x1016) so nothing is cropped
+              // or letterboxed at any width.
+              className="aspect-[1920/1016] w-full"
             />
           </div>
         </Reveal>

@@ -3,14 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LogIn, Menu, X } from "lucide-react";
 import { siteData, platforms } from "@/data/siteData";
 import DownloadMenu from "@/components/layout/DownloadMenu";
+import { scrollToElement } from "@/hooks/useSmoothScroll";
+
+const HIDDEN_CLASSES = ["-translate-y-16", "opacity-0", "pointer-events-none"];
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
   const lastScrollY = useRef(0);
+  const pathname = usePathname();
 
   // Hide-on-scroll writes a class directly to the node rather than going
   // through state, so scrolling never re-renders the header (and its
@@ -28,9 +33,7 @@ export default function Navbar() {
       if (Math.abs(delta) < 8) return;
 
       const hide = delta > 0 && current > 80;
-      el.classList.toggle("-translate-y-16", hide);
-      el.classList.toggle("opacity-0", hide);
-      el.classList.toggle("pointer-events-none", hide);
+      for (const c of HIDDEN_CLASSES) el.classList.toggle(c, hide);
 
       lastScrollY.current = current;
     };
@@ -44,6 +47,46 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // The classes above are set imperatively and the Navbar lives in the layout,
+  // so it never unmounts on navigation. Without this reset, following a link
+  // while the header is hidden leaves it invisible AND pointer-events-none on
+  // the next page — the nav appears dead.
+  // (The drawer itself is closed by each link's own onClick.)
+  useEffect(() => {
+    headerRef.current?.classList.remove(...HIDDEN_CLASSES);
+    lastScrollY.current = window.scrollY;
+  }, [pathname]);
+
+  /**
+   * In-page links. Lenis owns the scroll position, so a native hash jump is
+   * reverted on its next frame; these have to go through scrollToElement.
+   */
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    const hashIndex = href.indexOf("#");
+    const base = hashIndex === -1 ? href : href.slice(0, hashIndex) || "/";
+    const hash = hashIndex === -1 ? "" : href.slice(hashIndex);
+
+    // Only intercept when the target is on the page we are already viewing.
+    if (base !== pathname) return;
+
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (!el) return;
+      e.preventDefault();
+      scrollToElement(el, -90);
+      window.history.replaceState(null, "", hash);
+    } else {
+      // "Home" or the logo while already home: go back to the top.
+      e.preventDefault();
+      scrollToElement(0);
+      window.history.replaceState(null, "", base);
+    }
+    setMobileOpen(false);
+  };
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -81,7 +124,7 @@ export default function Navbar() {
             <Link
               href="/"
               className="flex items-center gap-2 font-extrabold tracking-tight text-[#1A1A1A]"
-              onClick={closeMobile}
+              onClick={(e) => handleNavClick(e, "/")}
             >
               <span className="relative h-8 w-8">
                 <Image
@@ -99,17 +142,18 @@ export default function Navbar() {
             </Link>
 
             {/* Nav links (desktop) */}
-           <nav className="hidden items-center gap-6 text-sm md:flex">
-  {navWithBlog.map((n) => (
-    <Link
-      key={n.href}
-      href={n.href}
-      className="text-[#1A1A1A] font-semibold transition hover:text-[#6B7280]"
-    >
-      {n.label}
-    </Link>
-  ))}
-</nav>
+            <nav className="hidden items-center gap-6 text-sm md:flex">
+              {navWithBlog.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  onClick={(e) => handleNavClick(e, n.href)}
+                  className="font-semibold text-[#1A1A1A] transition hover:text-[#6B7280]"
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </nav>
 
 
             {/* CTA Button (desktop only) */}
@@ -206,7 +250,10 @@ export default function Navbar() {
                   <li key={n.href}>
                     <Link
                       href={n.href}
-                      onClick={closeMobile}
+                      onClick={(e) => {
+                        closeMobile();
+                        handleNavClick(e, n.href);
+                      }}
                       className="text-base font-semibold text-[#1A1A1A]"
                     >
                       {n.label}
