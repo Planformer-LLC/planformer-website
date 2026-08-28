@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import SiteLayout from "@/components/layout/SiteLayout";
 import { BlogContent } from "@/components/blog/BlogContent";
@@ -76,10 +77,13 @@ export default async function BlogDetailsPage({ params }: PageProps) {
         <div className="mx-auto max-w-[1240px] px-0 pt-32 sm:px-4 sm:pt-40 lg:px-6">
           <div className="relative w-full overflow-hidden sm:rounded-sm">
             <div className="relative aspect-[4/3] w-full sm:aspect-[16/7] md:aspect-[16/6]">
-              <img
+              <Image
                 src={post.coverImage.url}
                 alt={post.coverImage.alt || post.title}
-                className="h-full w-full object-cover"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 1240px"
+                className="object-cover"
               />
             </div>
           </div>

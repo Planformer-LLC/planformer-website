@@ -170,7 +170,7 @@ export default function DownloadPage() {
 </div>
 
 
-          {/* ROW 3 - iPad (icon changed to appstore.svg)
+          {/* ROW 3 - iPad */}
           <div className="mt-6">
             <Reveal delay={0.06}>
               <div className="w-full lg:w-[590px]">
@@ -180,18 +180,17 @@ export default function DownloadPage() {
                   description="Perfect for on-site reviews and quick markups with a touch-friendly experience."
                   image="/assets/images/download/iPad.webp"
                   heightClass="h-[574px]"
-                 buttons={[
-  {
-    text: "Download on App Store",
-    icon: "/assets/icons/downloadpageicon/appstore.svg",
-    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
-  },
-]}
-
+                  buttons={[
+                    {
+                      text: "Download on App Store",
+                      icon: "/assets/icons/downloadpageicon/appstore.svg",
+                      href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+                    },
+                  ]}
                 />
               </div>
             </Reveal>
-          </div> */}
+          </div>
         </div>
       </section>
     </SiteLayout>

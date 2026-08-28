@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BlogPost, formatBlogDate } from "@/lib/blog";
 
 export function BlogCard({ post }: { post: BlogPost }) {
@@ -8,10 +9,12 @@ export function BlogCard({ post }: { post: BlogPost }) {
         <div className="rounded-2xl bg-white p-2.5 shadow-sm ring-1 ring-black/5">
           <div className="relative w-full overflow-hidden rounded-xl">
             <div className="relative aspect-[4/3] w-full">
-              <img
+              <Image
                 src={post.coverImage.url}
                 alt={post.coverImage.alt || post.title}
-                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                fill
+                sizes="(max-width: 768px) 100vw, 400px"
+                className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               />
             </div>
           </div>

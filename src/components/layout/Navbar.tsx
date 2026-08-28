@@ -3,25 +3,42 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Download, LogIn, Menu, X } from "lucide-react";
-import { siteData } from "@/data/siteData";
+import { LogIn, Menu, X } from "lucide-react";
+import { siteData, platforms } from "@/data/siteData";
+import DownloadMenu from "@/components/layout/DownloadMenu";
 
 export default function Navbar() {
-  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   const lastScrollY = useRef(0);
 
+  // Hide-on-scroll writes a class directly to the node rather than going
+  // through state, so scrolling never re-renders the header (and its
+  // children) on every frame.
   useEffect(() => {
-    const handleScroll = () => {
+    let ticking = false;
+
+    const apply = () => {
+      ticking = false;
+      const el = headerRef.current;
+      if (!el) return;
+
       const current = window.scrollY;
       const delta = current - lastScrollY.current;
-
       if (Math.abs(delta) < 8) return;
 
-      if (current > lastScrollY.current && current > 80) setHidden(true);
-      else setHidden(false);
+      const hide = delta > 0 && current > 80;
+      el.classList.toggle("-translate-y-16", hide);
+      el.classList.toggle("opacity-0", hide);
+      el.classList.toggle("pointer-events-none", hide);
 
       lastScrollY.current = current;
+    };
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(apply);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -40,7 +57,6 @@ export default function Navbar() {
   const closeMobile = () => setMobileOpen(false);
 
   const ICONS = {
-    appStore: "/assets/icons/downloadpageicon/appstore.svg",
     twitterX: "/assets/icons/socialmedia-icons/twitterx.svg",
     instagram: "/assets/icons/socialmedia-icons/insta.svg",
     facebook: "/assets/icons/socialmedia-icons/facebook.svg",
@@ -54,13 +70,8 @@ export default function Navbar() {
     <>
       {/* ✅ White background stays with navbar on scroll */}
       <header
-        className={`
-          fixed top-0 left-0 z-50 w-full
-          transition-all duration-300
-          ${hidden ? "pointer-events-none -translate-y-16 opacity-0" : "translate-y-0 opacity-100"}
-          bg-white/95 backdrop-blur
-          border-b border-black/10
-        `}
+        ref={headerRef}
+        className="fixed top-0 left-0 z-50 w-full translate-y-0 border-b border-black/10 bg-white/95 opacity-100 backdrop-blur transition-all duration-300"
       >
         <div className="mx-auto max-w-[1280px] px-3 md:px-6 lg:px-20">
          <div className="flex items-center justify-between py-5 md:py-6">
@@ -103,22 +114,23 @@ export default function Navbar() {
 
             {/* CTA Button (desktop only) */}
             <div className="hidden items-center gap-3 md:flex">
+              <DownloadMenu />
+
               <Link
                 href={siteData.cta.href}
                 className="
                   inline-flex rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] text-white transition active:scale-[0.98] hover:bg-transparent hover:text-[#0F83FF]
                   items-center justify-center gap-2
-                  h-[46px] min-w-[170px]
-                  pl-5 pr-6
+                  h-[46px] min-w-[130px]
+                  px-5
                   text-sm font-semibold leading-none
                 "
               >
-                <Download size={18} />
                 {siteData.cta.label}
               </Link>
 
               <Link
-                href="https://app.planformer.com/onboarding_screen"
+                href={siteData.loginHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
@@ -205,31 +217,49 @@ export default function Navbar() {
             </nav>
 
             {/* CTA + Contact + Socials */}
-            <div className="mt-auto px-6 pb-10 pt-48">
-              <div className="flex items-center justify-end gap-3">
+            <div className="mt-auto px-6 pt-16 pb-10">
+              {/* Every platform, not just the App Store */}
+              <p className="text-xs font-bold tracking-[0.14em] text-ink/50 uppercase">
+                Download for
+              </p>
+              <ul className="mt-3 grid grid-cols-2 gap-2">
+                {platforms.map((p) => (
+                  <li key={p.id}>
+                    <a
+                      href={p.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeMobile}
+                      className="flex items-center gap-2 rounded-lg border border-black/10 px-3 py-2.5 text-sm font-semibold text-ink transition active:scale-[0.98]"
+                    >
+                      <Image
+                        src={p.icon}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="h-4 w-4 shrink-0 object-contain invert"
+                      />
+                      {p.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-5 flex items-center gap-3">
                 <Link
                   href={siteData.cta.href}
                   onClick={closeMobile}
-                  className="inline-flex h-[46px] min-w-[148px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] pl-2.5 pr-3 text-sm font-semibold text-white transition active:scale-[0.98] hover:bg-transparent hover:text-[#0F83FF]"
+                  className="inline-flex h-[46px] flex-1 items-center justify-center rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] px-3 text-sm font-semibold text-white transition hover:bg-transparent hover:text-[#0F83FF] active:scale-[0.98]"
                 >
-                  <span className="relative h-4 w-4 shrink-0">
-                    <Image
-                      src={ICONS.appStore}
-                      alt="App Store"
-                      fill
-                      sizes="16px"
-                      className="object-contain"
-                    />
-                  </span>
-                  <span>Download now</span>
+                  {siteData.cta.label}
                 </Link>
 
                 <Link
-                  href="https://app.planformer.com/onboarding_screen"
+                  href={siteData.loginHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={closeMobile}
-                  className="inline-flex h-[46px] min-w-[108px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent pl-2 pr-2.5 text-sm font-semibold text-[#0F83FF] transition active:scale-[0.98] hover:bg-[#0F83FF] hover:text-white"
+                  className="inline-flex h-[46px] min-w-[108px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-[#0F83FF] bg-transparent px-2.5 text-sm font-semibold text-[#0F83FF] transition hover:bg-[#0F83FF] hover:text-white active:scale-[0.98]"
                 >
                   <LogIn size={16} className="shrink-0" />
                   <span>Login</span>
