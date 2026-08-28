@@ -6,8 +6,7 @@ import { Download } from "lucide-react";
 export default function FinalCTA() {
   return (
     <section className="relative bg-[#1A1F28] text-white overflow-hidden">
-      {/* We DO NOT use .bg-grid here because it's a dark section. Maintaining the original unique dark background. */}
-      <div className="absolute inset-0 bg-[url('/assets/bg/BG2.svg')] bg-cover bg-center opacity-40" />
+      <div className="absolute inset-0 bg-[url('/assets/bg/bg2.svg')] bg-cover bg-center opacity-40" />
 
       {/* ✅ desktop: a bit taller so you get center text + bottom images nicely */}
       <div className="relative mx-auto max-w-6xl px-4 pt-40 pb-0 md:pt-2 md:pb-0 min-h-[840px] md:min-h-[520px]">
@@ -52,7 +51,7 @@ export default function FinalCTA() {
               >
                 <Image
                   src="/assets/images/home/finalcta2.webp"
-                  alt="Planformer detail"
+                  alt="The Planformer takeoff editor showing measured areas on a site plan"
                   width={640}
                   height={400}
                   className="
@@ -72,7 +71,7 @@ export default function FinalCTA() {
               >
                 <Image
                   src="/assets/images/home/finalcta.webp"
-                  alt="Planformer preview"
+                  alt="A contractor giving a thumbs-up next to the Planformer app"
                   width={1200}
                   height={700}
                   className="

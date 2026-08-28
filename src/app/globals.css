@@ -1,31 +1,34 @@
 @import "tailwindcss";
 
+/* Brand tokens. Under Tailwind v4 these must live in @theme — a tailwind.config.js
+   is never loaded without an @config directive, so putting them there does nothing. */
+@theme {
+  --color-brand: #0F83FF;
+  --color-brand-hover: #0070ea;
+  --color-ink: #1A1A1A;
+  --color-ink-muted: #767676;
+  --color-section: #F5F5F5;
+  --color-surface-dark: #1A1F28;
+  --color-takeoff-green: #00B51E;
+  --color-takeoff-amber: #FFBB00;
+}
+
 html { scroll-behavior: smooth; }
 
-:root {
-  --color-primary: #0F83FF;
-  --color-section: #F5F5F5;
-  --color-heading: #1A1A1A;
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-[10px] bg-[#0F83FF] px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#0070ea] hover:shadow-[0_4px_14px_0_rgba(15,131,255,0.39)] hover:-translate-y-[1px] active:scale-[0.98];
+  @apply inline-flex items-center justify-center rounded-[10px] bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-brand-hover hover:shadow-[0_4px_14px_0_rgba(15,131,255,0.39)] hover:-translate-y-[1px] active:scale-[0.98];
 }
 
 .btn-primary-sm {
-  @apply inline-flex items-center justify-center rounded-[10px] bg-[#0F83FF] px-4 py-2 text-xs font-semibold text-white transition-all duration-300 hover:bg-[#0070ea] hover:shadow-[0_4px_14px_0_rgba(15,131,255,0.39)] hover:-translate-y-[1px] active:scale-[0.98];
+  @apply inline-flex items-center justify-center rounded-[10px] bg-brand px-4 py-2 text-xs font-semibold text-white transition-all duration-300 hover:bg-brand-hover hover:shadow-[0_4px_14px_0_rgba(15,131,255,0.39)] hover:-translate-y-[1px] active:scale-[0.98];
 }
 
 .card-hover {
   @apply transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)];
-}
-
-/* Subtle grid background like your screenshots */
-.bg-grid {
-  background-image:
-    linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
 }
 
 .bg-grid-dark {
@@ -35,13 +38,3 @@ html { scroll-behavior: smooth; }
     linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
   background-size: 42px 42px;
 }
-
-/* Fixed grid background so patterns align seamlessly across multiple stacked sections */
-.bg-grid {
-  background-image: url("/assets/bg/bg.svg");
-  background-repeat: repeat;
-  background-position: top left;
-  background-attachment: fixed; /* This makes the grid continuous across sections! */
-}
-
-
