@@ -31,7 +31,11 @@ export const platforms = [
     id: "macos",
     label: "macOS",
     icon: "/assets/icons/downloadpageicon/apple.svg",
-    href: "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.12%2B19%2FPlanformer.dmg?alt=media",
+    // Direct GCS URL, matching the Windows installer. The old
+    // firebasestorage.googleapis.com form returned 403 because the object has
+    // no download token — see doc/release-downloads.md before publishing a new
+    // build.
+    href: "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.12%2B19/Planformer.dmg",
     schemaName: "macOS",
   },
   {

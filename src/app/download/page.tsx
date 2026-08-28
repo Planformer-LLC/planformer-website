@@ -3,8 +3,11 @@ import SiteLayout from "@/components/layout/SiteLayout";
 import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
 
+// Direct GCS URL, matching WINDOWS_APP_INSTALLER_URL below. The previous
+// firebasestorage.googleapis.com form returned 403 for every visitor because
+// the object carries no download token — see doc/release-downloads.md.
 const MACOS_DMG_URL =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/releases%2Fmacos%2Fdownload%2F0.0.12%2B19%2FPlanformer.dmg?alt=media";
+  "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.12%2B19/Planformer.dmg";
 const WINDOWS_APP_INSTALLER_URL =
   "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/windows/planformer.appinstaller";
 
