@@ -2,10 +2,13 @@ import Link from "next/link";
 import Reveal from "@/components/animations/Reveal";
 import PosterVideo from "@/components/sections/PosterVideo";
 
+// v2: re-encoded at native resolution (x264 CRF 24) — 15.7MB -> 11.2MB with no
+// visible loss on the plan linework, and the poster as WebP (347KB -> 109KB).
+// v1 is left in place untouched.
 const heroPosterUrl =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv1%2Fhero_thumbnail.png?alt=media&token=df97afd9-5030-498a-9139-3e2270325ae4";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_thumbnail.webp?alt=media&token=ac2c235a-00f2-4cf2-aabd-81d769d0152c";
 const heroVideoUrl =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv1%2Fhero_video_1080p.mp4?alt=media&token=906cf5f0-b105-4537-98e5-390c03b5b335";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_video_1080p.mp4?alt=media&token=d1a3c46d-afc0-441b-a3f5-da252861ae14";
 
 const stats = [
   { value: "4.8★", label: "App Store rating" },

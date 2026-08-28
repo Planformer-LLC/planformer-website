@@ -1,10 +1,12 @@
 import Reveal from "@/components/animations/Reveal";
 import PosterVideo from "@/components/sections/PosterVideo";
 
+// v3: re-encoded (x264 CRF 26) 4.77MB -> 3.3MB, poster as WebP 238KB -> 23KB.
+// v2 is left in place untouched.
 const thumbnailUrl =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv2%2Fhowitworkthumbnail.png?alt=media&token=f2aaa944-bac2-4f7a-971c-6068cb0463cf";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv3%2Fhow-it-works_thumbnail.webp?alt=media&token=a2c6a725-6c41-45b6-8e97-c672b90e75e3";
 const videoUrl =
-  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv2%2Fhow%20it%20works%20animation.mp4?alt=media&token=4044b122-fe9d-4f95-a8bf-d2211e8e938e";
+  "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhow-it-works%2Fv3%2Fhow-it-works.mp4?alt=media&token=b9cd538f-5af9-4b83-99d2-71a560c4bc2d";
 
 const steps = [
   {
