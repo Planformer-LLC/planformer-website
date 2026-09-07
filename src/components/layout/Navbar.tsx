@@ -4,10 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogIn, Menu, X } from "lucide-react";
+import { Download, LogIn, Menu, X } from "lucide-react";
 import { siteData, platforms } from "@/data/siteData";
-import DownloadMenu from "@/components/layout/DownloadMenu";
-import { scrollToElement } from "@/hooks/useSmoothScroll";
+import { scrollToElement } from "@/lib/scroll";
 
 const HIDDEN_CLASSES = ["-translate-y-16", "opacity-0", "pointer-events-none"];
 
@@ -67,8 +66,8 @@ export default function Navbar() {
   }, [pathname]);
 
   /**
-   * In-page links. Lenis owns the scroll position, so a native hash jump is
-   * reverted on its next frame; these have to go through scrollToElement.
+   * In-page links. Handled here so the scroll accounts for the fixed header
+   * height, which a bare hash jump does not.
    */
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
@@ -169,7 +168,15 @@ export default function Navbar() {
 
             {/* CTA Button (desktop only) */}
             <div className="hidden items-center gap-3 md:flex">
-              <DownloadMenu />
+              {/* Plain link to the download page — the page itself is the
+                  platform picker, so a dropdown duplicated it. */}
+              <Link
+                href="/download"
+                className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-black/10 bg-white px-5 text-sm leading-none font-semibold text-ink transition hover:border-[#0F83FF] hover:text-[#0F83FF] active:scale-[0.98]"
+              >
+                <Download size={17} />
+                Download
+              </Link>
 
               <Link
                 href={siteData.cta.href}

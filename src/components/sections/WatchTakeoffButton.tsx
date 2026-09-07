@@ -1,7 +1,7 @@
 "use client";
 
 import { Play } from "lucide-react";
-import { scrollToElement } from "@/hooks/useSmoothScroll";
+import { scrollToElement } from "@/lib/scroll";
 
 export const HERO_PLAY_EVENT = "planformer:play-hero";
 

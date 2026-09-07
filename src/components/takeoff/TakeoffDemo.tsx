@@ -67,7 +67,14 @@ export default function TakeoffDemo() {
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  // Track size; getBoundingClientRect never runs in the pointermove path.
+  /**
+   * Size only. This used to also run on every scroll event, which meant a
+   * forced layout (getBoundingClientRect) plus a React state update dozens of
+   * times a second while the page moved — the cause of the scroll lag around
+   * this section. The viewport's left/top DO change on scroll, but they are
+   * only needed at pointer time, so they are read there instead (once per
+   * animation frame, and only while a tool is active).
+   */
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -77,16 +84,14 @@ export default function TakeoffDemo() {
         { left: r.left, top: r.top, width: r.width, height: r.height },
         VIEWBOX,
       );
-      setPxPerUnit(vpRef.current.pxPerUnit);
+      setPxPerUnit((prev) =>
+        prev === vpRef.current.pxPerUnit ? prev : vpRef.current.pxPerUnit,
+      );
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
-    window.addEventListener("scroll", measure, { passive: true });
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("scroll", measure);
-    };
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
@@ -102,14 +107,35 @@ export default function TakeoffDemo() {
   /* Pointer                                                          */
   /* --------------------------------------------------------------- */
 
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    cursorRef.current = clientToPlan(e.clientX, e.clientY, vpRef.current);
-    if (rafRef.current) return;
-    rafRef.current = requestAnimationFrame(() => {
-      rafRef.current = 0;
-      setCursor(cursorRef.current);
-    });
-  }, []);
+  const clientRef = useRef<{ x: number; y: number } | null>(null);
+
+  const onPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      // Nothing to track unless the visitor is actually drawing. Previously
+      // this re-rendered the whole canvas on every mouse move over the
+      // section, including while merely scrolling past it.
+      if (!drawing && !calibrating) return;
+
+      clientRef.current = { x: e.clientX, y: e.clientY };
+      const el = wrapRef.current;
+      if (!el || rafRef.current) return;
+
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        const c = clientRef.current;
+        if (!c) return;
+        // One layout read per frame, only while drawing.
+        const r = el.getBoundingClientRect();
+        vpRef.current = computeViewport(
+          { left: r.left, top: r.top, width: r.width, height: r.height },
+          VIEWBOX,
+        );
+        cursorRef.current = clientToPlan(c.x, c.y, vpRef.current);
+        setCursor(cursorRef.current);
+      });
+    },
+    [drawing, calibrating],
+  );
 
   const commitAt = useCallback(
     (at: Pt) => dispatch({ type: "COMMIT_POINT", at, closeThresholdUnits }),
@@ -279,7 +305,6 @@ export default function TakeoffDemo() {
         <div className="relative">
           <div
             ref={wrapRef}
-            data-lenis-prevent
             className="relative w-full touch-none select-none"
             style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
           >
@@ -297,7 +322,7 @@ export default function TakeoffDemo() {
               onPointerMove={onPointerMove}
               onPointerDown={onPointerDown}
               onPointerUp={onPointerUp}
-              onPointerLeave={() => setCursor(null)}
+              onPointerLeave={() => cursor && setCursor(null)}
               onKeyDown={onKeyDown}
             >
               <PlanBackdrop />

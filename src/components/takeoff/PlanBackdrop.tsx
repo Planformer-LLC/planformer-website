@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { CORRIDOR, ENVELOPE, ROOMS, UNITS_PER_FT } from "@/lib/takeoff/planFixture";
 import { polygonAreaUnits, unitsToSqFeet } from "@/lib/takeoff/geometry";
 import { ringOf, FT_PER_UNIT_DEFAULT } from "@/lib/takeoff/planFixture";
@@ -9,7 +10,7 @@ import { ringOf, FT_PER_UNIT_DEFAULT } from "@/lib/takeoff/planFixture";
  * static skeleton (server) and the interactive island (client). That is what
  * makes the section look finished before any JS arrives, with zero CLS.
  */
-export default function PlanBackdrop() {
+function PlanBackdrop() {
   return (
     <g aria-hidden="true">
       {/* Dotted page background behind the sheet */}
@@ -144,3 +145,7 @@ export default function PlanBackdrop() {
     </g>
   );
 }
+
+// Static: ~70 SVG nodes that never change. Without memo they were rebuilt
+// on every cursor update and every scroll-triggered re-render.
+export default memo(PlanBackdrop);
