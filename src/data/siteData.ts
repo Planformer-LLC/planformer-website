@@ -3,7 +3,6 @@ export const siteData = {
   url: "https://planformer.com",
   nav: [
     { label: "Home", href: "/" },
-    { label: "Try it", href: "/#try-it" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],

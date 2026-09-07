@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Download, LogIn, Menu, X } from "lucide-react";
+import { LogIn, Menu, X } from "lucide-react";
 import { siteData, platforms } from "@/data/siteData";
+import DownloadMenu from "@/components/layout/DownloadMenu";
 import { scrollToElement } from "@/lib/scroll";
 
 const HIDDEN_CLASSES = ["-translate-y-16", "opacity-0", "pointer-events-none"];
@@ -152,7 +153,7 @@ export default function Navbar() {
             </Link>
 
             {/* Nav links (desktop) */}
-            <nav className="hidden items-center gap-6 text-sm md:flex">
+            <nav className="hidden items-center gap-6 text-sm lg:flex">
               {navWithBlog.map((n) => (
                 <Link
                   key={n.href}
@@ -167,16 +168,8 @@ export default function Navbar() {
 
 
             {/* CTA Button (desktop only) */}
-            <div className="hidden items-center gap-3 md:flex">
-              {/* Plain link to the download page — the page itself is the
-                  platform picker, so a dropdown duplicated it. */}
-              <Link
-                href="/download"
-                className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[10px] border-[2.5px] border-black/10 bg-white px-5 text-sm leading-none font-semibold text-ink transition hover:border-[#0F83FF] hover:text-[#0F83FF] active:scale-[0.98]"
-              >
-                <Download size={17} />
-                Download
-              </Link>
+            <div className="hidden items-center gap-3 lg:flex">
+              <DownloadMenu />
 
               <Link
                 href={siteData.cta.href}
@@ -212,7 +205,7 @@ export default function Navbar() {
             <button
               type="button"
               aria-label="Open menu"
-              className="inline-flex items-center justify-center rounded-lg p-2 text-[#1A1A1A] md:hidden"
+              className="inline-flex items-center justify-center rounded-lg p-2 text-[#1A1A1A] lg:hidden"
               onClick={() => setMobileOpen(true)}
             >
               <Menu size={22} />
@@ -224,7 +217,7 @@ export default function Navbar() {
       {/* Mobile full-screen menu */}
       <div
         className={`
-          fixed inset-0 z-[60] bg-white md:hidden
+          fixed inset-0 z-[60] bg-white lg:hidden
           transition-transform duration-300
           ${mobileOpen ? "translate-x-0" : "translate-x-full"}
         `}
