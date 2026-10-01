@@ -34,7 +34,7 @@ export const platforms = [
     // firebasestorage.googleapis.com form returned 403 because the object has
     // no download token — see doc/release-downloads.md before publishing a new
     // build.
-    href: "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.17%2B27/Planformer.dmg",
+    href: "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.19%2B29/Planformer.dmg",
     schemaName: "macOS",
   },
   {
