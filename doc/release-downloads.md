@@ -64,7 +64,7 @@ of megabytes. A 403 means step 1 was skipped.
 
 | Platform | Link | Status |
 |---|---|---|
-| macOS | `storage.googleapis.com/.../0.0.18%2B28/Planformer.dmg` | 200, public |
+| macOS | `storage.googleapis.com/.../0.0.12%2B19/Planformer.dmg` | 200, public |
 | Windows | `storage.googleapis.com/.../planformer.appinstaller` | 200, public |
 | iOS / iPad | App Store | 200 |
 | Android | Play Store | 200 |
