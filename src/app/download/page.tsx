@@ -7,7 +7,7 @@ import Image from "next/image";
 // firebasestorage.googleapis.com form returned 403 for every visitor because
 // the object carries no download token — see doc/release-downloads.md.
 const MACOS_DMG_URL =
-  "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.17%2B27/Planformer.dmg";
+  "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/macos/download/0.0.18%2B28/Planformer.dmg";
 const WINDOWS_APP_INSTALLER_URL =
   "https://storage.googleapis.com/planformer-3408e.firebasestorage.app/releases/windows/planformer.appinstaller";
 
