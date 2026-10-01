@@ -40,7 +40,9 @@ export const metadata: Metadata = {
     "digital takeoff",
     "contractor estimating",
   ],
-  alternates: { canonical: "/" },
+  // No canonical here: a root canonical is inherited by every page that does not
+  // set its own (that pointed /blog and every post at the homepage). Each page
+  // sets its own self-referencing canonical instead.
   manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
