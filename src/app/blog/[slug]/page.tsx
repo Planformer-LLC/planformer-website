@@ -20,10 +20,14 @@ export async function generateMetadata({
     return {};
   }
 
+  const path = `/blog/${post.slug}`;
+
   return {
     title: post.seo.metaTitle,
     description: post.seo.metaDescription,
+    alternates: { canonical: path },
     openGraph: {
+      url: path,
       title: post.seo.ogTitle,
       description: post.seo.ogDescription,
       images: post.seo.ogImage ? [{ url: post.seo.ogImage }] : [],
