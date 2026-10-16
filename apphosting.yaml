@@ -39,3 +39,10 @@ env:
     secret: BLOG_PREVIEW_SECRET
   - variable: BLOG_REVALIDATE_SECRET
     secret: BLOG_REVALIDATE_SECRET
+  # Canonical host redirect (www -> apex, 301). Enable ONLY after the apex
+  # serves this backend directly in Firebase App Hosting -> Domains; while the
+  # apex still redirects to www this would cause a redirect loop. See next.config.ts.
+  # - variable: REDIRECT_WWW_TO_APEX
+  #   value: "true"
+  #   availability:
+  #     - BUILD

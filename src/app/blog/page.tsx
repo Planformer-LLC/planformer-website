@@ -9,6 +9,15 @@ export const metadata: Metadata = {
   title: "Planformer Blog",
   description:
     "Product news and best practices for teams building with Planformer.",
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    type: "website",
+    siteName: "Planformer",
+    url: "/blog",
+    title: "Planformer Blog",
+    description:
+      "Product news and best practices for teams building with Planformer.",
+  },
 };
 
 type BlogPageProps = {
