@@ -285,6 +285,8 @@ export default function Navbar() {
                   <li key={p.id}>
                     <a
                       href={p.href}
+                      data-download-platform={p.id}
+                      data-download-location="mobile_header"
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={closeMobile}

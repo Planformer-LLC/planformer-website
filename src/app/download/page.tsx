@@ -21,6 +21,7 @@ type DownloadCardProps = {
     text: string;
     icon: string; // icon path from public
     href?: string;
+    platform: string;
   }>;
 };
 
@@ -56,6 +57,8 @@ function DownloadCard({
            <a
   key={idx}
   href={b.href ?? "#"}
+  data-download-platform={b.platform}
+  data-download-location="download_page"
   target="_blank"
   rel="noopener noreferrer"
   className="inline-flex h-[50px] w-fit items-center gap-3 rounded-lg bg-[#0F83FF] px-4 text-sm font-semibold text-white transition hover:brightness-110"
@@ -124,6 +127,7 @@ export default function DownloadPage() {
                   buttons={[
                     {
                       text: "Download for macOS",
+                      platform: "macos",
                       icon: "/assets/icons/downloadpageicon/apple.svg",
                       href: MACOS_DMG_URL,
     },
@@ -143,6 +147,7 @@ export default function DownloadPage() {
                  buttons={[
                     {
                       text: "Download for Windows",
+                      platform: "windows",
                       icon: "/assets/icons/downloadpageicon/window.svg",
                       href: WINDOWS_APP_INSTALLER_URL,
     },
@@ -165,11 +170,13 @@ export default function DownloadPage() {
        buttons={[
   {
     text: "Download on App Store",
+    platform: "ios",
     icon: "/assets/icons/downloadpageicon/appstore.svg",
     href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
   },
   {
     text: "Download on Play Store",
+    platform: "android",
     icon: "/assets/icons/downloadpageicon/playstore.svg",
     href: "https://play.google.com/store/apps/details?id=com.planformer.app&pcampaignid=web_share",
   },
@@ -194,6 +201,7 @@ export default function DownloadPage() {
                   buttons={[
                     {
                       text: "Download on App Store",
+                      platform: "ipad",
                       icon: "/assets/icons/downloadpageicon/appstore.svg",
                       href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
                     },

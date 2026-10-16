@@ -70,6 +70,8 @@ export default function DownloadMenu() {
               key={p.id}
               role="menuitem"
               href={p.href}
+              data-download-platform={p.id}
+              data-download-location="desktop_header"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setOpen(false)}
