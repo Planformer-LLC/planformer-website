@@ -1,8 +1,8 @@
 import Reveal from "@/components/animations/Reveal";
 import StaggerContainer from "@/components/animations/StaggerContainer";
 import Image from "next/image";
-import Link from "next/link";
-import { Download } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { siteData } from "@/data/siteData";
 
 const items = [
   {
@@ -101,13 +101,13 @@ export default function WhyLoveIt() {
             </StaggerContainer>
 
             <Reveal from="bottom" delay={0.1}>
-              <Link
-                href="/download"
+              <a
+                href={siteData.signupHref}
                 className="btn-primary mt-7 inline-flex h-[50px] w-full items-center justify-center gap-2 px-6 md:h-[46px] md:w-auto"
               >
-                <Download size={18} />
-                Download now
-              </Link>
+                Start free trial
+                <ArrowRight size={18} aria-hidden="true" />
+              </a>
             </Reveal>
           </div>
         </div>

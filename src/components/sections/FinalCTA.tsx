@@ -1,7 +1,8 @@
 import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
 import Link from "next/link";
-import { Download } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
+import { siteData } from "@/data/siteData";
 
 export default function FinalCTA() {
   return (
@@ -28,13 +29,22 @@ export default function FinalCTA() {
             </Reveal>
 
             <Reveal from="bottom" delay={0.4} scale={0.96}>
-              <Link
-                href="/download"
-                className="btn-primary mt-8 inline-flex h-[50px] w-full items-center justify-center gap-2 px-6 md:w-auto shadow-[0_8px_30px_rgb(15,131,255,0.4)]"
-              >
-                <Download className="h-4 w-4" />
-                <span>Download now</span>
-              </Link>
+              <div className="mt-8 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-5">
+                <a
+                  href={siteData.signupHref}
+                  className="btn-primary inline-flex h-[54px] w-full items-center justify-center gap-2 px-7 text-base font-bold md:w-auto shadow-[0_8px_30px_rgb(15,131,255,0.4)]"
+                >
+                  <span>Start free trial</span>
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+                <Link
+                  href="/download"
+                  className="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-white/85 underline underline-offset-4 hover:text-white"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  or download the app
+                </Link>
+              </div>
             </Reveal>
           </div>
 

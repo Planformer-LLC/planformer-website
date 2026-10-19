@@ -2,8 +2,8 @@
 
 import type { Dispatch } from "react";
 import { useMemo } from "react";
-import Link from "next/link";
 import { Trash2 } from "lucide-react";
+import { siteData } from "@/data/siteData";
 import type { Action, TakeoffState } from "@/lib/takeoff/types";
 import { formatMoney, formatRowValue, quantityOf, unitLabel } from "@/lib/takeoff/format";
 import { RATE_DEFAULTS } from "@/lib/takeoff/planFixture";
@@ -134,9 +134,9 @@ export default function ResultsPanel({
           </p>
         </div>
 
-        <Link href="/download" className="btn-primary mt-3 h-11 w-full text-sm">
+        <a href={siteData.signupHref} className="btn-primary mt-3 h-11 w-full text-sm">
           Do this on your own plans
-        </Link>
+        </a>
         <p className="mt-2 text-center text-[11px] leading-snug text-ink/45">
           Your real plans are PDFs. Planformer handles those too.
         </p>

@@ -13,6 +13,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${siteData.url}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${siteData.url}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${siteData.url}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${siteData.url}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteData.url}/terms`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   // Blog posts come from Firestore. A sitemap must never fail the build, so a

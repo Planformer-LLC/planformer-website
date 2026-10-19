@@ -127,8 +127,10 @@ export default function Navbar() {
         ref={headerRef}
         className="fixed top-0 left-0 z-50 w-full translate-y-0 border-b border-black/10 bg-white/95 opacity-100 backdrop-blur transition-all duration-300"
       >
-        <div className="mx-auto max-w-[1280px] px-3 md:px-6 lg:px-20">
-         <div className="flex items-center justify-between py-5 md:py-6">
+        {/* lg:px-8 below xl: with Pricing in the nav and the longer trial
+            button, lg:px-20 left the logo touching "Home" at 1024px. */}
+        <div className="mx-auto max-w-[1280px] px-3 md:px-6 lg:px-8 xl:px-20">
+         <div className="flex items-center justify-between gap-6 py-5 md:py-6">
 
 
             {/* Logo + Name */}
@@ -153,7 +155,7 @@ export default function Navbar() {
             </Link>
 
             {/* Nav links (desktop) */}
-            <nav className="hidden items-center gap-6 text-sm lg:flex">
+            <nav className="hidden items-center gap-5 text-sm lg:flex xl:gap-6">
               {navWithBlog.map((n) => (
                 <Link
                   key={n.href}
@@ -176,7 +178,7 @@ export default function Navbar() {
                 className="
                   inline-flex rounded-[10px] border-[2.5px] border-[#0F83FF] bg-[#0F83FF] text-white transition active:scale-[0.98] hover:bg-transparent hover:text-[#0F83FF]
                   items-center justify-center gap-2
-                  h-[46px] min-w-[130px]
+                  h-[46px] min-w-[150px]
                   px-5
                   text-sm font-semibold leading-none
                 "

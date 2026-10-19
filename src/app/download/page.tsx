@@ -172,7 +172,7 @@ export default function DownloadPage() {
     text: "Download on App Store",
     platform: "ios",
     icon: "/assets/icons/downloadpageicon/appstore.svg",
-    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+    href: "https://apps.apple.com/us/app/planformer-smart-takeoffs/id6741836313",
   },
   {
     text: "Download on Play Store",
@@ -203,7 +203,7 @@ export default function DownloadPage() {
                       text: "Download on App Store",
                       platform: "ipad",
                       icon: "/assets/icons/downloadpageicon/appstore.svg",
-                      href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+                      href: "https://apps.apple.com/us/app/planformer-smart-takeoffs/id6741836313",
                     },
                   ]}
                 />

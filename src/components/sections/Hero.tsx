@@ -1,5 +1,7 @@
-import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, Check } from "lucide-react";
 import Reveal from "@/components/animations/Reveal";
+import { platforms, siteData } from "@/data/siteData";
 import PosterVideo from "@/components/sections/PosterVideo";
 import WatchTakeoffButton, {
   HERO_PLAY_EVENT,
@@ -15,6 +17,17 @@ const heroPosterUrl =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_poster_1920.webp?alt=media&token=a8d4c143-9eac-412a-b9b9-e3f721955db0";
 const heroVideoUrl =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_video_1080p.mp4?alt=media&token=d1a3c46d-afc0-441b-a3f5-da252861ae14";
+
+// iPad shares the iPhone App Store page, so it is left out of this short row.
+const heroDownloadLabels: Record<string, string> = {
+  macos: "Mac",
+  windows: "Windows",
+  ios: "App Store",
+  android: "Google Play",
+};
+const heroDownloads = platforms
+  .filter((p) => p.id in heroDownloadLabels)
+  .map((p) => ({ ...p, label: heroDownloadLabels[p.id] }));
 
 const stats = [
   { value: "4.8★", label: "App Store rating" },
@@ -58,13 +71,54 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
-              href="/download"
-              className="btn-primary h-[52px] w-full px-8 text-base sm:w-auto"
+            <a
+              href={siteData.signupHref}
+              className="btn-primary h-[56px] w-full gap-2 px-9 text-base font-bold shadow-[0_8px_24px_rgba(15,131,255,0.35)] sm:w-auto"
             >
               Start free trial
-            </Link>
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </a>
             <WatchTakeoffButton />
+          </div>
+
+          <p className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-ink/70">
+            {["Up to 14 days free", "Cancel anytime", "Works in your browser"].map(
+              (t) => (
+                <span key={t} className="inline-flex items-center gap-1.5">
+                  <Check className="h-4 w-4 text-[#0A7A1E]" aria-hidden="true" />
+                  {t}
+                </span>
+              ),
+            )}
+          </p>
+
+          {/* Secondary: installers and store pages, deliberately smaller than
+              the trial button. data-download-* feeds the
+              website_download_click conversion (WebsiteAnalytics). */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+            <span className="w-full text-[13px] text-ink/60 sm:mr-1 sm:w-auto">
+              Prefer the app? Download for
+            </span>
+            {heroDownloads.map((d) => (
+              <a
+                key={d.id}
+                href={d.href}
+                data-download-platform={d.id}
+                data-download-location="hero"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-black/15 bg-white px-3 text-[13px] font-semibold text-ink/80 transition hover:border-brand hover:text-brand"
+              >
+                <Image
+                  src={d.icon}
+                  alt=""
+                  width={14}
+                  height={14}
+                  className="h-3.5 w-3.5 object-contain invert"
+                />
+                {d.label}
+              </a>
+            ))}
           </div>
 
           {/* Stat row. No divider — the section background already draws

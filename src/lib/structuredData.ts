@@ -1,4 +1,4 @@
-import { siteData, platforms } from "@/data/siteData";
+import { siteData, platforms, pricingPlans } from "@/data/siteData";
 
 /**
  * JSON-LD builders.
@@ -57,12 +57,14 @@ export function softwareApplicationSchema() {
       "Excel export",
       "Offline use",
     ],
-    offers: {
+    offers: pricingPlans.map((plan) => ({
       "@type": "Offer",
-      price: "0",
+      name: `Planformer Premium, ${plan.name}`,
+      price: plan.amount.toFixed(2),
       priceCurrency: "USD",
-      description: "Free trial",
-    },
+      description: `${plan.trialDays}-day free trial, then ${plan.price} per ${plan.period}.`,
+      url: `${siteData.url}/#pricing`,
+    })),
   };
 }
 

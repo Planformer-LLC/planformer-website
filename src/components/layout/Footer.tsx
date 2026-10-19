@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteData } from "@/data/siteData";
-import { Download } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="border-t border-black/10 bg-white">
       {/* ✅ more bottom padding on mobile, keep desktop same */}
       <div className="mx-auto max-w-6xl px-4 pt-20 pb-20 md:py-20">
-        <div className="grid gap-12 md:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-4">
           {/* LEFT */}
           <div>
             <div className="flex items-center gap-2 font-extrabold text-[#1A1A1A]">
@@ -115,8 +115,14 @@ export default function Footer() {
               <Link href="/about" className="hover:text-[#1A1A1A]">
                 About
               </Link>
+              <Link href="/#pricing" className="hover:text-[#1A1A1A]">
+                Pricing
+              </Link>
               <Link href="/download" className="hover:text-[#1A1A1A]">
-                Trades
+                Download
+              </Link>
+              <Link href="/blog" className="hover:text-[#1A1A1A]">
+                Blog
               </Link>
               <Link href="/contact" className="hover:text-[#1A1A1A]">
                 Contact
@@ -124,16 +130,28 @@ export default function Footer() {
             </div>
           </div>
 
+          <div className="md:justify-self-center">
+            <p className="text-sm font-extrabold text-[#1A1A1A]">Legal</p>
+            <div className="mt-3 grid gap-2 text-sm text-[#1A1A1A]/70">
+              <Link href="/privacy" className="hover:text-[#1A1A1A]">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="hover:text-[#1A1A1A]">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
+
           {/* RIGHT */}
           <div className="md:justify-self-end md:text-right">
             {/* ✅ Mobile full width button like screenshot */}
-            <Link
-              href="/download"
+            <a
+              href={siteData.signupHref}
               className="btn-primary inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl px-6 md:h-[46px] md:w-auto"
             >
-              <Download className="h-4 w-4" />
-              <span>Download now</span>
-            </Link>
+              <span>Start free trial</span>
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </a>
 
             {/* Contact info */}
             <div className="mt-10 md:flex md:flex-col md:items-start">

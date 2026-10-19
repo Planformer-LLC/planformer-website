@@ -6,6 +6,7 @@ import HowItWorks from "@/components/sections/HowItWorks";
 import TryItHere from "@/components/sections/TryItHere";
 import WhyLoveIt from "@/components/sections/WhyLoveIt";
 import SupportedTrades from "@/components/sections/SupportedTrades";
+import Pricing from "@/components/sections/Pricing";
 import Testimonials from "@/components/sections/Testimonials";
 import FinalCTA from "@/components/sections/FinalCTA";
 
@@ -29,6 +30,7 @@ export default function Page() {
       {/* Proves the workflow HowItWorks just described, while intent is highest */}
       <TryItHere />
       <SupportedTrades />
+      <Pricing />
       <WhyLoveIt />
       <Testimonials />
       <FinalCTA />

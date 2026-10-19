@@ -3,10 +3,14 @@ export const siteData = {
   url: "https://planformer.com",
   nav: [
     { label: "Home", href: "/" },
+    { label: "Pricing", href: "/#pricing" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
-  cta: { label: "Start free", href: "/download" },
+  // The free trial only exists in the web app (Stripe checkout), so every
+  // "Start free trial" goes straight to its sign-up form, not to /download.
+  signupHref: "https://app.planformer.com/signup",
+  cta: { label: "Start free trial", href: "https://app.planformer.com/signup" },
   loginHref: "https://app.planformer.com/onboarding_screen",
   email: "sales@planformer.com",
   // Displayed in the hero stat row. No ratingCount is recorded here, so the
@@ -20,6 +24,44 @@ export const siteData = {
     "https://www.youtube.com/channel/UC0dFj16ro_cHa2pd9y4Q29A",
   ],
 } as const;
+
+/**
+ * Web (Stripe) prices and trial lengths. Trial days must match
+ * trialDaysByPlanPeriod in the app repo's functions/src/services/
+ * stripe_billing_constants.js; the prices must match the live Stripe prices.
+ */
+export const pricingPlans = [
+  {
+    id: "monthly",
+    name: "Monthly",
+    price: "$49.99",
+    amount: 49.99,
+    period: "month",
+    trialDays: 7,
+    note: "Billed monthly after your trial. Cancel anytime.",
+  },
+  {
+    id: "yearly",
+    name: "Yearly",
+    price: "$399",
+    amount: 399,
+    period: "year",
+    trialDays: 14,
+    // $399 vs 12 × $49.99 = $599.88 → 33% less; $399 / 12 = $33.25.
+    note: "Just $33.25 a month, billed yearly after your trial.",
+    badge: "Best value · Save 33%",
+  },
+] as const;
+
+/** Every Premium feature, as listed on the app's paywall. */
+export const premiumFeatures = [
+  "Unlimited measurements",
+  "Unlimited plan uploads",
+  "Save and organize multiple plans",
+  "Cloud storage integration",
+  "Web, Mac, Windows, iPhone, iPad and Android",
+  "Priority customer support",
+] as const;
 
 /**
  * Every platform Planformer ships on. Single source of truth for the header
@@ -48,14 +90,14 @@ export const platforms = [
     id: "ios",
     label: "iPhone",
     icon: "/assets/icons/downloadpageicon/appstore.svg",
-    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+    href: "https://apps.apple.com/us/app/planformer-smart-takeoffs/id6741836313",
     schemaName: "iOS",
   },
   {
     id: "ipad",
     label: "iPad",
     icon: "/assets/icons/downloadpageicon/appstore.svg",
-    href: "https://apps.apple.com/pk/app/planformer-smart-takeoffs/id6741836313",
+    href: "https://apps.apple.com/us/app/planformer-smart-takeoffs/id6741836313",
     schemaName: "iPadOS",
   },
   {
