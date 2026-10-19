@@ -28,7 +28,7 @@ const contents = [
 export default function PrivacyPage() {
   const email = siteData.email;
   return (
-    <LegalPage title="Privacy Policy" updated="October 19, 2026" replaces="July 2, 2025">
+    <LegalPage title="Privacy Policy" updated="October 20, 2026" replaces="July 2, 2025">
       <nav
         aria-label="Contents"
         className="rounded-2xl border border-black/10 px-6 py-5 text-[15px] [&_a]:no-underline hover:[&_a]:underline"

@@ -15,7 +15,7 @@ const [monthly, yearly] = pricingPlans;
 export default function TermsPage() {
   const email = siteData.email;
   return (
-    <LegalPage title="Terms of Service" updated="October 19, 2026" replaces="July 17, 2025">
+    <LegalPage title="Terms of Service" updated="October 20, 2026" replaces="July 17, 2025">
       <div className="rounded-2xl border border-[#D6E6FF] bg-[#F2F7FF] px-6 py-5 text-[15px]">
         <p className="mb-2 text-xs font-extrabold tracking-[0.12em] text-ink uppercase">
           The short version
