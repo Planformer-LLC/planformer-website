@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,62 +9,14 @@ import { siteData, platforms } from "@/data/siteData";
 import DownloadMenu from "@/components/layout/DownloadMenu";
 import { scrollToElement } from "@/lib/scroll";
 
-const HIDDEN_CLASSES = ["-translate-y-16", "opacity-0", "pointer-events-none"];
-
+// The header stays put. It used to hide on scroll-down by adding
+// -translate-y-16 / opacity-0 / pointer-events-none, but the base
+// translate-y-0 / opacity-100 classes win in the generated CSS, so it never
+// actually moved or faded: it stayed on screen while ignoring every click.
+// An always-reachable "Start free trial" is worth more than the hide anyway.
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const headerRef = useRef<HTMLElement | null>(null);
-  const lastScrollY = useRef(0);
   const pathname = usePathname();
-
-  // Hide-on-scroll writes a class directly to the node rather than going
-  // through state, so scrolling never re-renders the header (and its
-  // children) on every frame.
-  useEffect(() => {
-    let ticking = false;
-
-    // Seed from the real position. Starting at 0 meant a page that loaded
-    // already scrolled (a deep link, a restored tab) saw a huge positive delta
-    // on the first scroll event and hid the header — and since
-    // pointer-events-none applies instantly while opacity fades over 300ms,
-    // the header looked perfectly visible but ignored every click.
-    lastScrollY.current = window.scrollY;
-
-    const apply = () => {
-      ticking = false;
-      const el = headerRef.current;
-      if (!el) return;
-
-      const current = window.scrollY;
-      const delta = current - lastScrollY.current;
-      if (Math.abs(delta) < 8) return;
-
-      // Near the top the header is always shown, whatever the delta says.
-      const hide = current > 80 && delta > 0;
-      for (const c of HIDDEN_CLASSES) el.classList.toggle(c, hide);
-
-      lastScrollY.current = current;
-    };
-
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(apply);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // The classes above are set imperatively and the Navbar lives in the layout,
-  // so it never unmounts on navigation. Without this reset, following a link
-  // while the header is hidden leaves it invisible AND pointer-events-none on
-  // the next page — the nav appears dead.
-  // (The drawer itself is closed by each link's own onClick.)
-  useEffect(() => {
-    headerRef.current?.classList.remove(...HIDDEN_CLASSES);
-    lastScrollY.current = window.scrollY;
-  }, [pathname]);
 
   /**
    * In-page links. Handled here so the scroll accounts for the fixed header
@@ -124,8 +76,7 @@ export default function Navbar() {
     <>
       {/* ✅ White background stays with navbar on scroll */}
       <header
-        ref={headerRef}
-        className="fixed top-0 left-0 z-50 w-full translate-y-0 border-b border-black/10 bg-white/95 opacity-100 backdrop-blur transition-all duration-300"
+        className="fixed top-0 left-0 z-50 w-full border-b border-black/10 bg-white/95 backdrop-blur"
       >
         {/* lg:px-8 below xl: with Pricing in the nav and the longer trial
             button, lg:px-20 left the logo touching "Home" at 1024px. */}
