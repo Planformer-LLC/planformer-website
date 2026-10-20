@@ -46,7 +46,7 @@ export default function Hero() {
           <h1
             id="hero-title"
             // 34px keeps "Measure the plans." on one line at 375px wide.
-            className="text-[34px] leading-[1.06] font-extrabold tracking-[-0.035em] text-ink min-[400px]:text-[38px] sm:text-[52px] xl:text-[60px]"
+            className="text-[34px] leading-[1.06] font-extrabold tracking-[-0.035em] text-ink min-[400px]:text-[38px] sm:text-[52px] lg:text-[46px] xl:text-[60px]"
           >
             <span className="block">Measure the plans.</span>
             <span className="block">Price the job.</span>
