@@ -38,7 +38,14 @@ export default function Pricing() {
           {pricingPlans.map((plan, i) => {
             const featured = "badge" in plan;
             return (
-              <Reveal key={plan.id} from="bottom" delay={0.1 * i}>
+              <Reveal
+                key={plan.id}
+                from="bottom"
+                delay={0.1 * i}
+                // Phones show the best-value plan first; side by side keeps
+                // Monthly on the left.
+                className={featured ? "order-first md:order-none" : undefined}
+              >
                 <div
                   className={`relative flex h-full flex-col gap-5 rounded-[20px] bg-white p-7 md:p-9 ${
                     featured

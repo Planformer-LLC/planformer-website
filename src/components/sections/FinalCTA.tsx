@@ -1,100 +1,50 @@
-import Reveal from "@/components/animations/Reveal";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Download } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Reveal from "@/components/animations/Reveal";
 import { siteData } from "@/data/siteData";
 
 export default function FinalCTA() {
   return (
-    <section className="relative bg-[#1A1F28] text-white overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/assets/bg/bg2.svg')] bg-cover bg-center opacity-40" />
-
-      {/* ✅ desktop: a bit taller so you get center text + bottom images nicely */}
-      <div className="relative mx-auto max-w-6xl px-4 pt-40 pb-0 md:pt-2 md:pb-0 min-h-[840px] md:min-h-[520px]">
-        {/* ✅ desktop: h-full so we can push images to bottom */}
-        <div className="flex h-full flex-col md:flex-row md:justify-between">
-          {/* ✅ desktop: center the text vertically */}
-          <div className="mx-auto max-w-md text-center md:mx-0 md:text-left md:self-center relative z-30">
-            <Reveal from="left" delay={0.1}>
-              <h2 className="text-3xl font-extrabold md:text-4xl">
-                Ready to take off
-                <br className="md:hidden" /> faster?
-              </h2>
-            </Reveal>
-
-            <Reveal from="left" delay={0.25}>
-              <p className="mt-3 text-white/80">
-                Start your free trial and complete your first takeoff in minutes.
-              </p>
-            </Reveal>
-
-            <Reveal from="bottom" delay={0.4} scale={0.96}>
-              <div className="mt-8 flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-5">
-                <a
-                  href={siteData.signupHref}
-                  className="btn-primary inline-flex h-[54px] w-full items-center justify-center gap-2 px-7 text-base font-bold md:w-auto shadow-[0_8px_30px_rgb(15,131,255,0.4)]"
-                >
-                  <span>Start free trial</span>
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </a>
-                <Link
-                  href="/download"
-                  className="inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-white/85 underline underline-offset-4 hover:text-white"
-                >
-                  <Download className="h-4 w-4" aria-hidden="true" />
-                  or download the app
-                </Link>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* ✅ desktop: push the whole image group to the bottom */}
-          <div className="relative mt-0 flex-1 md:flex md:items-end md:justify-end">
-            {/* ✅ desktop: give a height so absolute bottom works */}
-            <div className="relative h-[540px] w-full md:h-[520px]">
-              {/* ✅ White UI image: pops in from right */}
-              <Reveal
-                from="right"
-                delay={0.3}
-                duration={0.8}
-                className="absolute bottom-0 -right-40 z-10 md:bottom-0 md:left-[170px]"
+    <section aria-labelledby="cta-title" className="bg-[#F5F7FA] px-4 pt-4 pb-20 sm:px-6 md:pb-24">
+      <Reveal from="bottom">
+        <div className="mx-auto flex max-w-[1200px] flex-col overflow-hidden rounded-3xl bg-[#0062CC] text-white md:flex-row md:items-center md:gap-6">
+          <div className="flex min-w-0 flex-1 flex-col gap-[18px] px-6 pt-10 pb-8 md:py-14 md:pl-14">
+            <h2
+              id="cta-title"
+              className="text-[30px] leading-[1.08] font-extrabold tracking-[-0.03em] md:text-[44px]"
+            >
+              Ready to take off faster?
+            </h2>
+            <p className="text-base leading-relaxed text-[#E1EEFF] md:text-lg">
+              Start your free trial and finish your first takeoff in minutes.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+              <a
+                href={siteData.signupHref}
+                className="inline-flex h-[58px] items-center justify-center gap-2 rounded-xl bg-white px-[30px] text-lg font-extrabold text-[#0062CC] transition hover:bg-[#EAF3FF] active:scale-[0.98]"
               >
-                <Image
-                  src="/assets/images/home/finalcta2.webp"
-                  alt="The Planformer takeoff editor showing measured areas on a site plan"
-                  width={640}
-                  height={400}
-                  className="
-                    h-auto w-[126%] max-w-[620px]
-                    md:w-[620px] md:max-w-none
-                    drop-shadow-2xl
-                  "
-                />
-              </Reveal>
-
-              {/* ✅ Man image: pops in from bottom */}
-              <Reveal
-                from="bottom"
-                delay={0.5}
-                duration={0.7}
-                className="absolute bottom-0 left-[34%] -translate-x-1/2 z-20 md:left-auto md:right-[240px] md:translate-x-0"
+                Start free trial
+                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+              </a>
+              <Link
+                href="/download"
+                className="py-3 text-center text-[15px] font-semibold text-white underline underline-offset-4 hover:text-[#E1EEFF]"
               >
-                <Image
-                  src="/assets/images/home/finalcta.webp"
-                  alt="A contractor giving a thumbs-up next to the Planformer app"
-                  width={1200}
-                  height={700}
-                  className="
-                    h-auto w-[80%] max-w-[470px]
-                    md:w-[520px] md:max-w-none
-                    drop-shadow-2xl
-                  "
-                />
-              </Reveal>
+                or download the app
+              </Link>
             </div>
           </div>
+          <Image
+            src="/assets/images/home/finalcta.webp"
+            alt=""
+            width={596}
+            height={393}
+            sizes="(max-width: 768px) 90vw, 420px"
+            className="mx-auto h-auto w-full max-w-[420px] self-end md:mx-0 md:mr-6"
+          />
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

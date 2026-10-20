@@ -1,115 +1,61 @@
-import Reveal from "@/components/animations/Reveal";
-import StaggerContainer from "@/components/animations/StaggerContainer";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { siteData } from "@/data/siteData";
+import { MonitorSmartphone, Smile, Target, Zap } from "lucide-react";
+import Reveal from "@/components/animations/Reveal";
 
 const items = [
-  {
-    title: "Speed",
-    desc: "Cut takeoff time by up to 90 percent.",
-    icon: "/assets/icons/whyloveit-icons/zap-lightning-flash.svg",
-  },
-  {
-    title: "Precision",
-    desc: "Reduce manual errors and repeat work.",
-    icon: "/assets/icons/whyloveit-icons/shield-security-protection.svg",
-  },
+  { title: "Speed", desc: "Cut takeoff time by up to 90 percent.", Icon: Zap },
+  { title: "Precision", desc: "Fewer manual errors and less repeat work.", Icon: Target },
   {
     title: "Multiplatform",
-    desc: "Use the takeoff tools across office and field.",
-    icon: "/assets/icons/whyloveit-icons/connect-devices-macbook-iphone-phone.svg",
+    desc: "The same takeoff in the office and in the field.",
+    Icon: MonitorSmartphone,
   },
-  {
-    title: "Accessibility",
-    desc: "Easy to use even on the first try.",
-    icon: "/assets/icons/whyloveit-icons/magic-stick-star.svg",
-  },
+  { title: "Easy to use", desc: "Easy to pick up, even on the first try.", Icon: Smile },
 ];
 
 export default function WhyLoveIt() {
   return (
-    <section
-      className="relative overflow-hidden bg-white pt-8 pb-8 md:pt-8 md:pb-10"
-      style={{
-        backgroundImage: "url('/assets/bg/bg3.svg')",
-        backgroundRepeat: "repeat",
-        backgroundPosition: "center",
-        backgroundSize: "auto",
-      }}
-    >
-      {/* ✅ reduce side padding on md+ to reduce left whitespace */}
-      <div className="w-full md:mx-auto md:max-w-7xl md:px-4 lg:px-0">
-        {/* ✅ slightly smaller gap so it feels tighter */}
-        <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,680px)_minmax(0,1fr)] md:items-start md:gap-10">
-          {/* LEFT IMAGE — slides in from left */}
-          <Reveal from="left" duration={0.7}>
-            <div
-              className="
-                overflow-hidden bg-white shadow-sm
-                rounded-2xl
-                md:w-full md:max-w-[720px]
-                md:aspect-[720/740]
-              "
-            >
-              <Image
-                src="/assets/images/home/whyloveit.webp"
-                alt="Why contractors love Planformer"
-                width={680}
-                height={810}
-                priority
-                className="h-full w-full object-cover object-top"
-              />
+    <section aria-labelledby="why-title" className="bg-white py-20 md:py-24">
+      <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14">
+        <Reveal from="left" duration={0.7} className="min-w-0">
+          <Image
+            src="/assets/images/home/whyloveit.webp"
+            alt="Three contractors in hard hats reviewing a floor plan together"
+            width={796}
+            height={804}
+            sizes="(max-width: 1024px) 100vw, 520px"
+            className="mx-auto aspect-[796/804] h-auto w-full max-w-[520px] rounded-[18px] object-cover lg:mx-0"
+          />
+        </Reveal>
+
+        <div className="flex min-w-0 flex-col gap-7">
+          <Reveal from="right">
+            <div className="flex flex-col gap-3">
+              <p className="text-[13px] font-bold tracking-[0.12em] text-[#0062CC] uppercase">
+                Why Planformer
+              </p>
+              <h2
+                id="why-title"
+                className="text-[28px] leading-[1.12] font-extrabold tracking-[-0.03em] text-ink md:text-[42px]"
+              >
+                Why contractors and estimators love it.
+              </h2>
             </div>
           </Reveal>
 
-          <div className="w-full px-4 md:pl-6 md:pr-4 md:pt-0">
-
-            <Reveal from="right">
-              <h2 className="text-2xl font-extrabold text-[#1A1A1A] md:text-3xl">
-                Why Contractors and <span className="hidden md:inline"><br /></span>
-                Estimators Love It
-              </h2>
-            </Reveal>
-
-            {/* Feature cards — stagger from right */}
-            <StaggerContainer className="mt-7 space-y-4" stagger={0.09} delay={0.05}>
-              {items.map((i) => (
-                <Reveal key={i.title} from="right">
-                  {/* ✅ wider: allow full width on md+; cap only on very large screens */}
-                  <div className="w-full rounded-2xl bg-[#F5F5F5] lg:max-w-[620px] card-hover">
-                    <div className="px-[16px] py-[16px]">
-                      <Image
-                        src={i.icon}
-                        alt=""
-                        width={22}
-                        height={22}
-                        className="h-[22px] w-[22px]"
-                      />
-
-                      <p className="mt-[10px] font-extrabold text-[#1A1A1A]">
-                        {i.title}
-                      </p>
-
-                      <p className="mt-[10px] text-sm text-[#1A1A1A]/70 leading-snug">
-                        {i.desc}
-                      </p>
-                    </div>
+          <ul className="grid gap-6 sm:grid-cols-2">
+            {items.map(({ title, desc, Icon }, i) => (
+              <li key={title}>
+                <Reveal from="right" delay={i * 0.06}>
+                  <div className="flex flex-col gap-2">
+                    <Icon className="h-7 w-7 text-brand" strokeWidth={2} aria-hidden="true" />
+                    <h3 className="text-lg font-bold text-ink">{title}</h3>
+                    <p className="text-[15px] leading-relaxed text-[#4A5260]">{desc}</p>
                   </div>
                 </Reveal>
-              ))}
-            </StaggerContainer>
-
-            <Reveal from="bottom" delay={0.1}>
-              <a
-                href={siteData.signupHref}
-                className="btn-primary mt-7 inline-flex h-[50px] w-full items-center justify-center gap-2 px-6 md:h-[46px] md:w-auto"
-              >
-                Start free trial
-                <ArrowRight size={18} aria-hidden="true" />
-              </a>
-            </Reveal>
-          </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

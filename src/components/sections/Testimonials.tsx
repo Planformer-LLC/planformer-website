@@ -1,197 +1,107 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import Reveal from "@/components/animations/Reveal";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 
-type Testimonial = {
-  quote: string;
-  name: string;
-  company: string;
-  avatar: string;
-};
+const testimonials = [
+  {
+    quote:
+      "We moved two estimators from spreadsheets to Planformer in one week. Now our quantity takeoffs are consistent and bid prep is noticeably faster across every project.",
+    name: "Michael Rivera",
+    company: "StoneBridge Construction",
+    avatar: "/assets/images/home/reviews/reviewer-1.jpg",
+  },
+  {
+    quote:
+      "The interface is clean, the measurements are reliable, and our site managers can review estimates without extra training. It saves us several hours each week.",
+    name: "Aisha Khan",
+    company: "NorthStone Builders",
+    avatar: "/assets/images/home/reviews/reviewer-2.jpg",
+  },
+  {
+    quote:
+      "What I like most is fewer revisions after handoff. Our project managers and estimators stay aligned, and we submit cleaner bids with better confidence.",
+    name: "Ethan Collins",
+    company: "PrimeLine Contractors",
+    avatar: "/assets/images/home/reviews/reviewer-3.jpg",
+  },
+];
+
+const ROTATE_MS = 6000;
 
 export default function Testimonials() {
-  const testimonials: Testimonial[] = useMemo(
-    () => [
-      {
-        quote:
-          "We moved two estimators from spreadsheets to Planformer in one week. Now our quantity takeoffs are consistent and bid prep is noticeably faster across every project.",
-        name: "Michael Rivera",
-        company: "StoneBridge Construction",
-        avatar: "/assets/images/home/reviews/reviewer-1.jpg",
-      },
-      {
-        quote:
-          "The interface is clean, the measurements are reliable, and our site managers can review estimates without extra training. It saves us several hours each week.",
-        name: "Aisha Khan",
-        company: "NorthStone Builders",
-        avatar: "/assets/images/home/reviews/reviewer-2.jpg",
-      },
-      {
-        quote:
-          "What I like most is fewer revisions after handoff. Our project managers and estimators stay aligned, and we submit cleaner bids with better confidence.",
-        name: "Ethan Collins",
-        company: "PrimeLine Contractors",
-        avatar: "/assets/images/home/reviews/reviewer-3.jpg",
-      },
-    ],
-    []
-  );
-
-  const total = testimonials.length;
-
   const [active, setActive] = useState(0);
-  const [dir, setDir] = useState<1 | -1>(1); // 1 next, -1 prev
+  const timer = useRef<number | null>(null);
 
-  const intervalRef = useRef<number | null>(null);
+  const restart = useCallback(() => {
+    if (timer.current) window.clearInterval(timer.current);
+    timer.current = window.setInterval(
+      () => setActive((i) => (i + 1) % testimonials.length),
+      ROTATE_MS,
+    );
+  }, []);
 
-  const startInterval = () => {
-    // clear existing interval first
-    if (intervalRef.current) window.clearInterval(intervalRef.current);
-
-    intervalRef.current = window.setInterval(() => {
-      setDir(1);
-      setActive((prev) => (prev + 1) % total);
-    }, 5000);
-  };
-
-  // start autoplay on mount
   useEffect(() => {
-    startInterval();
+    restart();
     return () => {
-      if (intervalRef.current) window.clearInterval(intervalRef.current);
+      if (timer.current) window.clearInterval(timer.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [total]);
-
-  const goTo = (idx: number) => {
-    setDir(idx > active ? 1 : -1);
-    setActive(idx);
-
-    // ✅ reset timer when user clicks a dot
-    startInterval();
-  };
+  }, [restart]);
 
   const t = testimonials[active];
 
-  const variants = {
-    enter: (direction: 1 | -1) => ({
-      opacity: 0,
-      x: direction === 1 ? 40 : -40,
-      filter: "blur(2px)",
-    }),
-    center: {
-      opacity: 1,
-      x: 0,
-      filter: "blur(0px)",
-    },
-    exit: (direction: 1 | -1) => ({
-      opacity: 0,
-      x: direction === 1 ? -40 : 40,
-      filter: "blur(2px)",
-    }),
-  };
-
   return (
-    <section className="bg-[#F5F5F5] py-16 sm:py-20 md:py-24">
-      <div className="mx-auto max-w-6xl px-4">
-        <Reveal className="mx-auto max-w-4xl text-center">
-          <div className="relative bg-transparent px-4 py-8 sm:px-6 sm:py-10 md:px-12">
-            {/* Left quote */}
-            <span className="absolute left-4 top-4 sm:left-6 sm:top-6">
-              <Image
-                src="/assets/icons/quotas/open-quote-blockquote.svg"
-                alt="Open quote"
-                width={22}
-                height={22}
-                className="h-[18px] w-[18px] sm:h-[22px] sm:w-[22px]"
+    <section aria-label="Customer reviews" className="bg-[#F5F7FA] py-16 md:py-[88px]">
+      <div className="mx-auto max-w-[1000px] px-4 sm:px-6">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10"
+          >
+            <Image
+              src={t.avatar}
+              alt={t.name}
+              width={160}
+              height={200}
+              className="hidden h-[200px] w-[160px] shrink-0 rounded-2xl object-cover sm:block"
+            />
+            <figure className="flex min-w-0 flex-col gap-[18px]">
+              <blockquote className="text-[19px] leading-normal font-semibold tracking-[-0.01em] text-ink md:text-2xl">
+                “{t.quote}”
+              </blockquote>
+              <figcaption className="text-[15px] text-[#4A5260]">
+                <strong className="text-ink">{t.name}</strong> · {t.company}
+              </figcaption>
+            </figure>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-6 flex justify-center gap-1 sm:justify-start sm:pl-[200px]">
+          {testimonials.map((r, idx) => (
+            <button
+              key={r.name}
+              type="button"
+              onClick={() => {
+                setActive(idx);
+                restart();
+              }}
+              aria-label={`Show review ${idx + 1} of ${testimonials.length}`}
+              aria-current={idx === active}
+              className="grid h-8 w-8 place-items-center"
+            >
+              <span
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  idx === active ? "w-6 bg-brand" : "w-2.5 bg-black/15 hover:bg-black/30"
+                }`}
               />
-            </span>
-
-            {/* Animated swap */}
-            <div className="relative">
-              <AnimatePresence mode="wait" custom={dir}>
-                <motion.div
-                  key={active}
-                  custom={dir}
-                  variants={variants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    duration: 0.55,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {/* Quote text */}
-                  <div className="relative mx-auto max-w-2xl">
-                    <p className="text-[16px] leading-relaxed text-[#1A1A1A] sm:text-[18px] md:text-[20px]">
-                      {t.quote}
-                    </p>
-
-                    {/* Right quote */}
-                    <span className="absolute -bottom-6 right-0">
-                      <Image
-                        src="/assets/icons/quotas/close-quote-blockquote.svg"
-                        alt="Close quote"
-                        width={22}
-                        height={22}
-                        className="h-[18px] w-[18px] sm:h-[22px] sm:w-[22px]"
-                      />
-                    </span>
-                  </div>
-
-                  {/* Profile */}
-                  <div className="mt-14 sm:mt-16 md:mt-20 flex flex-col items-center">
-                    <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-[#0F83FF]/20 sm:h-14 sm:w-14">
-                      <Image
-                        src={t.avatar}
-                        alt={t.name}
-                        fill
-                        className="object-cover"
-                        sizes="56px"
-                        priority
-                      />
-                    </div>
-
-                    <div className="mt-4 text-[15px] font-semibold text-[#1A1A1A] sm:text-[16px]">
-                      {t.name}
-                    </div>
-
-                    <div className="mt-1 text-[12px] text-[#767676] sm:text-[13px]">
-                      {t.company}
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Dots (slightly bigger now) */}
-            <div className="mt-6 flex justify-center gap-2">
-              {testimonials.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => goTo(idx)}
-                  aria-label={`Show testimonial ${idx + 1}`}
-                  className="grid place-items-center p-1"
-                >
-                  <span
-                    className={[
-                      "rounded-full transition-all duration-300",
-                      "h-3 w-3 sm:h-[10px] sm:w-[10px]", // ✅ bigger dots
-                      idx === active
-                        ? "bg-[#0F83FF] scale-125 shadow-md"
-                        : "bg-black/10 hover:bg-black/20 hover:scale-110",
-                    ].join(" ")}
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-        </Reveal>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

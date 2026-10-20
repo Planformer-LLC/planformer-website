@@ -1,168 +1,103 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteData } from "@/data/siteData";
-import { ArrowRight } from "lucide-react";
+
+const columns = [
+  {
+    title: "Product",
+    links: [
+      { label: "Pricing", href: "/#pricing" },
+      { label: "Download", href: "/download" },
+      { label: "Start free trial", href: siteData.signupHref },
+      { label: "Log in", href: siteData.loginHref },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms of Service", href: "/terms" },
+    ],
+  },
+];
+
+const social = [
+  { label: "X", href: "https://x.com/Planformer" },
+  { label: "Instagram", href: "https://www.instagram.com/planformer/" },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61584807632276" },
+  { label: "YouTube", href: "https://www.youtube.com/channel/UC0dFj16ro_cHa2pd9y4Q29A" },
+];
 
 export default function Footer() {
   return (
-    <footer className="border-t border-black/10 bg-white">
-      {/* ✅ more bottom padding on mobile, keep desktop same */}
-      <div className="mx-auto max-w-6xl px-4 pt-20 pb-20 md:py-20">
-        <div className="grid gap-12 md:grid-cols-4">
-          {/* LEFT */}
-          <div>
-            <div className="flex items-center gap-2 font-extrabold text-[#1A1A1A]">
-              <span className="relative h-8 w-8">
-                <Image
-                  src="/assets/images/home/logo.svg"
-                  alt="Planformer logo"
-                  fill
-                  sizes="32px"
-                  className="object-contain"
-                />
-              </span>
-
-              <span className="text-[28px] leading-none md:text-[30px]">
-                {siteData.name}
-              </span>
-            </div>
-
-            <p className="mt-6 max-w-[360px] text-sm leading-snug text-[#1A1A1A]">
-              Measure, estimate, and plan faster with a streamlined, accurate
-              workflow anywhere you work.
+    <footer className="bg-surface-dark pt-16 pb-10 text-[#C9CED6] md:pt-[72px]">
+      <div className="mx-auto flex max-w-[1200px] flex-col gap-12 px-4 sm:px-6">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))] lg:gap-16">
+          <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-1">
+            <Link href="/" className="flex items-center gap-2.5 text-white">
+              <Image
+                src="/assets/images/home/logo.svg"
+                alt=""
+                width={21}
+                height={28}
+                className="h-7 w-auto"
+              />
+              <span className="text-xl font-extrabold">{siteData.name}</span>
+            </Link>
+            <p className="max-w-[320px] text-[15px] leading-relaxed">
+              Measure, estimate and plan faster with an accurate workflow,
+              wherever you work.
             </p>
-
-            <div className="mt-6 flex items-center gap-8">
-  {/* X (Twitter) */}
-  <Link
-    href="https://x.com/Planformer"
-    aria-label="X"
-    className="group"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="/assets/icons/socialmedia-icons/twitterx.svg"
-      alt="X"
-      width={20}
-      height={20}
-      className="h-5 w-5 transition-opacity group-hover:opacity-60"
-      style={{ filter: "brightness(0)" }}
-    />
-  </Link>
-
-  {/* Instagram */}
-  <Link
-    href="https://www.instagram.com/planformer/"
-    aria-label="Instagram"
-    className="group"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="/assets/icons/socialmedia-icons/insta.svg"
-      alt="Instagram"
-      width={20}
-      height={20}
-      className="h-5 w-5 transition-opacity group-hover:opacity-60"
-      style={{ filter: "brightness(0)" }}
-    />
-  </Link>
-
-  {/* Facebook */}
-  <Link
-    href="https://www.facebook.com/profile.php?id=61584807632276"
-    aria-label="Facebook"
-    className="group"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="/assets/icons/socialmedia-icons/facebook.svg"
-      alt="Facebook"
-      width={20}
-      height={20}
-      className="h-5 w-5 transition-opacity group-hover:opacity-60"
-      style={{ filter: "brightness(0)" }}
-    />
-  </Link>
-
-  {/* YouTube */}
-  <Link
-    href="https://www.youtube.com/channel/UC0dFj16ro_cHa2pd9y4Q29A"
-    aria-label="YouTube"
-    className="group"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <Image
-      src="/assets/icons/socialmedia-icons/youtube.svg"
-      alt="YouTube"
-      width={20}
-      height={20}
-      className="h-5 w-5 transition-opacity group-hover:opacity-60"
-      style={{ filter: "brightness(0)" }}
-    />
-  </Link>
-</div>
-
-          </div>
-
-          {/* CENTER */}
-          <div className="md:justify-self-center">
-            <p className="text-sm font-extrabold text-[#1A1A1A]">Company</p>
-            <div className="mt-3 grid gap-2 text-sm text-[#1A1A1A]/70">
-              <Link href="/about" className="hover:text-[#1A1A1A]">
-                About
-              </Link>
-              <Link href="/#pricing" className="hover:text-[#1A1A1A]">
-                Pricing
-              </Link>
-              <Link href="/download" className="hover:text-[#1A1A1A]">
-                Download
-              </Link>
-              <Link href="/blog" className="hover:text-[#1A1A1A]">
-                Blog
-              </Link>
-              <Link href="/contact" className="hover:text-[#1A1A1A]">
-                Contact
-              </Link>
-            </div>
-          </div>
-
-          <div className="md:justify-self-center">
-            <p className="text-sm font-extrabold text-[#1A1A1A]">Legal</p>
-            <div className="mt-3 grid gap-2 text-sm text-[#1A1A1A]/70">
-              <Link href="/privacy" className="hover:text-[#1A1A1A]">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="hover:text-[#1A1A1A]">
-                Terms of Service
-              </Link>
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div className="md:justify-self-end md:text-right">
-            {/* ✅ Mobile full width button like screenshot */}
             <a
-              href={siteData.signupHref}
-              className="btn-primary inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl px-6 md:h-[46px] md:w-auto"
+              href={`mailto:${siteData.email}`}
+              className="w-fit text-[15px] font-semibold text-white hover:underline"
             >
-              <span>Start free trial</span>
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              {siteData.email}
             </a>
-
-            {/* Contact info */}
-            <div className="mt-10 md:flex md:flex-col md:items-start">
-              <div className="md:text-left">
-                <p className="text-sm text-[#1A1A1A]/60">Contact Us</p>
-                <p className="mt-3 text-sm font-semibold text-[#1A1A1A]">
-                  {siteData.email}
-                </p>
-              </div>
-            </div>
           </div>
+
+          {columns.map((col) => (
+            <nav key={col.title} aria-label={col.title} className="flex flex-col gap-3">
+              <p className="text-[13px] font-bold tracking-[0.1em] text-white uppercase">
+                {col.title}
+              </p>
+              {col.links.map((l) => (
+                <Link
+                  key={l.label}
+                  href={l.href}
+                  className="w-fit text-[15px] text-[#C9CED6] transition hover:text-white"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-[#333B48] pt-6 text-[13px] sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Planformer LLC · 1342 Boxwood Drive, W Hewlett, NY 11557</p>
+          <ul className="flex flex-wrap gap-4">
+            {social.map((s) => (
+              <li key={s.label}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#C9CED6] underline-offset-4 hover:text-white hover:underline"
+                >
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

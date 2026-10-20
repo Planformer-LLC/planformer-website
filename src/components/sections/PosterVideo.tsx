@@ -19,6 +19,13 @@ type Props = Readonly<{
   playOnEvent?: string;
   /** Anchor id, so the play button can scroll the video into view. */
   id?: string;
+  /** next/image `sizes` for the poster; match it to the rendered width. */
+  sizes?: string;
+  /**
+   * When set, the play control is a labelled pill in the bottom-left corner
+   * (the hero) instead of the round button in the middle.
+   */
+  pillLabel?: string;
 }>;
 
 /**
@@ -37,6 +44,8 @@ export default function PosterVideo({
   priority = false,
   playOnEvent,
   id,
+  sizes = "(max-width: 768px) 100vw, 1200px",
+  pillLabel,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [started, setStarted] = useState(false);
@@ -59,7 +68,7 @@ export default function PosterVideo({
   return (
     <div
       id={id}
-      className={`relative overflow-hidden rounded-2xl border border-black/5 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.16)] md:rounded-[28px] ${className ?? ""}`}
+      className={`relative overflow-hidden rounded-2xl border border-[#E3E6EB] bg-white shadow-[0_30px_70px_rgba(16,24,40,0.14)] md:rounded-[18px] ${className ?? ""}`}
     >
       {started ? (
         <video
@@ -88,14 +97,23 @@ export default function PosterVideo({
             alt=""
             fill
             priority={priority}
-            sizes="(max-width: 768px) 100vw, 1200px"
+            sizes={sizes}
             className="object-contain"
           />
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-20 w-20 items-center justify-center rounded-full bg-white/92 shadow-lg backdrop-blur-sm transition-transform duration-200 group-hover:scale-105">
-              <Play size={28} className="ml-1 fill-ink text-ink" />
+          {pillLabel ? (
+            <span className="absolute bottom-4 left-4 inline-flex h-12 items-center gap-2.5 rounded-full bg-surface-dark py-0 pr-[18px] pl-2 text-sm font-semibold text-white shadow-lg transition-transform duration-200 group-hover:scale-[1.03] sm:bottom-6 sm:left-6">
+              <span className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-brand">
+                <Play size={14} className="ml-0.5 fill-white text-white" />
+              </span>
+              {pillLabel}
             </span>
-          </span>
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center">
+              <span className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-white shadow-[0_10px_30px_rgba(0,0,0,0.25)] transition-transform duration-200 group-hover:scale-105">
+                <Play size={24} className="ml-1 fill-brand text-brand" />
+              </span>
+            </span>
+          )}
         </button>
       )}
     </div>

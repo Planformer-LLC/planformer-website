@@ -7,38 +7,32 @@ export default function TryItHere() {
     <section
       id="try-it"
       aria-labelledby="try-it-heading"
-      className="relative overflow-hidden bg-white pt-24 pb-8 md:pt-32 md:pb-10"
-      style={{
-        backgroundImage: "url('/assets/bg/bg3.svg')",
-        backgroundRepeat: "repeat",
-        backgroundPosition: "center",
-        backgroundSize: "auto",
-      }}
+      className="relative overflow-hidden bg-surface-dark py-20 text-white md:py-24"
     >
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <Reveal>
-          <div className="max-w-3xl">
-            <p className="text-xs font-extrabold tracking-[0.18em] text-brand uppercase">
+          <div className="flex max-w-[640px] flex-col gap-3">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[#7DBBFF] uppercase">
               Try it right here
             </p>
             <h2
               id="try-it-heading"
-              className="mt-3 text-3xl font-extrabold tracking-tight text-ink md:text-4xl"
+              className="text-[28px] leading-[1.12] font-extrabold tracking-[-0.03em] text-white md:text-[42px]"
             >
               Take off this plan yourself.
             </h2>
-            <p className="mt-3 max-w-xl text-sm text-ink/70 md:text-base">
-              A real takeoff on a sample floor plan — pick a tool, click the
+            <p className="text-base leading-relaxed text-[#C9CED6] md:text-[17px]">
+              A real takeoff on a sample floor plan. Pick a tool, click the
               plan, and watch the quantities and cost add up. No sign-up.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-10">
+        <div className="mt-8 md:mt-10">
           <TakeoffDemoLoader />
         </div>
 
-        <p className="mt-4 text-center text-xs text-ink/45">
+        <p className="mt-4 text-center text-xs text-white/60">
           Demo only — the real app scales any PDF, saves your assemblies and
           exports to Excel.
         </p>

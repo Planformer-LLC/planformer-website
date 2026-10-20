@@ -10,72 +10,67 @@ const videoUrl =
 
 const steps = [
   {
-    n: "1",
-    title: "Upload Your PDF or Blueprint",
-    desc: "Drop in any plan. The system instantly prepares it for takeoff.",
-    color: "#0F83FF",
+    title: "Upload your PDF or blueprint",
+    desc: "Drop in any plan. Planformer prepares it for takeoff instantly.",
   },
   {
-    n: "2",
-    title: "Drag and Drop Assemblies",
-    desc: "Add material and labor assemblies directly onto your takeoff for quick, organized estimating",
-    color: "#F4B400",
+    title: "Measure and drop in assemblies",
+    desc: "Measure areas, lines and counts, then add material and labor assemblies right on the takeoff.",
   },
   {
-    n: "3",
-    title: "Export and Share",
-    desc: "Send everything to Excel or share clean reports with clients and teams.",
-    color: "#14B86A",
+    title: "Export and share",
+    desc: "Send everything to Excel or share clean reports with clients and your team.",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section
-      className="relative overflow-hidden bg-white pt-24 pb-8 md:pt-32 md:pb-10"
-      style={{
-        backgroundImage: "url('/assets/bg/bg3.svg')",
-        backgroundRepeat: "repeat",
-        backgroundPosition: "center",
-        backgroundSize: "auto",
-      }}
-    >
-      <div className="mx-auto max-w-7xl px-4">
-        <Reveal className="text-center">
-          <h2 className="text-2xl font-extrabold text-ink md:text-3xl">
-            How It Works
-          </h2>
+    <section aria-labelledby="how-title" className="bg-[#F5F7FA] py-20 md:py-24">
+      <div className="mx-auto flex max-w-[1200px] flex-col gap-10 px-4 sm:px-6 md:gap-12">
+        <Reveal>
+          <div className="flex max-w-[640px] flex-col gap-3">
+            <p className="text-[13px] font-bold tracking-[0.12em] text-[#0062CC] uppercase">
+              How it works
+            </p>
+            <h2
+              id="how-title"
+              className="text-[28px] leading-[1.12] font-extrabold tracking-[-0.03em] text-ink md:text-[42px]"
+            >
+              From PDF to priced estimate in three steps.
+            </h2>
+          </div>
         </Reveal>
 
-        {/* Steps as a row above the video */}
-        <div className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
-          {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 0.06}>
-              <div>
-                <p className="text-lg font-extrabold" style={{ color: s.color }}>
-                  {s.n}
-                </p>
-                <p className="mt-3 text-base font-extrabold text-ink">
-                  {s.title}
-                </p>
-                <p className="mt-2 text-sm text-ink/70">{s.desc}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <ol className="flex flex-col gap-4">
+            {steps.map((s, i) => (
+              <li key={s.title}>
+                <Reveal from="left" delay={i * 0.06}>
+                  <div className="flex gap-[18px] rounded-[14px] border border-[#E3E6EB] bg-white p-[22px]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-[#E8F2FF] font-extrabold text-[#0062CC]">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <h3 className="text-lg font-bold text-ink">{s.title}</h3>
+                      <p className="mt-1.5 text-[15px] leading-relaxed text-[#4A5260]">{s.desc}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
 
-        {/* Full-width video */}
-        <Reveal delay={0.1}>
-          <div className="mt-12 md:mt-14">
+          <Reveal from="right" delay={0.1} className="min-w-0">
             <PosterVideo
               posterUrl={thumbnailUrl}
               videoUrl={videoUrl}
-              label="Play the How It Works video"
+              label="Play the How it works video"
+              sizes="(max-width: 1024px) 100vw, 680px"
               // Source is 1280x720, so 16/9 exactly — no crop, no letterbox.
               className="aspect-video w-full"
             />
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

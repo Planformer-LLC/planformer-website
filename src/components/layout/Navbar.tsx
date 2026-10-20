@@ -154,15 +154,23 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              aria-label="Open menu"
-              className="inline-flex items-center justify-center rounded-lg p-2 text-[#1A1A1A] lg:hidden"
-              onClick={() => setMobileOpen(true)}
-            >
-              <Menu size={22} />
-            </button>
+            {/* Mobile: the trial stays one tap away, then the menu */}
+            <div className="flex items-center gap-1 lg:hidden">
+              <a
+                href={siteData.signupHref}
+                className="inline-flex h-10 items-center rounded-[10px] bg-brand px-3.5 text-sm font-bold text-white transition active:scale-[0.98]"
+              >
+                Free trial
+              </a>
+              <button
+                type="button"
+                aria-label="Open menu"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-[#1A1A1A]"
+                onClick={() => setMobileOpen(true)}
+              >
+                <Menu size={22} />
+              </button>
+            </div>
           </div>
         </div>
       </header>
