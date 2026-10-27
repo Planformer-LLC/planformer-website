@@ -5,7 +5,7 @@ import { siteData, platforms, pricingPlans } from "@/data/siteData";
  *
  * Note on ratings: Google requires a rating COUNT alongside a rating value in
  * `aggregateRating`, and issues manual actions for review markup that isn't
- * substantiated by visible on-page reviews. We display a 4.8 in the hero but
+ * substantiated by visible on-page reviews. We display a rating in the hero but
  * have no verified count, so `aggregateRating` is deliberately omitted. Add it
  * here once a real review count is available.
  */

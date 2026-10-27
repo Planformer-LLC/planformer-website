@@ -28,7 +28,7 @@ const heroDownloads = platforms
 const perks = ["Up to 14 days free", "Cancel anytime", "Works in your browser"];
 
 const stats = [
-  { value: "4.8★", label: "App Store rating" },
+  { value: `${siteData.rating.value.toFixed(1)}★`, label: "App Store rating" },
   { value: "90%", label: "Less takeoff time" },
   { value: "Offline", label: "No signal needed" },
 ];

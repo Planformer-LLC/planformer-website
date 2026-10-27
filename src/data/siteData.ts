@@ -13,10 +13,11 @@ export const siteData = {
   cta: { label: "Start free trial", href: "https://app.planformer.com/signup" },
   loginHref: "https://app.planformer.com/onboarding_screen",
   email: "sales@planformer.com",
-  // Displayed in the hero stat row. No ratingCount is recorded here, so the
+  // Displayed in the hero stat row; matches the US App Store average (5.0 from
+  // 6 ratings on 2026-10-27). No ratingCount is recorded here, so the
   // SoftwareApplication JSON-LD deliberately omits aggregateRating — Google
   // requires a count, and inventing one risks a manual action.
-  rating: { value: 4.8 },
+  rating: { value: 5 },
   social: [
     "https://x.com/Planformer",
     "https://www.instagram.com/planformer/",
