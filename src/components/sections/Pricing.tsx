@@ -28,8 +28,8 @@ export default function Pricing() {
               Simple pricing. Free to start.
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink/70 md:text-lg">
-              Every plan includes all Premium features. Cancel before your trial
-              ends and you won’t be charged.
+              Every plan includes all Premium features, and every plan starts
+              with a free trial.
             </p>
           </div>
         </Reveal>
