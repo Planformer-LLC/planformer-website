@@ -21,7 +21,7 @@ export default function TakeoffSkeleton() {
       <GuideSteps
         steps={[
           { label: "Scale is set", status: "done" },
-          { label: "Trace the garage", status: "now" },
+          { label: `Trace the ${TARGET_ROOM.name}`, status: "now" },
           { label: "See the price", status: "next" },
         ]}
       />

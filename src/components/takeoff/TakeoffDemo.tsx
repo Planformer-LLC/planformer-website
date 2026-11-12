@@ -232,13 +232,13 @@ export default function TakeoffDemo() {
   /* --------------------------------------------------------------- */
 
   // Any area the visitor saves completes the guided step, not only an exact
-  // trace of the garage: the point is to feel the tool, not pass a test.
+  // trace of the target room: the point is to feel the tool, not pass a test.
   const tracedOwnArea = state.measurements.some(
     (m) => m.kind === "area" && !m.id.startsWith("seed-"),
   );
   const steps: { label: string; status: StepStatus }[] = [
     { label: "Scale is set", status: "done" },
-    { label: "Trace the garage", status: tracedOwnArea ? "done" : "now" },
+    { label: `Trace the ${TARGET_ROOM.name}`, status: tracedOwnArea ? "done" : "now" },
     { label: "See the price", status: tracedOwnArea ? "done" : "next" },
   ];
 
@@ -251,7 +251,7 @@ export default function TakeoffDemo() {
           ? "Tap Close shape to finish."
           : "Drag the crosshair to a corner, then tap Add point.";
       }
-      if (draftPoints.length === 0) return "Click the first corner of the garage.";
+      if (draftPoints.length === 0) return `Click the first corner of the ${TARGET_ROOM.name}.`;
       return closeable
         ? "Click the first point again to close the shape."
         : "Click the next corner.";
@@ -264,7 +264,7 @@ export default function TakeoffDemo() {
     if (state.draft?.kind === "count") {
       return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
     }
-    if (!tracedOwnArea) return `${tap} Area below, then trace the garage's four corners.`;
+    if (!tracedOwnArea) return `${tap} Area below, then trace the ${TARGET_ROOM.name}'s four corners.`;
     return null;
   })();
 

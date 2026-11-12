@@ -2,41 +2,45 @@ import type { Measurement, MeasurementKind, Pt } from "./types";
 import type { ViewBox } from "./geometry";
 
 /**
- * Synthetic sample plan: a detached garage with a studio and bath.
+ * Synthetic sample plan: a single-storey two-bedroom house, 40 ft x 30 ft.
  *
- * Authored so 1 plan unit = 1/20 ft, i.e. 1 ft = 20 units. At the
- * 1/4" = 1'-0" architectural scale one printed inch is 4 ft = 80 units.
- * Every room is a whole number of feet, so the seeded quantities are round
- * and read as real takeoff numbers. The scale is preset in the demo.
+ * Authored so 1 ft = 18 plan units. At the 1/4" = 1'-0" architectural scale
+ * one printed inch is 4 ft = 72 units. Every room is a whole number of feet,
+ * so the seeded quantities are round and read as real takeoff numbers. The
+ * scale is preset in the demo.
  */
-export const FT_PER_UNIT_DEFAULT = 0.05;
-export const UNITS_PER_DRAWING_INCH = 80;
-export const UNITS_PER_FT = 1 / FT_PER_UNIT_DEFAULT;
+export const UNITS_PER_FT = 18;
+export const FT_PER_UNIT_DEFAULT = 1 / UNITS_PER_FT;
+export const UNITS_PER_DRAWING_INCH = 72;
 export const SCALE_LABEL = "1/4\u2033 = 1\u2032-0\u2033";
 
 // Taller than the drawing so the floating toolbar sits below the plan, not on it.
 export const VIEWBOX: ViewBox = { x: 0, y: 0, w: 1120, h: 850 };
 
-/** Building envelope on the wall centrelines: 40 ft x 24 ft. */
-export const ENVELOPE = { x0: 200, y0: 150, x1: 1000, y1: 630 };
+/** Building envelope on the wall centrelines. */
+export const ENVELOPE = { x0: 230, y0: 120, x1: 950, y1: 660 };
 
 export interface Room {
   id: string;
-  label: string;
+  /** How the room reads in copy, e.g. "Trace the living room". */
+  name: string;
   x0: number;
   y0: number;
   x1: number;
   y1: number;
 }
 
+/** Back row 13 ft deep, front row 17 ft deep. */
 export const ROOMS: Room[] = [
-  { id: "garage", label: "GARAGE", x0: 200, y0: 150, x1: 680, y1: 630 },
-  { id: "studio", label: "STUDIO", x0: 680, y0: 150, x1: 1000, y1: 470 },
-  { id: "bath", label: "BATH", x0: 680, y0: 470, x1: 1000, y1: 630 },
+  { id: "bed-1", name: "bedroom 1", x0: 230, y0: 120, x1: 482, y1: 354 },
+  { id: "bath", name: "bath", x0: 482, y0: 120, x1: 626, y1: 282 },
+  { id: "bed-2", name: "bedroom 2", x0: 626, y0: 120, x1: 950, y1: 354 },
+  { id: "living", name: "living room", x0: 230, y0: 354, x1: 626, y1: 660 },
+  { id: "kitchen", name: "kitchen", x0: 626, y0: 354, x1: 950, y1: 660 },
 ];
 
-/** The room the guided first step asks visitors to trace (24 ft x 24 ft). */
-export const TARGET_ROOM = ROOMS.find((r) => r.id === "garage")!;
+/** The room the guided first step asks visitors to trace (22 ft x 17 ft). */
+export const TARGET_ROOM = ROOMS.find((r) => r.id === "living")!;
 
 export function ringOf(r: { x0: number; y0: number; x1: number; y1: number }): Pt[] {
   return [
@@ -65,13 +69,13 @@ export const MAX_MEASUREMENTS = 60;
 
 const room = (id: string) => ROOMS.find((r) => r.id === id)!;
 
-/** The garage is left deliberately unmeasured: it is the "trace me" target. */
+/** The living room is left deliberately unmeasured: it is the "trace me" target. */
 export const SEED_MEASUREMENTS: Measurement[] = [
   {
     id: "seed-area-1",
     kind: "area",
-    name: "Studio",
-    points: ringOf(room("studio")),
+    name: "Kitchen",
+    points: ringOf(room("kitchen")),
     color: "#E8D44D",
     fillPct: 50,
     borderPx: 2,
@@ -79,8 +83,8 @@ export const SEED_MEASUREMENTS: Measurement[] = [
   {
     id: "seed-area-2",
     kind: "area",
-    name: "Bath",
-    points: ringOf(room("bath")),
+    name: "Bedroom 1",
+    points: ringOf(room("bed-1")),
     color: "#3FD6DD",
     fillPct: 50,
     borderPx: 2,
@@ -90,9 +94,9 @@ export const SEED_MEASUREMENTS: Measurement[] = [
     kind: "linear",
     name: "Exterior wall",
     points: [
-      { x: 200, y: 150 },
-      { x: 1000, y: 150 },
-      { x: 1000, y: 630 },
+      { x: 230, y: 120 },
+      { x: 950, y: 120 },
+      { x: 950, y: 660 },
     ],
     color: "#FF7A1A",
     fillPct: 50,
@@ -103,8 +107,8 @@ export const SEED_MEASUREMENTS: Measurement[] = [
     kind: "count",
     name: "Outlets",
     points: [
-      { x: 730, y: 200 }, { x: 870, y: 200 }, { x: 975, y: 440 },
-      { x: 250, y: 200 }, { x: 630, y: 580 },
+      { x: 250, y: 334 }, { x: 460, y: 300 }, { x: 650, y: 300 },
+      { x: 930, y: 334 }, { x: 930, y: 640 }, { x: 250, y: 380 },
     ],
     color: "#7B2FBE",
     fillPct: 50,
