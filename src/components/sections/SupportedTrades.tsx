@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { BrickWall, Calculator, CircleDot, Pentagon, Spline } from "lucide-react";
+import { Calculator, CircleDot, Pentagon, Spline } from "lucide-react";
 
 type Tool = "area" | "linear" | "count" | "calc";
 
@@ -10,7 +10,7 @@ const toolName = { area: "Area", linear: "Linear", count: "Count", calc: "Calcul
  * What each trade actually measures, tagged with the tool that does it.
  * Keep this to what the app can do today: no roof pitch, no lumber counts.
  */
-const trades: { title: string; photo: string | null; items: [Tool, string][] }[] = [
+const trades: { title: string; photo: string; items: [Tool, string][] }[] = [
   {
     title: "General contracting",
     photo: "/assets/images/home/supportedtrade.webp",
@@ -30,9 +30,8 @@ const trades: { title: string; photo: string | null; items: [Tool, string][] }[]
     ],
   },
   {
-    // No photo yet: shows an icon tile until one is added.
     title: "Drywall",
-    photo: null,
+    photo: "/assets/images/home/drywall.webp",
     items: [
       ["linear", "Wall length times height"],
       ["area", "Ceilings"],
@@ -78,7 +77,16 @@ const trades: { title: string; photo: string | null; items: [Tool, string][] }[]
 /** Server component: every trade visible at once, no tabs and no client JS. */
 export default function SupportedTrades() {
   return (
-    <section aria-labelledby="trades-title" className="border-t border-[#E3ECF8] bg-white py-20 md:py-28">
+    <section
+      aria-labelledby="trades-title"
+      // Same plan-paper grid as the sections above.
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      style={{
+        backgroundImage:
+          "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="flex max-w-[620px] flex-col gap-4">
           <h2
@@ -93,26 +101,20 @@ export default function SupportedTrades() {
           </p>
         </div>
 
-        <ul className="mt-10 divide-y divide-[#EEF1F5] border-y border-[#EEF1F5] md:mt-12">
+        <ul className="mt-10 divide-y divide-[#EEF1F5] rounded-2xl border border-[#D7E2F1] bg-white px-4 sm:px-6 md:mt-12">
           {trades.map((t) => (
             <li
               key={t.title}
               className="grid grid-cols-[72px_minmax(0,1fr)] items-center gap-x-4 gap-y-3 py-4 md:grid-cols-[120px_240px_minmax(0,1fr)] md:gap-x-6 md:py-5"
             >
-              {t.photo ? (
-                <Image
-                  src={t.photo}
-                  alt=""
-                  width={240}
-                  height={140}
-                  sizes="120px"
-                  className="h-[54px] w-[72px] rounded-lg object-cover md:h-[72px] md:w-[120px]"
-                />
-              ) : (
-                <span className="flex h-[54px] w-[72px] items-center justify-center rounded-lg bg-[#EAF3FF] text-brand md:h-[72px] md:w-[120px]">
-                  <BrickWall className="h-7 w-7" aria-hidden="true" />
-                </span>
-              )}
+              <Image
+                src={t.photo}
+                alt=""
+                width={240}
+                height={140}
+                sizes="120px"
+                className="h-[54px] w-[72px] rounded-lg object-cover md:h-[72px] md:w-[120px]"
+              />
               <h3 className="text-lg font-extrabold text-ink md:text-xl">{t.title}</h3>
               <ul className="col-span-2 flex flex-wrap gap-2 md:col-span-1">
                 {t.items.map(([tool, label]) => {
