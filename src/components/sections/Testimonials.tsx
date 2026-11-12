@@ -71,7 +71,7 @@ export default function Testimonials() {
   return (
     <section
       aria-labelledby="reviews-title"
-      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-16 md:py-24"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
@@ -79,10 +79,10 @@ export default function Testimonials() {
       }}
     >
       <div className="mx-auto max-w-[920px] px-4 sm:px-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <h2
             id="reviews-title"
-            className="max-w-[520px] text-[32px] leading-[1.06] font-extrabold tracking-[-0.03em] text-ink md:text-[42px]"
+            className="text-[26px] leading-[1.1] font-extrabold tracking-[-0.03em] text-ink md:text-[32px]"
           >
             What contractors say on the App Store.
           </h2>
@@ -98,7 +98,7 @@ export default function Testimonials() {
         </div>
 
         <div
-          className="mt-8 grid rounded-2xl border border-[#D7E2F1] bg-white p-7 md:p-10"
+          className="mt-6 grid rounded-2xl border border-[#D7E2F1] bg-white p-5 md:px-8 md:py-6"
           onMouseEnter={() => (paused.current = true)}
           onMouseLeave={() => (paused.current = false)}
           onFocus={() => (paused.current = true)}
@@ -108,23 +108,23 @@ export default function Testimonials() {
             <figure
               key={r.name}
               aria-hidden={i !== active}
-              className={`flex flex-col gap-4 transition-opacity duration-500 [grid-area:1/1] ${
+              className={`flex flex-col gap-2.5 transition-opacity duration-500 [grid-area:1/1] ${
                 i === active ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
             >
-              <Stars className="h-5 w-5" />
-              <p className="text-lg font-extrabold text-ink">{r.title}</p>
-              <blockquote className="text-[18px] leading-relaxed text-ink md:text-[21px]">
+              <Stars />
+              <p className="font-extrabold text-ink">{r.title}</p>
+              <blockquote className="text-base leading-relaxed text-ink md:text-[17px]">
                 &ldquo;{r.quote}&rdquo;
               </blockquote>
-              <figcaption className="mt-auto text-[15px] text-[#4A5260]">
+              <figcaption className="mt-auto text-sm text-[#4A5260]">
                 <strong className="text-ink">{r.name}</strong>, App Store review
               </figcaption>
             </figure>
           ))}
         </div>
 
-        <div className="mt-4 flex justify-center gap-1">
+        <div className="mt-2 flex justify-center gap-1">
           {reviews.map((r, i) => (
             <button
               key={r.name}
