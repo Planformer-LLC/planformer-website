@@ -31,6 +31,12 @@ const devices = [
   { label: "Android", Icon: Smartphone },
 ];
 
+const stats = [
+  { value: `${siteData.rating.value.toFixed(1)}★`, label: "App Store rating" },
+  { value: "150%", label: "Quicker takeoffs" },
+  { value: "Offline", label: "No signal needed" },
+];
+
 export default function Hero() {
   return (
     <section
@@ -97,6 +103,21 @@ export default function Hero() {
               // Matches the source exactly (1920x1016): no crop, no letterbox.
               className="aspect-[1920/1016] w-full"
             />
+            <dl className="grid grid-cols-3 gap-2 sm:gap-3">
+              {stats.map((s) => (
+                <div key={s.label} className="rounded-xl bg-white p-3 sm:p-4">
+                  <dt className="sr-only">{s.label}</dt>
+                  <dd>
+                    <span className="block text-xl font-extrabold text-ink sm:text-[26px]">
+                      {s.value}
+                    </span>
+                    <span className="mt-1 block text-xs text-[#5F6670] sm:text-[13px]">
+                      {s.label}
+                    </span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
             <div className="flex flex-col gap-3 rounded-xl border border-[#D7E2F1] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm font-semibold text-[#4A5260]">
                 One account, every device
