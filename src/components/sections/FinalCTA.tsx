@@ -53,7 +53,7 @@ export default function FinalCTA() {
   return (
     <section
       aria-labelledby="cta-title"
-      className="bg-[#F6F9FE] px-4 pt-4 pb-20 sm:px-6 md:pb-24"
+      className="bg-[#F6F9FE] px-4 pt-4 pb-12 sm:px-6 md:pb-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",

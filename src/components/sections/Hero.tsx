@@ -42,7 +42,7 @@ export default function Hero() {
     <section
       aria-labelledby="hero-title"
       // Faint plan-paper grid: reads as construction without stock photos.
-      className="bg-[#F6F9FE] pt-32 pb-20 md:pt-40 md:pb-24"
+      className="bg-[#F6F9FE] pt-28 pb-12 md:pt-36 md:pb-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",

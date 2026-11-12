@@ -7,7 +7,7 @@ export default function TryItHere() {
       id="try-it"
       aria-labelledby="try-it-heading"
       // The header is fixed; keep the section clear of it on #try-it jumps.
-      className="relative scroll-mt-20 border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      className="relative scroll-mt-20 border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
@@ -28,7 +28,7 @@ export default function TryItHere() {
           </p>
         </div>
 
-        <div className="mt-8 md:mt-10">
+        <div className="mt-6 md:mt-8">
           <TakeoffDemoLoader />
         </div>
       </div>

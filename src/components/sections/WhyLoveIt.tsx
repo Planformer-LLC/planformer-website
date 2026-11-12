@@ -27,7 +27,7 @@ export default function WhyLoveIt() {
   return (
     <section
       aria-labelledby="why-title"
-      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-16 md:py-20"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
