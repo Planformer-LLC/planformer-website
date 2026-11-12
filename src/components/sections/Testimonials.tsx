@@ -1,3 +1,6 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 import { platforms } from "@/data/siteData";
 
@@ -28,35 +31,58 @@ const reviews = [
   },
 ];
 
-function Stars() {
+const ROTATE_MS = 7000;
+
+function Stars({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <span className="flex gap-0.5 text-[#F5A524]" aria-label="5 out of 5 stars">
       {Array.from({ length: 5 }, (_, i) => (
-        <Star key={i} className="h-4 w-4 fill-current" aria-hidden="true" />
+        <Star key={i} className={`${className} fill-current`} aria-hidden="true" />
       ))}
     </span>
   );
 }
 
-/** Server component: all reviews visible and indexable, no rotation. */
+/**
+ * One review at a time, rotating. Every review stays in the HTML (stacked in
+ * one grid cell and cross-faded), so all of them are indexable and the box
+ * keeps the height of the longest one: no layout jump between slides.
+ */
 export default function Testimonials() {
-  const [lead, ...rest] = reviews;
+  const [active, setActive] = useState(0);
+  const timer = useRef<number | null>(null);
+  const paused = useRef(false);
+
+  const restart = useCallback(() => {
+    if (timer.current) window.clearInterval(timer.current);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    timer.current = window.setInterval(() => {
+      if (!paused.current) setActive((i) => (i + 1) % reviews.length);
+    }, ROTATE_MS);
+  }, []);
+
+  useEffect(() => {
+    restart();
+    return () => {
+      if (timer.current) window.clearInterval(timer.current);
+    };
+  }, [restart]);
 
   return (
     <section
       aria-labelledby="reviews-title"
-      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-16 md:py-24"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
         backgroundSize: "28px 28px",
       }}
     >
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+      <div className="mx-auto max-w-[920px] px-4 sm:px-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <h2
             id="reviews-title"
-            className="max-w-[620px] text-[32px] leading-[1.06] font-extrabold tracking-[-0.03em] text-ink md:text-[46px]"
+            className="max-w-[520px] text-[32px] leading-[1.06] font-extrabold tracking-[-0.03em] text-ink md:text-[42px]"
           >
             What contractors say on the App Store.
           </h2>
@@ -64,42 +90,60 @@ export default function Testimonials() {
             href={appStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 self-start rounded-full border border-[#D7E2F1] bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-brand md:self-auto"
+            className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-[#D7E2F1] bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-brand md:self-auto"
           >
             <Stars />
             5.0 on the App Store
           </a>
         </div>
 
-        <div className="mt-10 grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-          <figure className="flex flex-col gap-5 rounded-2xl border-2 border-brand bg-white p-7 md:p-9">
-            <Stars />
-            <p className="text-lg font-extrabold text-ink">{lead.title}</p>
-            <blockquote className="text-[19px] leading-relaxed text-ink md:text-[21px]">
-              &ldquo;{lead.quote}&rdquo;
-            </blockquote>
-            <figcaption className="mt-auto text-[15px] text-[#4A5260]">
-              <strong className="text-ink">{lead.name}</strong>, App Store review
-            </figcaption>
-          </figure>
+        <div
+          className="mt-8 grid rounded-2xl border border-[#D7E2F1] bg-white p-7 md:p-10"
+          onMouseEnter={() => (paused.current = true)}
+          onMouseLeave={() => (paused.current = false)}
+          onFocus={() => (paused.current = true)}
+          onBlur={() => (paused.current = false)}
+        >
+          {reviews.map((r, i) => (
+            <figure
+              key={r.name}
+              aria-hidden={i !== active}
+              className={`flex flex-col gap-4 transition-opacity duration-500 [grid-area:1/1] ${
+                i === active ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            >
+              <Stars className="h-5 w-5" />
+              <p className="text-lg font-extrabold text-ink">{r.title}</p>
+              <blockquote className="text-[18px] leading-relaxed text-ink md:text-[21px]">
+                &ldquo;{r.quote}&rdquo;
+              </blockquote>
+              <figcaption className="mt-auto text-[15px] text-[#4A5260]">
+                <strong className="text-ink">{r.name}</strong>, App Store review
+              </figcaption>
+            </figure>
+          ))}
+        </div>
 
-          <div className="grid gap-5">
-            {rest.map((r) => (
-              <figure
-                key={r.name}
-                className="flex flex-col gap-3 rounded-2xl border border-[#D7E2F1] bg-white p-6 md:p-7"
-              >
-                <Stars />
-                <p className="font-extrabold text-ink">{r.title}</p>
-                <blockquote className="text-base leading-relaxed text-ink">
-                  &ldquo;{r.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-auto text-sm text-[#4A5260]">
-                  <strong className="text-ink">{r.name}</strong>, App Store review
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+        <div className="mt-4 flex justify-center gap-1">
+          {reviews.map((r, i) => (
+            <button
+              key={r.name}
+              type="button"
+              onClick={() => {
+                setActive(i);
+                restart();
+              }}
+              aria-label={`Show review ${i + 1} of ${reviews.length}`}
+              aria-current={i === active}
+              className="grid h-8 w-8 place-items-center"
+            >
+              <span
+                className={`h-2.5 rounded-full transition-all duration-300 ${
+                  i === active ? "w-6 bg-brand" : "w-2.5 bg-black/15 hover:bg-black/30"
+                }`}
+              />
+            </button>
+          ))}
         </div>
       </div>
     </section>
