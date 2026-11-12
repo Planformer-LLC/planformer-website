@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import WebsiteAnalytics from "@/components/analytics/WebsiteAnalytics";
+import LeadOfferPopup from "@/components/marketing/LeadOfferPopup";
 import { siteData } from "@/data/siteData";
 import {
   jsonLd,
@@ -91,6 +92,7 @@ export default function RootLayout({
       <body className={`${plusJakarta.className} text-ink antialiased`}>
         <WebsiteAnalytics />
         {children}
+        <LeadOfferPopup />
       </body>
     </html>
   );
