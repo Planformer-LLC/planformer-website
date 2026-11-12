@@ -1,7 +1,13 @@
-import Image from "next/image";
-import { ArrowRight, Check } from "lucide-react";
+import {
+  ArrowRight,
+  Globe,
+  Laptop,
+  Monitor,
+  Smartphone,
+  Tablet,
+} from "lucide-react";
 import Reveal from "@/components/animations/Reveal";
-import { platforms, siteData } from "@/data/siteData";
+import { siteData } from "@/data/siteData";
 import PosterVideo from "@/components/sections/PosterVideo";
 
 // v2: re-encoded at native resolution (x264 CRF 24) — 15.7MB -> 11.2MB with no
@@ -14,49 +20,43 @@ const heroPosterUrl =
 const heroVideoUrl =
   "https://firebasestorage.googleapis.com/v0/b/planformer-3408e.firebasestorage.app/o/marketing%2Fhero%2Fv2%2Fhero_video_1080p.mp4?alt=media&token=d1a3c46d-afc0-441b-a3f5-da252861ae14";
 
-// iPad shares the iPhone App Store page, so it is left out of this short row.
-const heroDownloadLabels: Record<string, string> = {
-  macos: "Mac",
-  windows: "Windows",
-  ios: "App Store",
-  android: "Google Play",
-};
-const heroDownloads = platforms
-  .filter((p) => p.id in heroDownloadLabels)
-  .map((p) => ({ ...p, label: heroDownloadLabels[p.id] }));
-
-const perks = ["Up to 14 days free", "Cancel anytime", "Works in your browser"];
-
-const stats = [
-  { value: `${siteData.rating.value.toFixed(1)}★`, label: "App Store rating" },
-  { value: "90%", label: "Less takeoff time" },
-  { value: "Offline", label: "No signal needed" },
+// Every platform on one subscription is the main thing desktop-only
+// competitors can't say, so it gets its own row under the video.
+const devices = [
+  { label: "Mac", Icon: Laptop },
+  { label: "Windows", Icon: Monitor },
+  { label: "Web", Icon: Globe },
+  { label: "iPhone", Icon: Smartphone },
+  { label: "iPad", Icon: Tablet },
+  { label: "Android", Icon: Smartphone },
 ];
 
 export default function Hero() {
   return (
-    <section aria-labelledby="hero-title" className="bg-white pt-32 pb-20 md:pt-40 md:pb-24">
+    <section
+      aria-labelledby="hero-title"
+      // Faint plan-paper grid: reads as construction without stock photos.
+      className="bg-[#F6F9FE] pt-32 pb-20 md:pt-40 md:pb-24"
+      style={{
+        backgroundImage:
+          "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
       <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-14">
         {/* Copy */}
         <div className="flex min-w-0 flex-col gap-6">
-          <p className="text-[13px] font-bold tracking-[0.12em] text-[#0062CC] uppercase">
-            Takeoff &amp; Estimating Software
-          </p>
-
           <h1
             id="hero-title"
-            // 34px keeps "Measure the plans." on one line at 375px wide.
-            className="text-[34px] leading-[1.06] font-extrabold tracking-[-0.035em] text-ink min-[400px]:text-[38px] sm:text-[52px] lg:text-[46px] xl:text-[60px]"
+            className="text-[40px] leading-[1.02] font-extrabold tracking-[-0.035em] text-ink sm:text-[56px] lg:text-[52px] xl:text-[64px]"
           >
-            <span className="block">Measure the plans.</span>
-            <span className="block">Price the job.</span>
-            <span className="block text-brand">Same afternoon.</span>
+            Your takeoff goes where you go.
           </h1>
 
           <p className="max-w-[520px] text-base leading-relaxed text-[#4A5260] sm:text-[19px] sm:leading-[1.6]">
-            Planformer turns a PDF plan set into quantities, assemblies and a
-            priced estimate — in your browser, on your desktop, or on your phone
-            at the site.
+            Desktop takeoff software keeps you chained to one Windows PC.
+            Planformer works on every device you own, so the bid moves with
+            you from the office to the jobsite.
           </p>
 
           <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:items-center sm:gap-6">
@@ -70,55 +70,22 @@ export default function Hero() {
               <ArrowRight className="h-5 w-5" aria-hidden="true" />
             </a>
             <a
-              href="#pricing"
+              href="#try-it"
               className="py-3 text-center text-base font-semibold text-ink underline underline-offset-4 hover:text-brand"
             >
-              See pricing
+              Try a takeoff, no sign-up
             </a>
           </div>
 
-          <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-sm text-[#4A5260]">
-            {perks.map((t) => (
-              <li key={t} className="inline-flex items-center gap-1.5">
-                <Check className="h-4 w-4 text-[#0A7A1E]" strokeWidth={2.5} aria-hidden="true" />
-                {t}
-              </li>
-            ))}
-          </ul>
-
-          {/* Secondary: installers and store pages, deliberately smaller than
-              the trial button. data-download-* feeds the
-              website_download_click conversion (WebsiteAnalytics). */}
-          <div className="flex flex-col gap-2.5 border-t border-[#ECEEF1] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-            <span className="text-[13px] text-[#5F6670]">Prefer the app? Download for</span>
-            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
-              {heroDownloads.map((d) => (
-                <a
-                  key={d.id}
-                  href={d.href}
-                  data-download-platform={d.id}
-                  data-download-location="hero"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center justify-center gap-1.5 rounded-[10px] border border-[#D9DDE3] bg-white px-3 text-[13px] font-semibold text-[#3D4450] transition hover:border-brand hover:text-brand sm:h-9 sm:rounded-full"
-                >
-                  <Image
-                    src={d.icon}
-                    alt=""
-                    width={14}
-                    height={14}
-                    className="h-3.5 w-3.5 object-contain invert"
-                  />
-                  {d.label}
-                </a>
-              ))}
-            </div>
-          </div>
+          <p className="text-sm text-[#5F6670]">
+            Free for up to 14 days. Cancel anytime. Rated{" "}
+            {siteData.rating.value.toFixed(1)} on the App Store.
+          </p>
         </div>
 
-        {/* Video + stats */}
+        {/* Video + devices */}
         <Reveal from="right" duration={0.6} className="min-w-0">
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4">
             <PosterVideo
               id="hero-video"
               posterUrl={heroPosterUrl}
@@ -130,21 +97,19 @@ export default function Hero() {
               // Matches the source exactly (1920x1016): no crop, no letterbox.
               className="aspect-[1920/1016] w-full"
             />
-            <dl className="grid grid-cols-3 gap-2 sm:gap-3">
-              {stats.map((s) => (
-                <div key={s.label} className="rounded-xl bg-[#F5F7FA] p-3 sm:p-4">
-                  <dt className="sr-only">{s.label}</dt>
-                  <dd>
-                    <span className="block text-xl font-extrabold text-ink sm:text-[26px]">
-                      {s.value}
-                    </span>
-                    <span className="mt-1 block text-xs text-[#5F6670] sm:text-[13px]">
-                      {s.label}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
+            <div className="flex flex-col gap-3 rounded-xl border border-[#D7E2F1] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm font-semibold text-[#4A5260]">
+                One account, every device
+              </p>
+              <ul className="grid grid-cols-6 gap-1 text-[#0A5FC2] sm:flex sm:gap-4">
+                {devices.map(({ label, Icon }) => (
+                  <li key={label} className="flex flex-col items-center gap-1">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                    <span className="text-[11px] font-semibold">{label}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Reveal>
       </div>

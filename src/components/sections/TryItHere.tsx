@@ -7,7 +7,8 @@ export default function TryItHere() {
     <section
       id="try-it"
       aria-labelledby="try-it-heading"
-      className="relative overflow-hidden bg-surface-dark py-20 text-white md:py-24"
+      // The header is fixed; keep the section clear of it on #try-it jumps.
+      className="relative scroll-mt-20 overflow-hidden bg-surface-dark py-20 text-white md:py-24"
     >
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
         <Reveal>
