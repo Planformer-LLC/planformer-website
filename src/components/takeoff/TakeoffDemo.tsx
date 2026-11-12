@@ -230,7 +230,8 @@ export default function TakeoffDemo() {
   /* Hints: only how to use the active tool, never what to measure    */
   /* --------------------------------------------------------------- */
 
-  const hasMeasured = state.measurements.length > 0;
+  // The visitor's own work, not the seeded example.
+  const hasMeasured = state.measurements.some((m) => !m.id.startsWith("seed-"));
   const hint = (() => {
     if (state.pending) return "Save it to add it to your list.";
     const kind = state.draft?.kind;

@@ -63,15 +63,27 @@ export const MIN_VERTEX_SEPARATION_UNITS = 3;
 export const MAX_VERTICES = 200;
 export const MAX_MEASUREMENTS = 60;
 
-/**
- * The demo starts clean: the visitor's own shapes are the only ones on the
- * plan. (Kept as an export so the reducer's initial state stays explicit.)
- */
-export const SEED_MEASUREMENTS: Measurement[] = [];
+const living = ROOMS.find((r) => r.id === "living")!;
 
-/** First shapes auto-name "Area 1", "Linear 1", "Count 1", as in the app. */
+/**
+ * One finished area, so visitors see what a measurement looks like on the
+ * plan and in the list before they draw their own.
+ */
+export const SEED_MEASUREMENTS: Measurement[] = [
+  {
+    id: "seed-area-1",
+    kind: "area",
+    name: "Living room",
+    points: ringOf(living),
+    color: "#00B51E",
+    fillPct: 50,
+    borderPx: 2,
+  },
+];
+
+/** So the visitor's first area auto-names "Area 2", as the app would. */
 export const SEED_NAME_COUNTERS: Record<MeasurementKind, number> = {
-  area: 0,
+  area: 1,
   linear: 0,
   count: 0,
 };
