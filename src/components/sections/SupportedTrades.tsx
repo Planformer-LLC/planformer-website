@@ -26,7 +26,7 @@ const trades: { title: string; photo: string; items: [Tool, string][] }[] = [
     items: [
       ["area", "Slabs, driveways, paving"],
       ["linear", "Footings and curbs"],
-      ["calc", "Volume in cubic yards"],
+      ["calc", "Cubic yards or tons"],
     ],
   },
   {

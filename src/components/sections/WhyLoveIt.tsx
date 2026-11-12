@@ -13,7 +13,7 @@ const features = [
   },
   {
     title: "Volume calculator",
-    desc: "Turn a slab or driveway area into cubic yards of concrete or asphalt. 1,200 sq ft at 4 in is 14.8 cu yd.",
+    desc: "Measure it, add the depth and width, and get the cubic yards or tons of concrete or asphalt you need.",
     Icon: Calculator,
   },
   {
