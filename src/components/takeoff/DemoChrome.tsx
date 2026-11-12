@@ -1,8 +1,7 @@
 import Image from "next/image";
-import { Check, CircleDot, FileText, Pentagon, Ruler, Spline, Upload } from "lucide-react";
+import { Check, CircleDot, FileText, Pentagon, Ruler, Spline } from "lucide-react";
 import type { ReactNode } from "react";
 import type { MeasurementKind } from "@/lib/takeoff/types";
-import { siteData } from "@/data/siteData";
 
 /**
  * Presentational pieces shared by the static skeleton (server) and the
@@ -60,14 +59,8 @@ export function WindowBar({ actions }: { actions?: ReactNode }) {
           In progress
         </span>
       </p>
-      <a
-        href={siteData.signupHref}
-        title="Start a free trial to share your own takeoffs"
-        className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-brand px-3.5 text-sm font-semibold text-white transition hover:bg-brand-hover"
-      >
-        <Upload className="h-4 w-4" aria-hidden="true" />
-        Share
-      </a>
+      {/* Keeps the project name centred now that Share is gone. */}
+      <span className="w-[78px] shrink-0" aria-hidden="true" />
     </div>
   );
 }
