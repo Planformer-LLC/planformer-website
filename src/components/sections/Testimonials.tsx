@@ -78,8 +78,8 @@ export default function Testimonials() {
         backgroundSize: "28px 28px",
       }}
     >
-      <div className="mx-auto max-w-[920px] px-4 sm:px-6">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto max-w-[720px] px-4 sm:px-6">
+        <div className="flex flex-col items-center gap-3 text-center">
           <h2
             id="reviews-title"
             className="text-[26px] leading-[1.1] font-extrabold tracking-[-0.03em] text-ink md:text-[32px]"
@@ -90,7 +90,7 @@ export default function Testimonials() {
             href={appStoreUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-[#D7E2F1] bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-brand md:self-auto"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#D7E2F1] bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-brand"
           >
             <Stars />
             5.0 on the App Store
