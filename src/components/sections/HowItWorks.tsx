@@ -18,12 +18,12 @@ const steps = [
     desc: "Trace areas, walls and counts, then drop in items from your saved library. Save an item once with your own costs and it's ready on every project.",
   },
   {
-    title: "Export the estimate",
-    desc: "Send quantities and costs to Excel to finish your bid.",
-  },
-  {
     title: "Share the takeoff",
     desc: "Send the marked-up plans to your client or crew, so everyone sees exactly what was measured.",
+  },
+  {
+    title: "Export the estimate",
+    desc: "Send quantities and costs to Excel to finish your bid.",
   },
 ];
 
