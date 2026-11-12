@@ -1,13 +1,11 @@
 "use client";
 
 import type { Dispatch } from "react";
-import { useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { siteData } from "@/data/siteData";
 import type { Action, Measurement, TakeoffState } from "@/lib/takeoff/types";
-import { formatFeet, formatMoney, formatRowValue, quantityOf } from "@/lib/takeoff/format";
+import { formatFeet, formatRowValue } from "@/lib/takeoff/format";
 import { perimeterUnits, unitsToFeet } from "@/lib/takeoff/geometry";
-import { RATE_DEFAULTS } from "@/lib/takeoff/planFixture";
 import { KindIcon } from "./DemoChrome";
 
 /** Main value and, for areas, the perimeter underneath, as the app lists them. */
@@ -17,14 +15,6 @@ export function rowLines(m: Measurement, ftPerUnit: number): [string, string | n
   return [main, formatFeet(unitsToFeet(perimeterUnits(m.points), ftPerUnit))];
 }
 
-export function estimateTotal(measurements: Measurement[], ftPerUnit: number) {
-  return measurements.reduce((sum, m) => {
-    const r = RATE_DEFAULTS[m.kind];
-    // Markup is per-unit currency, not a percentage (CalculatorItem in the app).
-    return sum + (r.cost + r.markup) * quantityOf(m, ftPerUnit);
-  }, 0);
-}
-
 export default function ResultsPanel({
   state,
   dispatch,
@@ -32,14 +22,10 @@ export default function ResultsPanel({
 }: {
   state: TakeoffState;
   dispatch: Dispatch<Action>;
-  /** True once the visitor has added their own measurement. */
+  /** True once the visitor has traced an area: the sign-up nudge steps up. */
   highlight: boolean;
 }) {
   const { measurements, scale } = state;
-  const total = useMemo(
-    () => estimateTotal(measurements, scale.ftPerUnit),
-    [measurements, scale.ftPerUnit],
-  );
 
   return (
     <aside className="flex flex-col border-t border-[#EEF1F5] bg-white lg:border-t-0 lg:border-r">
@@ -58,7 +44,8 @@ export default function ResultsPanel({
 
       {measurements.length === 0 ? (
         <p className="px-4 py-3 text-sm text-ink/50">
-          Nothing measured yet. Pick a tool below the plan.
+          Nothing measured yet. Pick a tool below the plan and your
+          measurements show up here.
         </p>
       ) : (
         <ul role="list" className="max-h-[300px] overflow-y-auto px-2 pb-2">
@@ -104,29 +91,17 @@ export default function ResultsPanel({
       )}
 
       <div className="mt-auto border-t border-[#EEF1F5] px-4 pt-4 pb-4">
-        <div
-          className={`rounded-xl px-4 py-3 transition-colors duration-500 ${
-            highlight ? "bg-[#EAF3FF] ring-2 ring-brand" : "bg-[#F5F7FA]"
-          }`}
-          aria-live="polite"
-        >
-          <div className="flex items-baseline justify-between text-sm text-[#5F6670]">
-            <span>Estimate</span>
-            <span>
-              {measurements.length} {measurements.length === 1 ? "item" : "items"}
-            </span>
-          </div>
-          <p className="mt-1 text-[28px] leading-tight font-extrabold text-ink tabular-nums">
-            {formatMoney(total)}
+        {highlight ? (
+          <p className="mb-3 text-sm leading-snug text-ink" aria-live="polite">
+            That&apos;s a real takeoff. Upload your own plans and do the same on
+            every job.
           </p>
-          <p className="mt-1 text-xs text-[#5F6670]">
-            Sample prices: flooring $5.75/sq ft, trim $4.25/ft, outlets $110 each.
-          </p>
-        </div>
-
+        ) : null}
         <a
           href={siteData.signupHref}
-          className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-[10px] bg-brand text-sm font-bold text-white transition hover:bg-brand-hover"
+          className={`inline-flex h-11 w-full items-center justify-center rounded-[10px] bg-brand text-sm font-bold text-white transition hover:bg-brand-hover ${
+            highlight ? "ring-4 ring-brand/25" : ""
+          }`}
         >
           Do this on your own plans
         </a>

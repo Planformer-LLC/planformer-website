@@ -233,13 +233,15 @@ export default function TakeoffDemo() {
 
   // Any area the visitor saves completes the guided step, not only an exact
   // trace of the target room: the point is to feel the tool, not pass a test.
-  const tracedOwnArea = state.measurements.some(
-    (m) => m.kind === "area" && !m.id.startsWith("seed-"),
-  );
+  const tracedOwnArea = state.measurements.some((m) => m.kind === "area");
+  const triedOtherTool = state.measurements.some((m) => m.kind !== "area");
   const steps: { label: string; status: StepStatus }[] = [
     { label: "Scale is set", status: "done" },
     { label: `Trace the ${TARGET_ROOM.name}`, status: tracedOwnArea ? "done" : "now" },
-    { label: "See the price", status: tracedOwnArea ? "done" : "next" },
+    {
+      label: "Try Linear or Count",
+      status: triedOtherTool ? "done" : tracedOwnArea ? "now" : "next",
+    },
   ];
 
   const tap = coarse ? "Tap" : "Click";
@@ -265,6 +267,7 @@ export default function TakeoffDemo() {
       return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
     }
     if (!tracedOwnArea) return `${tap} Area below, then trace the ${TARGET_ROOM.name}'s four corners.`;
+    if (!triedOtherTool) return "Nice. Now try Linear along a wall, or Count the windows.";
     return null;
   })();
 

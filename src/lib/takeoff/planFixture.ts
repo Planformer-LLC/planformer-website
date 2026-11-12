@@ -67,71 +67,15 @@ export const MIN_VERTEX_SEPARATION_UNITS = 3;
 export const MAX_VERTICES = 200;
 export const MAX_MEASUREMENTS = 60;
 
-const room = (id: string) => ROOMS.find((r) => r.id === id)!;
-
-/** The living room is left deliberately unmeasured: it is the "trace me" target. */
-export const SEED_MEASUREMENTS: Measurement[] = [
-  {
-    id: "seed-area-1",
-    kind: "area",
-    name: "Kitchen",
-    points: ringOf(room("kitchen")),
-    color: "#E8D44D",
-    fillPct: 50,
-    borderPx: 2,
-  },
-  {
-    id: "seed-area-2",
-    kind: "area",
-    name: "Bedroom 1",
-    points: ringOf(room("bed-1")),
-    color: "#3FD6DD",
-    fillPct: 50,
-    borderPx: 2,
-  },
-  {
-    id: "seed-linear-1",
-    kind: "linear",
-    name: "Exterior wall",
-    points: [
-      { x: 230, y: 120 },
-      { x: 950, y: 120 },
-      { x: 950, y: 660 },
-    ],
-    color: "#FF7A1A",
-    fillPct: 50,
-    borderPx: 2,
-  },
-  {
-    id: "seed-count-1",
-    kind: "count",
-    name: "Outlets",
-    points: [
-      { x: 250, y: 334 }, { x: 460, y: 300 }, { x: 650, y: 300 },
-      { x: 930, y: 334 }, { x: 930, y: 640 }, { x: 250, y: 380 },
-    ],
-    color: "#7B2FBE",
-    fillPct: 50,
-    borderPx: 2,
-  },
-];
-
-/** So the visitor's first area auto-names "Area 3", not "Area 1". */
-export const SEED_NAME_COUNTERS: Record<MeasurementKind, number> = {
-  area: 2,
-  linear: 1,
-  count: 1,
-};
-
 /**
- * Cost rates. `total = (cost + markup) * qty` — markup is per-unit currency,
- * not a percentage, matching CalculatorItem in the app.
+ * The demo starts clean: the visitor's own shapes are the only ones on the
+ * plan. (Kept as an export so the reducer's initial state stays explicit.)
  */
-export const RATE_DEFAULTS: Record<
-  MeasurementKind,
-  { item: string; cost: number; markup: number }
-> = {
-  area: { item: "Flooring, LVP", cost: 4.25, markup: 1.5 },
-  linear: { item: "Base trim", cost: 3.1, markup: 1.15 },
-  count: { item: "Outlet, installed", cost: 88, markup: 22 },
+export const SEED_MEASUREMENTS: Measurement[] = [];
+
+/** First shapes auto-name "Area 1", "Linear 1", "Count 1", as in the app. */
+export const SEED_NAME_COUNTERS: Record<MeasurementKind, number> = {
+  area: 0,
+  linear: 0,
+  count: 0,
 };
