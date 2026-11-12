@@ -62,9 +62,10 @@ function Shape({ m, selected }: { m: Measurement; selected: boolean }) {
   );
 }
 
-/** Per-edge dimension labels, offset off the line along its normal. */
+/** Per-edge dimension labels, offset off the line along its normal (inward for areas). */
 function EdgeLabels({ m, ftPerUnit }: { m: Measurement; ftPerUnit: number }) {
   if (m.kind === "count") return null;
+  const inside = m.kind === "area" ? centroid(m.points) : null;
 
   return (
     <g>
@@ -73,12 +74,20 @@ function EdgeLabels({ m, ftPerUnit }: { m: Measurement; ftPerUnit: number }) {
         // Skip labels that would not fit on their own edge.
         if (len < 46) return null;
         const mid = midpoint(a, b);
-        const nrm = edgeNormal(a, b);
+        let nrm = edgeNormal(a, b);
+        // Areas: put each label inside its own shape, so two rooms sharing a
+        // wall don't print their lengths on top of each other.
+        if (inside) {
+          const toC = { x: inside.x - mid.x, y: inside.y - mid.y };
+          if (nrm.x * toC.x + nrm.y * toC.y < 0) nrm = { x: -nrm.x, y: -nrm.y };
+        }
+        // Labels are wider than tall, so clear vertical edges by more.
+        const off = 14 + 18 * Math.abs(nrm.x);
         return (
           <text
             key={i}
-            x={mid.x + nrm.x * 13}
-            y={mid.y + nrm.y * 13}
+            x={mid.x + nrm.x * off}
+            y={mid.y + nrm.y * off}
             textAnchor="middle"
             dominantBaseline="middle"
             fontSize={13}
@@ -162,7 +171,9 @@ function MeasurementLayer({
   ftPerUnit,
   selectedId,
   onSelect,
-  showBadges = true,
+  // Off by default: the app's plan view shows shapes only, with the numbers
+  // in the side list.
+  showBadges = false,
 }: {
   measurements: readonly Measurement[];
   ftPerUnit: number;

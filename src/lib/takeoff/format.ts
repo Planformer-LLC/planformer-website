@@ -12,9 +12,14 @@ export function formatDistance(feet: number): string {
   return `${ft}${PRIME}${inch}${PRIME}${PRIME}`;
 }
 
-/** e.g. 412.5 -> "412.50 ft²" */
+/** e.g. 412.5 -> "412.50 sq ft", as the app's measurement list prints it. */
 export function formatArea(sqFt: number): string {
-  return `${sqFt.toFixed(2)} ft²`;
+  return `${sqFt.toFixed(2)} sq ft`;
+}
+
+/** e.g. 84 -> "84.00 ft", the perimeter line under an area. */
+export function formatFeet(feet: number): string {
+  return `${feet.toFixed(2)} ft`;
 }
 
 /** On-canvas badges use the spelled-out unit: "412.50 SQ FT" */

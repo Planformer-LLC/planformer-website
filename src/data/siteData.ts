@@ -50,7 +50,7 @@ export const pricingPlans = [
     trialDays: 14,
     // $399 vs 12 × $49.99 = $599.88 → 33% less; $399 / 12 = $33.25.
     note: "Just $33.25 a month, billed yearly after your trial.",
-    badge: "Best value · Save 33%",
+    badge: "Save 33%",
   },
 ] as const;
 
@@ -71,14 +71,12 @@ export const leadOffer = {
   excludedPaths: ["/privacy", "/terms", "/blog/preview"],
 } as const;
 
-/** Every Premium feature, as listed on the app's paywall. */
+/** What every plan includes, shown under the plans on the homepage. */
 export const premiumFeatures = [
-  "Unlimited measurements",
-  "Unlimited plan uploads",
-  "Save and organize multiple plans",
-  "Cloud storage integration",
-  "Web, Mac, Windows, iPhone, iPad and Android",
-  "Priority customer support",
+  "Unlimited measurements and plans",
+  "Saved items library for every project",
+  "Export to Excel and share takeoffs",
+  "Priority support",
 ] as const;
 
 /**

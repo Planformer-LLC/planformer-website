@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { Plus, Undo2, RotateCcw, Ruler, Check, X } from "lucide-react";
+import { Plus, Undo2, RotateCcw, Check, X } from "lucide-react";
 import PlanBackdrop from "./PlanBackdrop";
 import MeasurementLayer from "./MeasurementLayer";
-import ScaleSheet from "./ScaleSheet";
 import ResultsPanel from "./ResultsPanel";
+import { KindIcon, ScaleSlot, TOOL_LABELS, WindowBar } from "./DemoChrome";
 import { reducer, initialState, canClose } from "@/lib/takeoff/reducer";
-import type { Pt, ToolId } from "@/lib/takeoff/types";
+import type { Pt } from "@/lib/takeoff/types";
 import {
   clientToPlan,
   computeViewport,
@@ -27,20 +27,13 @@ import {
   unitsToSqFeet,
   type Viewport,
 } from "@/lib/takeoff/geometry";
-import { formatArea, formatDistance, formatScalePill } from "@/lib/takeoff/format";
+import { formatArea, formatDistance } from "@/lib/takeoff/format";
 import {
   CLOSE_PX_COARSE,
   CLOSE_PX_FINE,
   PALETTE,
   VIEWBOX,
 } from "@/lib/takeoff/planFixture";
-
-const TOOLS: Array<{ id: ToolId; label: string }> = [
-  { id: "scale", label: "Scale" },
-  { id: "linear", label: "Linear" },
-  { id: "area", label: "Area" },
-  { id: "count", label: "Count" },
-];
 
 export default function TakeoffDemo() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -216,19 +209,11 @@ export default function TakeoffDemo() {
     return formatDistance(unitsToFeet(polylineLengthUnits(preview), state.scale.ftPerUnit));
   }, [state.draft, draftPoints, preview, state.scale.ftPerUnit]);
 
-  const prompt = calibrating
-    ? state.calibration?.pts.length === 0
-      ? "Select starting point"
-      : "Click Next Point"
-    : draftPoints.length === 0
-      ? "Select starting point"
-      : "Click Next Point";
-
   const actionLabel = closeable
-    ? "Close Shape"
+    ? "Close shape"
     : state.draft?.kind === "count"
-      ? "Add Count"
-      : "Add Point";
+      ? "Add count"
+      : "Add point";
 
   // Haptic on the rising edge of the close affordance, as the app does.
   const wasCloseable = useRef(false);
@@ -237,305 +222,290 @@ export default function TakeoffDemo() {
     wasCloseable.current = closeable;
   }, [closeable]);
 
+  // The colour the reducer will give this shape when it closes (finalize()).
+  const draftColor = PALETTE[state.measurements.length % PALETTE.length];
+
   const pendingColorIdx = PALETTE.indexOf(
     (state.pending?.color ?? PALETTE[0]) as (typeof PALETTE)[number],
   );
 
+  /* --------------------------------------------------------------- */
+  /* Hints: only how to use the active tool, never what to measure    */
+  /* --------------------------------------------------------------- */
+
+  // The visitor's own work, not the seeded example.
+  const hasMeasured = state.measurements.some((m) => !m.id.startsWith("seed-"));
+  const hint = (() => {
+    if (state.pending) return "Save it to add it to your list.";
+    const kind = state.draft?.kind;
+    if (kind === "area") {
+      if (coarse) return closeable ? "Tap Close shape to finish." : "Drag to a corner, then tap Add point.";
+      return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
+    }
+    if (kind === "linear") {
+      return coarse ? "Drag to a point, tap Add point. Tap Done to finish." : "Click along the line. Click Done to finish.";
+    }
+    if (kind === "count") {
+      return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
+    }
+    return null;
+  })();
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.10)]">
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-black/10 bg-white px-3 py-3 sm:px-4">
-        <div role="radiogroup" aria-label="Takeoff tool" className="flex flex-wrap gap-2">
-          {TOOLS.map((t) => {
-            const active = state.tool === t.id;
-            return (
+    <div>
+      <div className="overflow-hidden rounded-2xl border border-[#D7E2F1] bg-white shadow-[0_18px_50px_rgba(15,60,120,0.10)]">
+        <WindowBar
+          actions={
+            <>
               <button
-                key={t.id}
                 type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() =>
-                  dispatch({ type: "SELECT_TOOL", tool: active && t.id !== "scale" ? null : t.id })
-                }
-                className={`inline-flex h-10 min-w-[76px] items-center justify-center rounded-full px-4 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
-                  active
-                    ? "bg-brand text-white"
-                    : "border border-black/10 bg-white text-ink hover:border-black/25"
-                }`}
+                onClick={() => dispatch({ type: "UNDO" })}
+                disabled={state.past.length === 0}
+                aria-label="Undo last point"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-brand transition hover:bg-[#F2F7FF] disabled:text-ink/25"
               >
-                {t.label}
+                <Undo2 size={18} />
               </button>
-            );
-          })}
-        </div>
+              <button
+                type="button"
+                onClick={() => dispatch({ type: "RESET_DEMO" })}
+                aria-label="Reset the demo"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-ink/55 transition hover:bg-[#F2F7FF] hover:text-ink"
+              >
+                <RotateCcw size={17} />
+              </button>
+            </>
+          }
+        />
 
-        <span className="mx-1 hidden h-6 w-px bg-black/10 sm:block" />
-
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "UNDO" })}
-          disabled={state.past.length === 0}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-black/10 px-3.5 text-sm font-semibold text-ink transition hover:border-black/25 disabled:opacity-35"
-        >
-          <Undo2 size={15} /> Undo
-        </button>
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "RESET_DEMO" })}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-black/10 px-3.5 text-sm font-semibold text-ink transition hover:border-black/25"
-        >
-          <RotateCcw size={15} /> Reset
-        </button>
-
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "OPEN_SHEET", sheet: "scale" })}
-          className="ml-auto inline-flex h-10 items-center gap-2 rounded-full border border-black/10 px-3.5 font-mono text-xs font-semibold text-ink/70 transition hover:border-brand hover:text-brand"
-        >
-          <Ruler size={15} />
-          {formatScalePill(state.scale.ftPerUnit)}
-          <span className="rounded-full bg-[#F5F5F5] px-2 py-0.5 text-[10px] tracking-wide uppercase">
-            Uniform
-          </span>
-        </button>
-      </div>
-
-      <div className="grid lg:grid-cols-[1fr_320px]">
-        {/* Canvas */}
-        <div className="relative">
-          <div
-            ref={wrapRef}
-            className="relative w-full touch-none select-none"
-            style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
-          >
-            <svg
-              viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
-              className="h-full w-full"
-              style={{
-                fontFamily: "inherit",
-                cursor: drawing || calibrating ? "crosshair" : "default",
-              }}
-              role="application"
-              aria-roledescription="Interactive floor plan takeoff"
-              aria-label="Sample floor plan. Pick a tool, then click to place measurement points."
-              tabIndex={0}
-              onPointerMove={onPointerMove}
-              onPointerDown={onPointerDown}
-              onPointerUp={onPointerUp}
-              onPointerLeave={() => cursor && setCursor(null)}
-              onKeyDown={onKeyDown}
+        <div className="grid lg:grid-cols-[300px_minmax(0,1fr)]">
+          {/* Plan */}
+          <div className="relative lg:order-2">
+            <div
+              ref={wrapRef}
+              className="relative w-full touch-none select-none"
+              style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
             >
-              <PlanBackdrop />
+              <svg
+                viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
+                className="h-full w-full"
+                style={{
+                  fontFamily: "inherit",
+                  cursor: drawing ? "crosshair" : "default",
+                }}
+                role="application"
+                aria-roledescription="Interactive floor plan takeoff"
+                aria-label="Sample house plan. Pick a tool, then click to place measurement points."
+                tabIndex={0}
+                onPointerMove={onPointerMove}
+                onPointerDown={onPointerDown}
+                onPointerUp={onPointerUp}
+                onPointerLeave={() => cursor && setCursor(null)}
+                onKeyDown={onKeyDown}
+              >
+                <PlanBackdrop />
 
-              <MeasurementLayer
-                measurements={state.measurements}
-                ftPerUnit={state.scale.ftPerUnit}
-                selectedId={state.selectedId}
-                onSelect={(id) => dispatch({ type: "SELECT", id })}
-              />
-
-              {/* Pending (finalised, awaiting Save) */}
-              {state.pending ? (
                 <MeasurementLayer
-                  measurements={[state.pending]}
+                  measurements={state.measurements}
                   ftPerUnit={state.scale.ftPerUnit}
+                  selectedId={state.selectedId}
+                  onSelect={(id) => dispatch({ type: "SELECT", id })}
                 />
+
+                {/* Pending (finalised, awaiting Save) */}
+                {state.pending ? (
+                  <MeasurementLayer measurements={[state.pending]} ftPerUnit={state.scale.ftPerUnit} />
+                ) : null}
+
+                {/* Live draft */}
+                {draftPoints.length > 0 && state.draft ? (
+                  <g>
+                    {state.draft.kind !== "count" ? (
+                      <path
+                        d={
+                          preview.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") +
+                          (state.draft.kind === "area" && preview.length > 2 ? " Z" : "")
+                        }
+                        fill={state.draft.kind === "area" ? draftColor : "none"}
+                        fillOpacity={state.draft.kind === "area" ? 0.3 : 0}
+                        stroke={draftColor}
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    ) : null}
+
+                    {/* Per-edge live dimensions */}
+                    {state.draft.kind !== "count" &&
+                      preview.slice(0, -1).map((a, i) => {
+                        const b = preview[i + 1];
+                        const len = dist(a, b);
+                        if (len < 40) return null;
+                        const mid = midpoint(a, b);
+                        const nrm = edgeNormal(a, b);
+                        return (
+                          <text
+                            key={i}
+                            x={mid.x + nrm.x * 13}
+                            y={mid.y + nrm.y * 13}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            fontSize={13}
+                            fontWeight={600}
+                            fill={draftColor}
+                            paintOrder="stroke"
+                            stroke="#fff"
+                            strokeWidth={3}
+                            strokeLinejoin="round"
+                          >
+                            {formatDistance(unitsToFeet(len, state.scale.ftPerUnit))}
+                          </text>
+                        );
+                      })}
+
+                    {draftPoints.map((p, i) => (
+                      <circle key={i} cx={p.x} cy={p.y} r={5} fill={draftColor} />
+                    ))}
+
+                    {/* Close affordance: translucent green disc on vertex 1,
+                        radius exactly equal to the hit zone. */}
+                    {closeable ? (
+                      <circle
+                        cx={draftPoints[0].x}
+                        cy={draftPoints[0].y}
+                        r={closeThresholdUnits}
+                        fill="#00B51E"
+                        fillOpacity={0.3}
+                      />
+                    ) : null}
+                  </g>
+                ) : null}
+
+                {/* Crosshair, red as in the app */}
+                {cursor && drawing ? (
+                  <g pointerEvents="none">
+                    <line x1={VIEWBOX.x} y1={cursor.y} x2={VIEWBOX.w} y2={cursor.y} stroke="#E53935" strokeWidth={1.5} />
+                    <line x1={cursor.x} y1={VIEWBOX.y} x2={cursor.x} y2={VIEWBOX.h} stroke="#E53935" strokeWidth={1.5} />
+                    <circle cx={cursor.x} cy={cursor.y} r={9} fill="none" stroke="#E53935" strokeWidth={2} />
+                  </g>
+                ) : null}
+              </svg>
+
+              {/* Running value while drawing */}
+              {drawing && liveValue && !state.pending ? (
+                <span className="pointer-events-none absolute top-3 left-3 rounded-lg bg-[#FFBB00] px-3 py-1.5 text-sm font-bold text-ink shadow-sm tabular-nums">
+                  {liveValue}
+                </span>
               ) : null}
 
-              {/* Live draft */}
-              {draftPoints.length > 0 && state.draft ? (
-                <g>
-                  {state.draft.kind !== "count" ? (
-                    <path
-                      d={
-                        preview.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") +
-                        (state.draft.kind === "area" && preview.length > 2 ? " Z" : "")
-                      }
-                      fill={state.draft.kind === "area" ? PALETTE[0] : "none"}
-                      fillOpacity={state.draft.kind === "area" ? 0.3 : 0}
-                      stroke={PALETTE[0]}
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  ) : null}
+              {/* How to use the active tool */}
+              {hint ? (
+                <p
+                  className="pointer-events-none absolute top-2 right-2 max-w-[min(230px,55%)] rounded-xl bg-surface-dark px-3 py-2 text-xs leading-snug font-semibold text-white shadow-lg sm:top-3 sm:right-3 sm:px-3.5 sm:py-2.5 sm:text-[13px]"
+                  aria-live="polite"
+                >
+                  {hint}
+                </p>
+              ) : null}
 
-                  {/* Per-edge live dimensions */}
-                  {state.draft.kind !== "count" &&
-                    preview.slice(0, -1).map((a, i) => {
-                      const b = preview[i + 1];
-                      const len = dist(a, b);
-                      if (len < 40) return null;
-                      const mid = midpoint(a, b);
-                      const nrm = edgeNormal(a, b);
+              {/* Floating toolbar, which becomes the drawing controls */}
+              <div className="absolute bottom-3 left-1/2 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-1 rounded-2xl border border-[#E3E6EB] bg-white p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.10)]">
+                {state.pending ? (
+                  <>
+                    <div className="flex items-center gap-1.5 px-2">
+                      {PALETTE.slice(0, 4).map((c, i) => (
+                        <button
+                          key={c}
+                          type="button"
+                          aria-label={`Colour ${i + 1}`}
+                          aria-pressed={pendingColorIdx === i}
+                          onClick={() => dispatch({ type: "PATCH_PENDING", patch: { color: c } })}
+                          className={`h-5 w-5 rounded-full transition ${
+                            pendingColorIdx === i ? "ring-2 ring-ink ring-offset-1" : ""
+                          }`}
+                          style={{ backgroundColor: c }}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => dispatch({ type: "SAVE_PENDING" })}
+                      className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-hover"
+                    >
+                      <Check size={16} /> Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => dispatch({ type: "DISCARD_PENDING" })}
+                      aria-label="Discard this measurement"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-ink/60 transition hover:bg-[#F5F7FA] hover:text-ink"
+                    >
+                      <X size={17} />
+                    </button>
+                  </>
+                ) : drawing ? (
+                  <>
+                    {coarse || closeable ? (
+                      <button
+                        type="button"
+                        onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
+                        className={`inline-flex h-10 items-center justify-center gap-1.5 rounded-xl px-4 text-sm font-semibold text-white transition ${
+                          closeable ? "bg-[#00B51E]" : "bg-brand hover:bg-brand-hover"
+                        }`}
+                      >
+                        {!closeable ? <Plus size={16} /> : null}
+                        {actionLabel}
+                      </button>
+                    ) : null}
+                    {draftPoints.length >= (state.draft?.kind === "count" ? 1 : 2) ? (
+                      <button
+                        type="button"
+                        onClick={() => dispatch({ type: "FINISH_OPEN" })}
+                        className="inline-flex h-10 items-center rounded-xl border border-[#E3E6EB] px-4 text-sm font-semibold text-ink transition hover:border-ink/30"
+                      >
+                        Done
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() => dispatch({ type: "SELECT_TOOL", tool: null })}
+                      className="inline-flex h-10 items-center rounded-xl px-3 text-sm font-semibold text-ink/60 transition hover:text-ink"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <div role="radiogroup" aria-label="Takeoff tool" className="flex items-center gap-1">
+                    <ScaleSlot />
+                    {TOOL_LABELS.map((t) => {
+                      const active = state.tool === t.id;
                       return (
-                        <text
-                          key={i}
-                          x={mid.x + nrm.x * 13}
-                          y={mid.y + nrm.y * 13}
-                          textAnchor="middle"
-                          dominantBaseline="middle"
-                          fontSize={13}
-                          fontWeight={600}
-                          fill={PALETTE[0]}
-                          paintOrder="stroke"
-                          stroke="#fff"
-                          strokeWidth={3}
-                          strokeLinejoin="round"
+                        <button
+                          key={t.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          onClick={() => dispatch({ type: "SELECT_TOOL", tool: active ? null : t.id })}
+                          className={`flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
+                            active ? "bg-[#EAF3FF] text-brand" : "text-ink hover:bg-[#F5F7FA]"
+                          }`}
                         >
-                          {formatDistance(unitsToFeet(len, state.scale.ftPerUnit))}
-                        </text>
+                          <KindIcon kind={t.id} className="h-5 w-5" />
+                          {t.label}
+                        </button>
                       );
                     })}
-
-                  {draftPoints.map((p, i) => (
-                    <circle key={i} cx={p.x} cy={p.y} r={5} fill={PALETTE[0]} />
-                  ))}
-
-                  {/* Close affordance: translucent green disc on vertex 1,
-                      radius exactly equal to the hit zone. */}
-                  {closeable ? (
-                    <circle
-                      cx={draftPoints[0].x}
-                      cy={draftPoints[0].y}
-                      r={closeThresholdUnits}
-                      fill="#00B51E"
-                      fillOpacity={0.3}
-                    />
-                  ) : null}
-                </g>
-              ) : null}
-
-              {/* Calibration line */}
-              {calibrating && state.calibration ? (
-                <g>
-                  {state.calibration.pts.map((p, i) => (
-                    <circle key={i} cx={p.x} cy={p.y} r={6} fill="#0F83FF" />
-                  ))}
-                  {state.calibration.pts.length === 1 && cursor ? (
-                    <line
-                      x1={state.calibration.pts[0].x}
-                      y1={state.calibration.pts[0].y}
-                      x2={cursor.x}
-                      y2={cursor.y}
-                      stroke="#0F83FF"
-                      strokeWidth={2.5}
-                    />
-                  ) : null}
-                </g>
-              ) : null}
-
-              {/* Crosshair guides */}
-              {cursor && (drawing || calibrating) ? (
-                <g pointerEvents="none">
-                  <line x1={VIEWBOX.x} y1={cursor.y} x2={VIEWBOX.w} y2={cursor.y} stroke="#1A1A1A" strokeOpacity={0.18} strokeWidth={1} />
-                  <line x1={cursor.x} y1={VIEWBOX.y} x2={cursor.x} y2={VIEWBOX.h} stroke="#1A1A1A" strokeOpacity={0.18} strokeWidth={1} />
-                </g>
-              ) : null}
-            </svg>
-
-            {/* Amber prompt pill. The app uses white text on #FFBB00 (~1.9:1);
-                near-black here gives ~11:1 without changing the colour. */}
-            {(drawing || calibrating) && !state.pending ? (
-              <div className="pointer-events-none absolute bottom-3 left-3 flex flex-wrap items-center gap-2">
-                <span className="rounded-lg bg-[#FFBB00] px-3 py-1.5 font-mono text-xs font-bold text-ink shadow-sm">
-                  {prompt}
-                </span>
-                {liveValue ? (
-                  <span className="rounded-lg bg-[#FFBB00] px-3 py-1.5 font-mono text-xs font-bold text-ink shadow-sm">
-                    {liveValue}
-                  </span>
-                ) : null}
+                  </div>
+                )}
               </div>
-            ) : null}
+            </div>
           </div>
 
-          {/* Action bar */}
-          <div className="flex flex-wrap items-center gap-2 border-t border-black/10 bg-white px-3 py-3 sm:px-4">
-            {state.pending ? (
-              <>
-                <span className="text-sm font-semibold text-ink">
-                  {state.pending.name}
-                </span>
-                <div className="flex items-center gap-1.5">
-                  {PALETTE.map((c, i) => (
-                    <button
-                      key={c}
-                      type="button"
-                      aria-label={`Colour ${i + 1}`}
-                      aria-pressed={pendingColorIdx === i}
-                      onClick={() => dispatch({ type: "PATCH_PENDING", patch: { color: c } })}
-                      className={`h-5 w-5 rounded-full transition ${
-                        pendingColorIdx === i ? "ring-2 ring-ink ring-offset-1" : ""
-                      }`}
-                      style={{ backgroundColor: c }}
-                    />
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "SAVE_PENDING" })}
-                  className="btn-primary ml-auto h-10 gap-1.5 px-5"
-                >
-                  <Check size={16} /> Save
-                </button>
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "DISCARD_PENDING" })}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-[10px] border border-black/10 px-4 text-sm font-semibold text-ink transition hover:border-black/25"
-                >
-                  <X size={16} /> Cancel
-                </button>
-              </>
-            ) : drawing || calibrating ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
-                  disabled={!coarse && !cursor}
-                  className={`inline-flex h-11 items-center justify-center gap-2 rounded-[10px] px-5 text-sm font-semibold text-white transition disabled:opacity-40 ${
-                    closeable ? "bg-[#00B51E]" : "bg-brand hover:bg-brand-hover"
-                  }`}
-                >
-                  {/* The plus icon disappears when the label becomes Close Shape */}
-                  {!closeable ? <Plus size={16} /> : null}
-                  {actionLabel}
-                </button>
-
-                {draftPoints.length >= (state.draft?.kind === "count" ? 1 : 2) ? (
-                  <button
-                    type="button"
-                    onClick={() => dispatch({ type: "FINISH_OPEN" })}
-                    className="inline-flex h-11 items-center rounded-[10px] border border-black/10 px-4 text-sm font-semibold text-ink transition hover:border-black/25"
-                  >
-                    Done
-                  </button>
-                ) : null}
-
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "SELECT_TOOL", tool: null })}
-                  className="ml-auto inline-flex h-11 items-center rounded-[10px] px-3 text-sm font-semibold text-ink/55 transition hover:text-ink"
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <p className="text-sm text-ink/60">
-                Pick <strong className="font-semibold text-ink">Area</strong> and trace{" "}
-                <strong className="font-semibold text-ink">STORAGE 102</strong> — it is the
-                one room left unmeasured.
-              </p>
-            )}
+          <div className="lg:order-1">
+            <ResultsPanel state={state} dispatch={dispatch} highlight={hasMeasured} />
           </div>
         </div>
-
-        <ResultsPanel state={state} dispatch={dispatch} />
       </div>
-
-      {state.sheet === "scale" ? (
-        <ScaleSheet state={state} dispatch={dispatch} />
-      ) : null}
 
       <p aria-live="polite" className="sr-only">
         {state.announcement}

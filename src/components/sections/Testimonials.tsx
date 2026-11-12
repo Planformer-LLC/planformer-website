@@ -1,45 +1,64 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import { Star } from "lucide-react";
+import { platforms } from "@/data/siteData";
 
-const testimonials = [
+const appStoreUrl = platforms.find((p) => p.id === "ios")!.href;
+
+/**
+ * Real App Store reviews only, quoted as written (trimmed where marked with
+ * an ellipsis). Names are the reviewers' App Store nicknames. Do not add
+ * invented or paraphrased reviews here.
+ */
+const reviews = [
   {
+    title: "Game Changer",
     quote:
-      "We moved two estimators from spreadsheets to Planformer in one week. Now our quantity takeoffs are consistent and bid prep is noticeably faster across every project.",
-    name: "Michael Rivera",
-    company: "StoneBridge Construction",
-    avatar: "/assets/images/home/reviews/reviewer-1.jpg",
+      "I have been using PlanSwift on my laptop for years, but I always wished there was a mobile solution I could use on the go… Planformer has completely solved that problem.",
+    name: "A J 84",
   },
   {
+    title: "Great estimating app with excellent customer service",
     quote:
-      "The interface is clean, the measurements are reliable, and our site managers can review estimates without extra training. It saves us several hours each week.",
-    name: "Aisha Khan",
-    company: "NorthStone Builders",
-    avatar: "/assets/images/home/reviews/reviewer-2.jpg",
+      "Planformer is a very good app for creating estimates based on construction plans. It has plenty of useful tools, but what stands out the most is the customer service, which is very responsive…",
+    name: "LitoAlejandro",
   },
   {
-    quote:
-      "What I like most is fewer revisions after handoff. Our project managers and estimators stay aligned, and we submit cleaner bids with better confidence.",
-    name: "Ethan Collins",
-    company: "PrimeLine Contractors",
-    avatar: "/assets/images/home/reviews/reviewer-3.jpg",
+    title: "Great app",
+    quote: "Very user friendly and helpful for projects. Highly recommend!",
+    name: "Harel M.",
   },
 ];
 
-const ROTATE_MS = 6000;
+const ROTATE_MS = 7000;
 
+function Stars({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <span className="flex gap-0.5 text-[#F5A524]" aria-label="5 out of 5 stars">
+      {Array.from({ length: 5 }, (_, i) => (
+        <Star key={i} className={`${className} fill-current`} aria-hidden="true" />
+      ))}
+    </span>
+  );
+}
+
+/**
+ * One review at a time, rotating. Every review stays in the HTML (stacked in
+ * one grid cell and cross-faded), so all of them are indexable and the box
+ * keeps the height of the longest one: no layout jump between slides.
+ */
 export default function Testimonials() {
   const [active, setActive] = useState(0);
   const timer = useRef<number | null>(null);
+  const paused = useRef(false);
 
   const restart = useCallback(() => {
     if (timer.current) window.clearInterval(timer.current);
-    timer.current = window.setInterval(
-      () => setActive((i) => (i + 1) % testimonials.length),
-      ROTATE_MS,
-    );
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    timer.current = window.setInterval(() => {
+      if (!paused.current) setActive((i) => (i + 1) % reviews.length);
+    }, ROTATE_MS);
   }, []);
 
   useEffect(() => {
@@ -49,54 +68,77 @@ export default function Testimonials() {
     };
   }, [restart]);
 
-  const t = testimonials[active];
-
   return (
-    <section aria-label="Customer reviews" className="bg-[#F5F7FA] py-16 md:py-[88px]">
-      <div className="mx-auto max-w-[1000px] px-4 sm:px-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-10"
+    <section
+      aria-labelledby="reviews-title"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-10 md:py-12"
+      style={{
+        backgroundImage:
+          "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
+      <div className="mx-auto max-w-[720px] px-4 sm:px-6">
+        <div className="flex flex-col items-center gap-2.5 text-center">
+          <h2
+            id="reviews-title"
+            className="text-[26px] leading-[1.1] font-extrabold tracking-[-0.03em] text-ink md:text-[32px]"
           >
-            <Image
-              src={t.avatar}
-              alt={t.name}
-              width={160}
-              height={200}
-              className="hidden h-[200px] w-[160px] shrink-0 rounded-2xl object-cover sm:block"
-            />
-            <figure className="flex min-w-0 flex-col gap-[18px]">
-              <blockquote className="text-[19px] leading-normal font-semibold tracking-[-0.01em] text-ink md:text-2xl">
-                “{t.quote}”
+            What contractors say on the App Store.
+          </h2>
+          <a
+            href={appStoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[#D7E2F1] bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:border-brand"
+          >
+            <Stars />
+            5.0 on the App Store
+          </a>
+        </div>
+
+        <div
+          className="mt-5 grid rounded-2xl border border-[#D7E2F1] bg-white px-5 py-4 md:px-7 md:py-5"
+          onMouseEnter={() => (paused.current = true)}
+          onMouseLeave={() => (paused.current = false)}
+          onFocus={() => (paused.current = true)}
+          onBlur={() => (paused.current = false)}
+        >
+          {reviews.map((r, i) => (
+            <figure
+              key={r.name}
+              aria-hidden={i !== active}
+              className={`flex flex-col gap-2 transition-opacity duration-500 [grid-area:1/1] ${
+                i === active ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            >
+              <Stars />
+              <blockquote className="text-base leading-relaxed text-ink md:text-[17px]">
+                &ldquo;{r.quote}&rdquo;
               </blockquote>
-              <figcaption className="text-[15px] text-[#4A5260]">
-                <strong className="text-ink">{t.name}</strong> · {t.company}
+              <figcaption className="mt-auto text-sm text-[#4A5260]">
+                <strong className="text-ink">{r.name}</strong>, App Store review
               </figcaption>
             </figure>
-          </motion.div>
-        </AnimatePresence>
+          ))}
+        </div>
 
-        <div className="mt-6 flex justify-center gap-1 sm:justify-start sm:pl-[200px]">
-          {testimonials.map((r, idx) => (
+        <div className="mt-2 flex justify-center gap-1">
+          {reviews.map((r, i) => (
             <button
               key={r.name}
               type="button"
               onClick={() => {
-                setActive(idx);
+                setActive(i);
                 restart();
               }}
-              aria-label={`Show review ${idx + 1} of ${testimonials.length}`}
-              aria-current={idx === active}
+              aria-label={`Show review ${i + 1} of ${reviews.length}`}
+              aria-current={i === active}
               className="grid h-8 w-8 place-items-center"
             >
               <span
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  idx === active ? "w-6 bg-brand" : "w-2.5 bg-black/15 hover:bg-black/30"
+                  i === active ? "w-6 bg-brand" : "w-2.5 bg-black/15 hover:bg-black/30"
                 }`}
               />
             </button>
