@@ -15,7 +15,7 @@ const reviews = [
   {
     title: "Game Changer",
     quote:
-      "I have been using PlanSwift on my laptop for years, but I always wished there was a mobile solution I could use on the go—especially on my iPhone and, more importantly, my iPad. Planformer has completely solved that problem. Now I can easily measure and double-check my takeoffs directly from my phone or iPad while visiting project sites.",
+      "I have been using PlanSwift on my laptop for years, but I always wished there was a mobile solution I could use on the go… Planformer has completely solved that problem.",
     name: "A J 84",
   },
   {
@@ -71,7 +71,7 @@ export default function Testimonials() {
   return (
     <section
       aria-labelledby="reviews-title"
-      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-10 md:py-12"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
@@ -79,7 +79,7 @@ export default function Testimonials() {
       }}
     >
       <div className="mx-auto max-w-[720px] px-4 sm:px-6">
-        <div className="flex flex-col items-center gap-3 text-center">
+        <div className="flex flex-col items-center gap-2.5 text-center">
           <h2
             id="reviews-title"
             className="text-[26px] leading-[1.1] font-extrabold tracking-[-0.03em] text-ink md:text-[32px]"
@@ -98,7 +98,7 @@ export default function Testimonials() {
         </div>
 
         <div
-          className="mt-6 grid rounded-2xl border border-[#D7E2F1] bg-white p-5 md:px-8 md:py-6"
+          className="mt-5 grid rounded-2xl border border-[#D7E2F1] bg-white px-5 py-4 md:px-7 md:py-5"
           onMouseEnter={() => (paused.current = true)}
           onMouseLeave={() => (paused.current = false)}
           onFocus={() => (paused.current = true)}
@@ -108,12 +108,11 @@ export default function Testimonials() {
             <figure
               key={r.name}
               aria-hidden={i !== active}
-              className={`flex flex-col gap-2.5 transition-opacity duration-500 [grid-area:1/1] ${
+              className={`flex flex-col gap-2 transition-opacity duration-500 [grid-area:1/1] ${
                 i === active ? "opacity-100" : "pointer-events-none opacity-0"
               }`}
             >
               <Stars />
-              <p className="font-extrabold text-ink">{r.title}</p>
               <blockquote className="text-base leading-relaxed text-ink md:text-[17px]">
                 &ldquo;{r.quote}&rdquo;
               </blockquote>
