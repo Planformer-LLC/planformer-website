@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { leadOffer } from "@/data/siteData";
 import { adminDb } from "@/lib/firebase-admin";
+import { sendLeadAlert } from "@/lib/leadEmail";
 
 export const runtime = "nodejs";
 
@@ -110,10 +111,14 @@ export async function POST(request: NextRequest) {
     userAgent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
   };
 
+  let isNew = true;
+  let submissions = 1;
   try {
     const ref = adminDb.collection(COLLECTION).doc(e164);
     await adminDb.runTransaction(async (tx) => {
       const snap = await tx.get(ref);
+      isNew = !snap.exists;
+      submissions = ((snap.get("submissions") as number | undefined) ?? 0) + 1;
       tx.set(
         ref,
         {
@@ -138,7 +143,18 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  await forwardLead({ ...lead, submittedAt: new Date().toISOString() });
+  await Promise.all([
+    forwardLead({ ...lead, submittedAt: new Date().toISOString() }),
+    sendLeadAlert({
+      phone: e164,
+      offer: lead.offer,
+      promoCode: lead.promoCode,
+      page: lead.page,
+      utm: lead.utm,
+      isNew,
+      submissions,
+    }),
+  ]);
 
   return NextResponse.json({ ok: true, promoCode: leadOffer.promoCode });
 }
