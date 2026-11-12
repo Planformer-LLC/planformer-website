@@ -1,7 +1,7 @@
 import { RotateCcw, Undo2 } from "lucide-react";
 import PlanBackdrop from "./PlanBackdrop";
-import { GuideSteps, KindIcon, ScaleSlot, TOOL_LABELS, WindowBar } from "./DemoChrome";
-import { TARGET_ROOM, VIEWBOX } from "@/lib/takeoff/planFixture";
+import { KindIcon, ScaleSlot, TOOL_LABELS, WindowBar } from "./DemoChrome";
+import { VIEWBOX } from "@/lib/takeoff/planFixture";
 
 /**
  * Non-interactive stand-in shown before the island hydrates.
@@ -12,15 +12,7 @@ import { TARGET_ROOM, VIEWBOX } from "@/lib/takeoff/planFixture";
  */
 export default function TakeoffSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
-      <GuideSteps
-        steps={[
-          { label: "Scale is set", status: "done" },
-          { label: `Trace the ${TARGET_ROOM.name}`, status: "now" },
-          { label: "Try Linear or Count", status: "next" },
-        ]}
-      />
-
+    <div>
       <div className="overflow-hidden rounded-2xl border border-[#D7E2F1] bg-white shadow-[0_18px_50px_rgba(15,60,120,0.10)]">
         <WindowBar
           actions={
@@ -46,17 +38,6 @@ export default function TakeoffSkeleton() {
                 role="img"
               >
                 <PlanBackdrop />
-                <rect
-                  x={TARGET_ROOM.x0 + 6}
-                  y={TARGET_ROOM.y0 + 6}
-                  width={TARGET_ROOM.x1 - TARGET_ROOM.x0 - 12}
-                  height={TARGET_ROOM.y1 - TARGET_ROOM.y0 - 12}
-                  fill="#0F83FF"
-                  fillOpacity={0.06}
-                  stroke="#0F83FF"
-                  strokeWidth={3}
-                  strokeDasharray="14 10"
-                />
               </svg>
 
               <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1 rounded-2xl border border-[#E3E6EB] bg-white p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.10)]">
@@ -65,7 +46,7 @@ export default function TakeoffSkeleton() {
                   <span
                     key={t.id}
                     className={`flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] font-semibold ${
-                      t.id === "area" ? "bg-[#EAF3FF] text-brand ring-2 ring-brand/40" : "text-ink"
+                      "text-ink"
                     }`}
                   >
                     <KindIcon kind={t.id} className="h-5 w-5" />

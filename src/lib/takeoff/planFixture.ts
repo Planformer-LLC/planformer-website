@@ -22,7 +22,6 @@ export const ENVELOPE = { x0: 230, y0: 120, x1: 950, y1: 660 };
 
 export interface Room {
   id: string;
-  /** How the room reads in copy, e.g. "Trace the living room". */
   name: string;
   x0: number;
   y0: number;
@@ -38,9 +37,6 @@ export const ROOMS: Room[] = [
   { id: "living", name: "living room", x0: 230, y0: 354, x1: 626, y1: 660 },
   { id: "kitchen", name: "kitchen", x0: 626, y0: 354, x1: 950, y1: 660 },
 ];
-
-/** The room the guided first step asks visitors to trace (22 ft x 17 ft). */
-export const TARGET_ROOM = ROOMS.find((r) => r.id === "living")!;
 
 export function ringOf(r: { x0: number; y0: number; x1: number; y1: number }): Pt[] {
   return [

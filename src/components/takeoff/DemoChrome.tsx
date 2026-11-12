@@ -8,36 +8,6 @@ import type { MeasurementKind } from "@/lib/takeoff/types";
  * interactive demo (client), so the swap on hydration is seamless. No hooks.
  */
 
-export type StepStatus = "done" | "now" | "next";
-
-export function GuideSteps({ steps }: { steps: { label: string; status: StepStatus }[] }) {
-  return (
-    <ol className="flex flex-wrap gap-2" aria-label="Try it in three steps">
-      {steps.map((s, i) => (
-        <li
-          key={s.label}
-          aria-current={s.status === "now" ? "step" : undefined}
-          className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold transition-colors ${
-            s.status === "done"
-              ? "border-[#BFE5CB] bg-[#EFFAF2] text-[#1B7F3A]"
-              : s.status === "now"
-                ? "border-brand bg-brand text-white"
-                : "border-[#D7E2F1] bg-white text-[#5F6670]"
-          }`}
-        >
-          {s.status === "done" ? (
-            <Check className="h-4 w-4" aria-hidden="true" />
-          ) : (
-            <span aria-hidden="true">{i + 1}</span>
-          )}
-          {s.label}
-          {s.status === "done" ? <span className="sr-only">(done)</span> : null}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 /** The app's top bar, reduced to what reads at a glance. */
 export function WindowBar({ actions }: { actions?: ReactNode }) {
   return (

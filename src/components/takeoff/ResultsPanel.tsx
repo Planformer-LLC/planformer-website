@@ -22,7 +22,7 @@ export default function ResultsPanel({
 }: {
   state: TakeoffState;
   dispatch: Dispatch<Action>;
-  /** True once the visitor has traced an area: the sign-up nudge steps up. */
+  /** True once the visitor has measured something: the sign-up nudge steps up. */
   highlight: boolean;
 }) {
   const { measurements, scale } = state;

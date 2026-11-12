@@ -12,7 +12,7 @@ import { Plus, Undo2, RotateCcw, Check, X } from "lucide-react";
 import PlanBackdrop from "./PlanBackdrop";
 import MeasurementLayer from "./MeasurementLayer";
 import ResultsPanel from "./ResultsPanel";
-import { GuideSteps, KindIcon, ScaleSlot, TOOL_LABELS, WindowBar, type StepStatus } from "./DemoChrome";
+import { KindIcon, ScaleSlot, TOOL_LABELS, WindowBar } from "./DemoChrome";
 import { reducer, initialState, canClose } from "@/lib/takeoff/reducer";
 import type { Pt } from "@/lib/takeoff/types";
 import {
@@ -32,7 +32,6 @@ import {
   CLOSE_PX_COARSE,
   CLOSE_PX_FINE,
   PALETTE,
-  TARGET_ROOM,
   VIEWBOX,
 } from "@/lib/takeoff/planFixture";
 
@@ -228,53 +227,28 @@ export default function TakeoffDemo() {
   );
 
   /* --------------------------------------------------------------- */
-  /* Guide                                                            */
+  /* Hints: only how to use the active tool, never what to measure    */
   /* --------------------------------------------------------------- */
 
-  // Any area the visitor saves completes the guided step, not only an exact
-  // trace of the target room: the point is to feel the tool, not pass a test.
-  const tracedOwnArea = state.measurements.some((m) => m.kind === "area");
-  const triedOtherTool = state.measurements.some((m) => m.kind !== "area");
-  const steps: { label: string; status: StepStatus }[] = [
-    { label: "Scale is set", status: "done" },
-    { label: `Trace the ${TARGET_ROOM.name}`, status: tracedOwnArea ? "done" : "now" },
-    {
-      label: "Try Linear or Count",
-      status: triedOtherTool ? "done" : tracedOwnArea ? "now" : "next",
-    },
-  ];
-
-  const tap = coarse ? "Tap" : "Click";
-  const coach = (() => {
-    if (state.pending) return "Save it to add it to your estimate.";
-    if (state.draft?.kind === "area") {
-      if (coarse) {
-        return closeable
-          ? "Tap Close shape to finish."
-          : "Drag the crosshair to a corner, then tap Add point.";
-      }
-      if (draftPoints.length === 0) return `Click the first corner of the ${TARGET_ROOM.name}.`;
-      return closeable
-        ? "Click the first point again to close the shape."
-        : "Click the next corner.";
+  const hasMeasured = state.measurements.length > 0;
+  const hint = (() => {
+    if (state.pending) return "Save it to add it to your list.";
+    const kind = state.draft?.kind;
+    if (kind === "area") {
+      if (coarse) return closeable ? "Tap Close shape to finish." : "Drag to a corner, then tap Add point.";
+      return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
     }
-    if (state.draft?.kind === "linear") {
-      return coarse
-        ? "Drag to a point and tap Add point. Tap Done when finished."
-        : "Click along a wall. Click Done when finished.";
+    if (kind === "linear") {
+      return coarse ? "Drag to a point, tap Add point. Tap Done to finish." : "Click along the line. Click Done to finish.";
     }
-    if (state.draft?.kind === "count") {
+    if (kind === "count") {
       return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
     }
-    if (!tracedOwnArea) return `${tap} Area below, then trace the ${TARGET_ROOM.name}'s four corners.`;
-    if (!triedOtherTool) return "Nice. Now try Linear along a wall, or Count the windows.";
     return null;
   })();
 
   return (
-    <div className="flex flex-col gap-4">
-      <GuideSteps steps={steps} />
-
+    <div>
       <div className="overflow-hidden rounded-2xl border border-[#D7E2F1] bg-white shadow-[0_18px_50px_rgba(15,60,120,0.10)]">
         <WindowBar
           actions={
@@ -326,22 +300,6 @@ export default function TakeoffDemo() {
                 onKeyDown={onKeyDown}
               >
                 <PlanBackdrop />
-
-                {/* The room the guide asks for, until the visitor has traced an area */}
-                {!tracedOwnArea ? (
-                  <rect
-                    x={TARGET_ROOM.x0 + 6}
-                    y={TARGET_ROOM.y0 + 6}
-                    width={TARGET_ROOM.x1 - TARGET_ROOM.x0 - 12}
-                    height={TARGET_ROOM.y1 - TARGET_ROOM.y0 - 12}
-                    fill="#0F83FF"
-                    fillOpacity={0.06}
-                    stroke="#0F83FF"
-                    strokeWidth={3}
-                    strokeDasharray="14 10"
-                    pointerEvents="none"
-                  />
-                ) : null}
 
                 <MeasurementLayer
                   measurements={state.measurements}
@@ -436,13 +394,13 @@ export default function TakeoffDemo() {
                 </span>
               ) : null}
 
-              {/* Coach tip */}
-              {coach ? (
+              {/* How to use the active tool */}
+              {hint ? (
                 <p
                   className="pointer-events-none absolute top-2 right-2 max-w-[min(230px,55%)] rounded-xl bg-surface-dark px-3 py-2 text-xs leading-snug font-semibold text-white shadow-lg sm:top-3 sm:right-3 sm:px-3.5 sm:py-2.5 sm:text-[13px]"
                   aria-live="polite"
                 >
-                  {coach}
+                  {hint}
                 </p>
               ) : null}
 
@@ -517,7 +475,6 @@ export default function TakeoffDemo() {
                     <ScaleSlot />
                     {TOOL_LABELS.map((t) => {
                       const active = state.tool === t.id;
-                      const nudge = t.id === "area" && !tracedOwnArea;
                       return (
                         <button
                           key={t.id}
@@ -526,10 +483,8 @@ export default function TakeoffDemo() {
                           aria-checked={active}
                           onClick={() => dispatch({ type: "SELECT_TOOL", tool: active ? null : t.id })}
                           className={`flex min-w-[58px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
-                            active || nudge
-                              ? "bg-[#EAF3FF] text-brand"
-                              : "text-ink hover:bg-[#F5F7FA]"
-                          } ${nudge && !active ? "ring-2 ring-brand/40" : ""}`}
+                            active ? "bg-[#EAF3FF] text-brand" : "text-ink hover:bg-[#F5F7FA]"
+                          }`}
                         >
                           <KindIcon kind={t.id} className="h-5 w-5" />
                           {t.label}
@@ -543,7 +498,7 @@ export default function TakeoffDemo() {
           </div>
 
           <div className="lg:order-1">
-            <ResultsPanel state={state} dispatch={dispatch} highlight={tracedOwnArea} />
+            <ResultsPanel state={state} dispatch={dispatch} highlight={hasMeasured} />
           </div>
         </div>
       </div>
