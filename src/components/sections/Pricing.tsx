@@ -25,7 +25,7 @@ export default function Pricing() {
       id="pricing"
       aria-labelledby="pricing-title"
       // The header is fixed; keep the heading clear of it on /#pricing.
-      className="scroll-mt-24 border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      className="scroll-mt-24 border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
@@ -45,7 +45,7 @@ export default function Pricing() {
           </p>
         </div>
 
-        <div className="mx-auto mt-12 grid max-w-[944px] gap-6 md:grid-cols-2">
+        <div className="mx-auto mt-10 grid max-w-[944px] gap-6 md:grid-cols-2">
           {pricingPlans.map((plan) => {
             const featured = "badge" in plan;
             return (

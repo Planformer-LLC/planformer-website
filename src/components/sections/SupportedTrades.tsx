@@ -80,7 +80,7 @@ export default function SupportedTrades() {
     <section
       aria-labelledby="trades-title"
       // Same plan-paper grid as the sections above.
-      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-12 md:py-16"
       style={{
         backgroundImage:
           "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
@@ -101,7 +101,7 @@ export default function SupportedTrades() {
           </p>
         </div>
 
-        <ul className="mt-10 divide-y divide-[#EEF1F5] rounded-2xl border border-[#D7E2F1] bg-white px-4 sm:px-6 md:mt-12">
+        <ul className="mt-8 divide-y divide-[#EEF1F5] rounded-2xl border border-[#D7E2F1] bg-white px-4 sm:px-6 md:mt-10">
           {trades.map((t) => (
             <li
               key={t.title}
