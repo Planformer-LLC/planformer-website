@@ -222,6 +222,9 @@ export default function TakeoffDemo() {
     wasCloseable.current = closeable;
   }, [closeable]);
 
+  // The colour the reducer will give this shape when it closes (finalize()).
+  const draftColor = PALETTE[state.measurements.length % PALETTE.length];
+
   const pendingColorIdx = PALETTE.indexOf(
     (state.pending?.color ?? PALETTE[0]) as (typeof PALETTE)[number],
   );
@@ -323,9 +326,9 @@ export default function TakeoffDemo() {
                           preview.map((p, i) => `${i === 0 ? "M" : "L"}${p.x},${p.y}`).join(" ") +
                           (state.draft.kind === "area" && preview.length > 2 ? " Z" : "")
                         }
-                        fill={state.draft.kind === "area" ? PALETTE[0] : "none"}
+                        fill={state.draft.kind === "area" ? draftColor : "none"}
                         fillOpacity={state.draft.kind === "area" ? 0.3 : 0}
-                        stroke={PALETTE[0]}
+                        stroke={draftColor}
                         strokeWidth={2}
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -349,7 +352,7 @@ export default function TakeoffDemo() {
                             dominantBaseline="middle"
                             fontSize={13}
                             fontWeight={600}
-                            fill={PALETTE[0]}
+                            fill={draftColor}
                             paintOrder="stroke"
                             stroke="#fff"
                             strokeWidth={3}
@@ -361,7 +364,7 @@ export default function TakeoffDemo() {
                       })}
 
                     {draftPoints.map((p, i) => (
-                      <circle key={i} cx={p.x} cy={p.y} r={5} fill={PALETTE[0]} />
+                      <circle key={i} cx={p.x} cy={p.y} r={5} fill={draftColor} />
                     ))}
 
                     {/* Close affordance: translucent green disc on vertex 1,
