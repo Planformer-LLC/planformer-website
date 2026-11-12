@@ -1,10 +1,11 @@
 import { memo } from "react";
-import { CORRIDOR, ENVELOPE, ROOMS, UNITS_PER_FT } from "@/lib/takeoff/planFixture";
-import { polygonAreaUnits, unitsToSqFeet } from "@/lib/takeoff/geometry";
-import { ringOf, FT_PER_UNIT_DEFAULT } from "@/lib/takeoff/planFixture";
+import { ENVELOPE, ROOMS, SCALE_LABEL, UNITS_PER_FT } from "@/lib/takeoff/planFixture";
+
+/** Whole feet as a plan dimension, e.g. 24 -> 24'-0". */
+const ftLabel = (units: number) => `${Math.round(units / UNITS_PER_FT)}′-0″`;
 
 /**
- * The sample plan linework.
+ * The sample house plan linework.
  *
  * No hooks and no "use client", so this same component renders inside the
  * static skeleton (server) and the interactive island (client). That is what
@@ -13,29 +14,16 @@ import { ringOf, FT_PER_UNIT_DEFAULT } from "@/lib/takeoff/planFixture";
 function PlanBackdrop() {
   return (
     <g aria-hidden="true">
-      {/* Dotted page background behind the sheet */}
+      {/* Canvas behind the sheet, the same dotted grey the app uses */}
       <defs>
         <pattern id="pf-dots" width={28} height={28} patternUnits="userSpaceOnUse">
-          <circle cx={2} cy={2} r={2} fill="rgba(0,0,0,0.08)" />
+          <circle cx={2} cy={2} r={2} fill="rgba(0,0,0,0.07)" />
         </pattern>
-        <filter id="pf-sheet-shadow" x="-5%" y="-5%" width="110%" height="115%">
-          <feDropShadow dx="0" dy="6" stdDeviation="10" floodColor="#000" floodOpacity="0.10" />
-        </filter>
       </defs>
 
-      <rect x={0} y={0} width={1120} height={760} fill="#F3F3F2" />
-      <rect x={0} y={0} width={1120} height={760} fill="url(#pf-dots)" />
-
-      {/* The "sheet" the plan is printed on */}
-      <rect
-        x={28}
-        y={28}
-        width={1064}
-        height={704}
-        rx={4}
-        fill="#FFFFFF"
-        filter="url(#pf-sheet-shadow)"
-      />
+      <rect x={0} y={0} width={1120} height={850} fill="#F4F5F7" />
+      <rect x={0} y={0} width={1120} height={850} fill="url(#pf-dots)" />
+      <rect x={24} y={20} width={1072} height={734} fill="#FFFFFF" stroke="#E3E6EB" />
 
       {/* Rooms */}
       {ROOMS.map((r) => (
@@ -51,18 +39,7 @@ function PlanBackdrop() {
         />
       ))}
 
-      {/* Corridor */}
-      <rect
-        x={CORRIDOR.x0}
-        y={CORRIDOR.y0}
-        width={CORRIDOR.x1 - CORRIDOR.x0}
-        height={CORRIDOR.y1 - CORRIDOR.y0}
-        fill="none"
-        stroke="#1A1A1A"
-        strokeWidth={3}
-      />
-
-      {/* Exterior envelope, heavier */}
+      {/* Exterior walls, heavier */}
       <rect
         x={ENVELOPE.x0}
         y={ENVELOPE.y0}
@@ -70,82 +47,60 @@ function PlanBackdrop() {
         height={ENVELOPE.y1 - ENVELOPE.y0}
         fill="none"
         stroke="#1A1A1A"
-        strokeWidth={6}
+        strokeWidth={7}
       />
 
-      {/* Room labels with their true area */}
+      {/* Door swings, so it reads as a house plan rather than boxes */}
+      <g fill="none" stroke="#9AA0A6" strokeWidth={1.5}>
+        <path d="M200 390 A 48 48 0 0 1 248 342" />
+        <path d="M352 390 A 40 40 0 0 0 392 430" />
+        <path d="M520 390 A 48 48 0 0 0 568 438" />
+      </g>
+      <g stroke="#FFFFFF" strokeWidth={5}>
+        <line x1={200} y1={390} x2={248} y2={390} />
+        <line x1={352} y1={390} x2={392} y2={390} />
+        <line x1={520} y1={390} x2={568} y2={390} />
+        {/* Garage door opening */}
+        <line x1={720} y1={678} x2={976} y2={678} />
+      </g>
+      <line x1={720} y1={678} x2={976} y2={678} stroke="#9AA0A6" strokeWidth={2} strokeDasharray="10 6" />
+
+      {/* Room names and sizes */}
       {ROOMS.map((r) => {
         const cx = (r.x0 + r.x1) / 2;
         const cy = (r.y0 + r.y1) / 2;
-        const sqft = unitsToSqFeet(polygonAreaUnits(ringOf(r)), FT_PER_UNIT_DEFAULT);
         return (
           <g key={`${r.id}-label`}>
-            <text
-              x={cx}
-              y={cy}
-              textAnchor="middle"
-              fontSize={19}
-              fontWeight={700}
-              letterSpacing="0.06em"
-              fill="#9AA0A6"
-            >
+            <text x={cx} y={cy} textAnchor="middle" fontSize={19} fontWeight={700} letterSpacing="0.06em" fill="#8A9099">
               {r.label}
             </text>
-            <text
-              x={cx}
-              y={cy + 22}
-              textAnchor="middle"
-              fontSize={14}
-              fontWeight={500}
-              fill="#BFC4C9"
-            >
-              {sqft.toFixed(0)} SQ FT
+            <text x={cx} y={cy + 22} textAnchor="middle" fontSize={14} fontWeight={500} fill="#B3B8BF">
+              {ftLabel(r.x1 - r.x0)} x {ftLabel(r.y1 - r.y0)}
             </text>
           </g>
         );
       })}
 
-      {/* Corridor label */}
-      <text
-        x={(CORRIDOR.x0 + CORRIDOR.x1) / 2}
-        y={(CORRIDOR.y0 + CORRIDOR.y1) / 2 + 5}
-        textAnchor="middle"
-        fontSize={14}
-        fontWeight={600}
-        letterSpacing="0.08em"
-        fill="#BFC4C9"
-      >
-        CORRIDOR
-      </text>
-
-      {/* Dimension string along the south wall — the calibration target */}
+      {/* Overall dimension along the bottom */}
       <g stroke="#9AA0A6" strokeWidth={1.5}>
-        <line x1={ENVELOPE.x0} y1={724} x2={ENVELOPE.x1} y2={724} />
-        <line x1={ENVELOPE.x0} y1={716} x2={ENVELOPE.x0} y2={732} />
-        <line x1={ENVELOPE.x1} y1={716} x2={ENVELOPE.x1} y2={732} />
+        <line x1={ENVELOPE.x0} y1={712} x2={ENVELOPE.x1} y2={712} />
+        <line x1={ENVELOPE.x0} y1={702} x2={ENVELOPE.x0} y2={722} />
+        <line x1={ENVELOPE.x1} y1={702} x2={ENVELOPE.x1} y2={722} />
       </g>
-      <text
-        x={(ENVELOPE.x0 + ENVELOPE.x1) / 2}
-        y={719}
-        textAnchor="middle"
-        fontSize={13}
-        fontWeight={600}
-        fill="#9AA0A6"
-      >
-        {(ENVELOPE.x1 - ENVELOPE.x0) / UNITS_PER_FT}&#8217;-0&#8221;
+      <text x={(ENVELOPE.x0 + ENVELOPE.x1) / 2} y={734} textAnchor="middle" fontSize={13} fontWeight={600} fill="#8A9099">
+        {ftLabel(ENVELOPE.x1 - ENVELOPE.x0)}
       </text>
 
       {/* Title block */}
-      <text x={1060} y={50} textAnchor="end" fontSize={12} fontWeight={700} letterSpacing="0.1em" fill="#9AA0A6">
-        PLANFORMER SAMPLE — LEVEL 1
+      <text x={ENVELOPE.x1} y={52} textAnchor="end" fontSize={12} fontWeight={700} letterSpacing="0.1em" fill="#8A9099">
+        SAMPLE HOUSE, FLOOR PLAN
       </text>
-      <text x={60} y={50} fontSize={12} fontWeight={600} letterSpacing="0.06em" fill="#BFC4C9">
-        SCALE: 1/8&#8221; = 1&#8217;-0&#8221;
+      <text x={ENVELOPE.x0} y={52} fontSize={12} fontWeight={600} letterSpacing="0.06em" fill="#B3B8BF">
+        SCALE: {SCALE_LABEL}
       </text>
     </g>
   );
 }
 
-// Static: ~70 SVG nodes that never change. Without memo they were rebuilt
-// on every cursor update and every scroll-triggered re-render.
+// Static: never changes. Without memo it was rebuilt on every cursor update.
 export default memo(PlanBackdrop);

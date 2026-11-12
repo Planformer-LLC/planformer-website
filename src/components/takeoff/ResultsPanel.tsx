@@ -4,142 +4,132 @@ import type { Dispatch } from "react";
 import { useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { siteData } from "@/data/siteData";
-import type { Action, TakeoffState } from "@/lib/takeoff/types";
-import { formatMoney, formatRowValue, quantityOf, unitLabel } from "@/lib/takeoff/format";
+import type { Action, Measurement, TakeoffState } from "@/lib/takeoff/types";
+import { formatFeet, formatMoney, formatRowValue, quantityOf } from "@/lib/takeoff/format";
+import { perimeterUnits, unitsToFeet } from "@/lib/takeoff/geometry";
 import { RATE_DEFAULTS } from "@/lib/takeoff/planFixture";
+import { KindIcon } from "./DemoChrome";
+
+/** Main value and, for areas, the perimeter underneath, as the app lists them. */
+export function rowLines(m: Measurement, ftPerUnit: number): [string, string | null] {
+  const main = formatRowValue(m, ftPerUnit);
+  if (m.kind !== "area") return [main, null];
+  return [main, formatFeet(unitsToFeet(perimeterUnits(m.points), ftPerUnit))];
+}
+
+export function estimateTotal(measurements: Measurement[], ftPerUnit: number) {
+  return measurements.reduce((sum, m) => {
+    const r = RATE_DEFAULTS[m.kind];
+    // Markup is per-unit currency, not a percentage (CalculatorItem in the app).
+    return sum + (r.cost + r.markup) * quantityOf(m, ftPerUnit);
+  }, 0);
+}
 
 export default function ResultsPanel({
   state,
   dispatch,
+  highlight,
 }: {
   state: TakeoffState;
   dispatch: Dispatch<Action>;
+  /** True once the visitor has added their own measurement. */
+  highlight: boolean;
 }) {
   const { measurements, scale } = state;
-
-  const rows = useMemo(
-    () =>
-      measurements.map((m) => {
-        const rate = RATE_DEFAULTS[m.kind];
-        const qty = quantityOf(m, scale.ftPerUnit);
-        // Markup is per-unit currency, not a percentage.
-        return {
-          m,
-          item: rate.item,
-          qty,
-          unit: unitLabel(m.kind),
-          cost: rate.cost,
-          markup: rate.markup,
-          total: (rate.cost + rate.markup) * qty,
-        };
-      }),
+  const total = useMemo(
+    () => estimateTotal(measurements, scale.ftPerUnit),
     [measurements, scale.ftPerUnit],
   );
 
-  const total = useMemo(() => rows.reduce((a, r) => a + r.total, 0), [rows]);
-
   return (
-    <aside className="flex flex-col border-t border-black/10 lg:border-t-0 lg:border-l">
-      {/* Measurements */}
-      <div className="flex items-center justify-between px-4 pt-4 pb-2">
-        <h3 className="text-xs font-bold tracking-[0.14em] text-ink/50 uppercase">
-          Measurements
-        </h3>
+    <aside className="flex flex-col border-t border-[#EEF1F5] bg-white lg:border-t-0 lg:border-r">
+      <div className="flex items-center justify-between px-4 pt-4 pb-1">
+        <h3 className="text-[15px] font-semibold text-ink">Measurements</h3>
         {measurements.length > 0 ? (
           <button
             type="button"
             onClick={() => dispatch({ type: "CLEAR_ALL" })}
-            className="text-xs font-semibold text-ink/45 transition hover:text-[#E11D48]"
+            className="text-xs font-semibold text-ink/50 transition hover:text-[#E11D48]"
           >
-            Clear All
+            Clear all
           </button>
         ) : null}
       </div>
 
       {measurements.length === 0 ? (
-        <p className="px-4 pb-4 text-sm text-ink/45">No items yet</p>
+        <p className="px-4 py-3 text-sm text-ink/50">
+          Nothing measured yet. Pick a tool below the plan.
+        </p>
       ) : (
-        <ul role="list" className="max-h-[240px] overflow-y-auto px-2 pb-2">
-          {measurements.map((m) => (
-            <li key={m.id}>
-              <div
-                className={`flex items-center gap-2.5 rounded-lg px-2 py-2 transition ${
-                  state.selectedId === m.id ? "bg-[#F5F5F5]" : "hover:bg-[#FAFAFA]"
-                }`}
-              >
-                <span
-                  className="h-4 w-4 shrink-0 rounded"
-                  style={{ backgroundColor: m.color }}
-                  aria-hidden="true"
-                />
-                <button
-                  type="button"
-                  onClick={() => dispatch({ type: "SELECT", id: m.id })}
-                  className="min-w-0 flex-1 text-left"
+        <ul role="list" className="max-h-[300px] overflow-y-auto px-2 pb-2">
+          {measurements.map((m) => {
+            const [main, sub] = rowLines(m, scale.ftPerUnit);
+            return (
+              <li key={m.id}>
+                <div
+                  className={`group grid grid-cols-[20px_minmax(0,1fr)_auto_14px_28px] items-center gap-2 rounded-lg px-2 py-2 transition ${
+                    state.selectedId === m.id ? "bg-[#F2F7FF]" : "hover:bg-[#F7F8FA]"
+                  }`}
                 >
-                  <span className="block truncate text-sm font-semibold text-ink">
+                  <KindIcon kind={m.kind} className="h-[18px] w-[18px] text-[#4A5260]" />
+                  <button
+                    type="button"
+                    onClick={() => dispatch({ type: "SELECT", id: m.id })}
+                    className="truncate text-left text-sm font-semibold text-ink"
+                  >
                     {m.name}
+                  </button>
+                  <span className="text-right text-[13px] leading-tight text-ink">
+                    {main}
+                    {sub ? <span className="block text-xs text-[#5F6670]">{sub}</span> : null}
                   </span>
-                  <span className="block text-xs text-[#A3A3A3]">
-                    {formatRowValue(m, scale.ftPerUnit)}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  aria-label={`Delete ${m.name}`}
-                  onClick={() => dispatch({ type: "DELETE", id: m.id })}
-                  className="shrink-0 rounded p-1.5 text-ink/30 transition hover:bg-white hover:text-[#E11D48]"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            </li>
-          ))}
+                  <span
+                    className="h-3.5 w-3.5 rounded-full"
+                    style={{ backgroundColor: m.color }}
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    aria-label={`Delete ${m.name}`}
+                    onClick={() => dispatch({ type: "DELETE", id: m.id })}
+                    className="flex h-7 w-7 items-center justify-center rounded text-ink/30 transition hover:bg-white hover:text-[#E11D48]"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
 
-      {/* Estimate */}
-      <div className="mt-auto border-t border-black/10 px-4 pt-4 pb-4">
-        <h3 className="text-xs font-bold tracking-[0.14em] text-ink/50 uppercase">
-          Estimate
-        </h3>
-
-        {rows.length === 0 ? (
-          <p className="mt-2 text-sm text-ink/45">No items yet</p>
-        ) : (
-          <div className="mt-3 space-y-2">
-            {rows.map((r) => (
-              <div key={r.m.id} className="flex items-baseline justify-between gap-2 text-xs">
-                <span className="min-w-0 flex-1 truncate text-ink/70">{r.item}</span>
-                <span className="shrink-0 font-mono text-ink/45">
-                  {r.qty.toFixed(r.m.kind === "count" ? 0 : 2)} {r.unit}
-                </span>
-                <span className="shrink-0 font-mono font-semibold text-ink">
-                  {formatMoney(r.total)}
-                </span>
-              </div>
-            ))}
+      <div className="mt-auto border-t border-[#EEF1F5] px-4 pt-4 pb-4">
+        <div
+          className={`rounded-xl px-4 py-3 transition-colors duration-500 ${
+            highlight ? "bg-[#EAF3FF] ring-2 ring-brand" : "bg-[#F5F7FA]"
+          }`}
+          aria-live="polite"
+        >
+          <div className="flex items-baseline justify-between text-sm text-[#5F6670]">
+            <span>Estimate</span>
+            <span>
+              {measurements.length} {measurements.length === 1 ? "item" : "items"}
+            </span>
           </div>
-        )}
-
-        <div className="mt-4 rounded-xl bg-surface-dark px-4 py-3.5">
-          <p className="text-[10px] font-bold tracking-[0.14em] text-white/50 uppercase">
-            Total Price
-          </p>
-          <p className="mt-1 font-mono text-2xl font-extrabold text-white">
+          <p className="mt-1 text-[28px] leading-tight font-extrabold text-ink tabular-nums">
             {formatMoney(total)}
           </p>
-          <p className="mt-1 text-[11px] text-white/45">
-            $4.25/SF · $3.10/LF · $88 each, plus markup
+          <p className="mt-1 text-xs text-[#5F6670]">
+            Sample prices: flooring $5.75/sq ft, trim $4.25/ft, outlets $110 each.
           </p>
         </div>
 
-        <a href={siteData.signupHref} className="btn-primary mt-3 h-11 w-full text-sm">
+        <a
+          href={siteData.signupHref}
+          className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-[10px] bg-brand text-sm font-bold text-white transition hover:bg-brand-hover"
+        >
           Do this on your own plans
         </a>
-        <p className="mt-2 text-center text-[11px] leading-snug text-ink/45">
-          Your real plans are PDFs. Planformer handles those too.
-        </p>
       </div>
     </aside>
   );

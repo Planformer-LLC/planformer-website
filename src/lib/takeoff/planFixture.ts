@@ -2,21 +2,23 @@ import type { Measurement, MeasurementKind, Pt } from "./types";
 import type { ViewBox } from "./geometry";
 
 /**
- * Synthetic sample plan.
+ * Synthetic sample plan: a single-storey house.
  *
- * Authored so 1 plan unit = 0.125 ft, i.e. 1 ft = 8 units. That is exactly the
- * 1/8" = 1'-0" architectural scale (one printed inch = 8 ft = 64 units), and
- * it makes every room a whole number of feet — so the seeded quantities are
- * round and read as real takeoff numbers.
+ * Authored so 1 plan unit = 1/16 ft, i.e. 1 ft = 16 units. That is exactly the
+ * 1/4" = 1'-0" architectural scale (one printed inch = 4 ft = 64 units), and
+ * it makes every room a whole number of feet, so the seeded quantities are
+ * round and read as real takeoff numbers. The scale is preset in the demo.
  */
-export const FT_PER_UNIT_DEFAULT = 0.125;
+export const FT_PER_UNIT_DEFAULT = 0.0625;
 export const UNITS_PER_DRAWING_INCH = 64;
 export const UNITS_PER_FT = 1 / FT_PER_UNIT_DEFAULT;
+export const SCALE_LABEL = "1/4\u2033 = 1\u2032-0\u2033";
 
-export const VIEWBOX: ViewBox = { x: 0, y: 0, w: 1120, h: 760 };
+// Taller than the drawing so the floating toolbar sits below the plan, not on it.
+export const VIEWBOX: ViewBox = { x: 0, y: 0, w: 1120, h: 850 };
 
-/** Building envelope: 125 ft x 80 ft = 10,000 SQ FT. */
-export const ENVELOPE = { x0: 60, y0: 60, x1: 1060, y1: 700 };
+/** Building envelope: 60 ft x 38 ft. */
+export const ENVELOPE = { x0: 80, y0: 70, x1: 1040, y1: 678 };
 
 export interface Room {
   id: string;
@@ -27,16 +29,19 @@ export interface Room {
   y1: number;
 }
 
+/** Front row 20 ft deep, back row 18 ft deep. */
 export const ROOMS: Room[] = [
-  { id: "office-101", label: "OFFICE 101", x0: 60, y0: 60, x1: 380, y1: 300 },
-  { id: "storage-102", label: "STORAGE 102", x0: 380, y0: 60, x1: 620, y1: 300 },
-  { id: "break-104", label: "BREAK 104", x0: 620, y0: 60, x1: 820, y1: 300 },
-  { id: "mech-105", label: "MECH 105", x0: 820, y0: 60, x1: 1060, y1: 300 },
-  { id: "warehouse-103", label: "WAREHOUSE 103", x0: 60, y0: 360, x1: 1060, y1: 700 },
+  { id: "living", label: "LIVING", x0: 80, y0: 70, x1: 464, y1: 390 },
+  { id: "kitchen", label: "KITCHEN", x0: 464, y0: 70, x1: 752, y1: 390 },
+  { id: "dining", label: "DINING", x0: 752, y0: 70, x1: 1040, y1: 390 },
+  { id: "bed-1", label: "BED 1", x0: 80, y0: 390, x1: 304, y1: 678 },
+  { id: "bath", label: "BATH", x0: 304, y0: 390, x1: 432, y1: 678 },
+  { id: "bed-2", label: "BED 2", x0: 432, y0: 390, x1: 656, y1: 678 },
+  { id: "garage", label: "GARAGE", x0: 656, y0: 390, x1: 1040, y1: 678 },
 ];
 
-/** Corridor separating the office row from the warehouse. */
-export const CORRIDOR = { x0: 60, y0: 300, x1: 1060, y1: 360 };
+/** The room the guided first step asks visitors to trace (24 ft x 18 ft). */
+export const TARGET_ROOM = ROOMS.find((r) => r.id === "garage")!;
 
 export function ringOf(r: { x0: number; y0: number; x1: number; y1: number }): Pt[] {
   return [
@@ -47,7 +52,7 @@ export function ringOf(r: { x0: number; y0: number; x1: number; y1: number }): P
   ];
 }
 
-/** Green first — the colour the app's own tutorial captures standardise on. */
+/** Colours for new shapes, close to the app's own fills. */
 export const PALETTE = [
   "#00B51E",
   "#0F83FF",
@@ -63,50 +68,50 @@ export const MIN_VERTEX_SEPARATION_UNITS = 3;
 export const MAX_VERTICES = 200;
 export const MAX_MEASUREMENTS = 60;
 
-/** STORAGE 102 is left deliberately unmeasured — it is the "trace me" target. */
+const room = (id: string) => ROOMS.find((r) => r.id === id)!;
+
+/** The garage is left deliberately unmeasured: it is the "trace me" target. */
 export const SEED_MEASUREMENTS: Measurement[] = [
   {
     id: "seed-area-1",
     kind: "area",
-    name: "Area 1",
-    points: ringOf(ROOMS[0]),
-    color: PALETTE[0],
+    name: "Living room",
+    points: ringOf(room("living")),
+    color: "#E8D44D",
     fillPct: 50,
     borderPx: 2,
   },
   {
     id: "seed-area-2",
     kind: "area",
-    name: "Area 2",
-    points: ringOf(ROOMS[4]),
-    color: PALETTE[1],
-    // The largest shape uses the lightest legal fill step so it does not
-    // visually swamp the plan.
-    fillPct: 25,
+    name: "Kitchen",
+    points: ringOf(room("kitchen")),
+    color: "#3FD6DD",
+    fillPct: 50,
     borderPx: 2,
   },
   {
     id: "seed-linear-1",
     kind: "linear",
-    name: "Linear 1",
+    name: "Exterior wall",
     points: [
-      { x: 60, y: 300 },
-      { x: 1060, y: 300 },
-      { x: 1060, y: 700 },
+      { x: 80, y: 678 },
+      { x: 80, y: 70 },
+      { x: 1040, y: 70 },
     ],
-    color: PALETTE[2],
+    color: "#1A1A1A",
     fillPct: 50,
     borderPx: 2,
   },
   {
     id: "seed-count-1",
     kind: "count",
-    name: "Count 1",
+    name: "Outlets",
     points: [
-      { x: 200, y: 450 }, { x: 440, y: 450 }, { x: 680, y: 450 }, { x: 920, y: 450 },
-      { x: 200, y: 610 }, { x: 440, y: 610 }, { x: 680, y: 610 }, { x: 920, y: 610 },
+      { x: 140, y: 130 }, { x: 400, y: 130 }, { x: 520, y: 330 },
+      { x: 700, y: 130 }, { x: 150, y: 620 }, { x: 590, y: 620 },
     ],
-    color: PALETTE[3],
+    color: "#7B2FBE",
     fillPct: 50,
     borderPx: 2,
   },
@@ -127,7 +132,7 @@ export const RATE_DEFAULTS: Record<
   MeasurementKind,
   { item: string; cost: number; markup: number }
 > = {
-  area: { item: "Floor finish — LVT", cost: 4.25, markup: 1.5 },
-  linear: { item: "Wall base & trim", cost: 3.1, markup: 1.15 },
-  count: { item: "Recessed fixture", cost: 88, markup: 22 },
+  area: { item: "Flooring, LVP", cost: 4.25, markup: 1.5 },
+  linear: { item: "Base trim", cost: 3.1, markup: 1.15 },
+  count: { item: "Outlet, installed", cost: 88, markup: 22 },
 };
