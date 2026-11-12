@@ -33,7 +33,16 @@ const steps = [
  */
 export default function HowItWorks() {
   return (
-    <section aria-labelledby="how-title" className="bg-white py-20 md:py-28">
+    <section
+      aria-labelledby="how-title"
+      // Same plan-paper grid as the hero, so the top of the page reads as one sheet.
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-20 md:py-28"
+      style={{
+        backgroundImage:
+          "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
       <div className="mx-auto flex max-w-[1200px] flex-col gap-14 px-4 sm:px-6 md:gap-16">
         <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
           <div className="flex max-w-[480px] flex-col gap-4">
