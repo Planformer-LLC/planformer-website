@@ -61,7 +61,7 @@ export const pricingPlans = [
  */
 export const leadOffer = {
   enabled: true,
-  promoCode: "YEARLY20",
+  promoCode: "YEARLY15",
   percentOff: 15,
   // Seconds on a page before the popup opens (exit intent can open it sooner).
   delaySeconds: 8,
