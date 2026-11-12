@@ -33,7 +33,7 @@ const devices = [
 
 const stats = [
   { value: `${siteData.rating.value.toFixed(1)}★`, label: "App Store rating" },
-  { value: "150%", label: "Quicker takeoffs" },
+  { value: "2.5×", label: "Faster takeoffs" },
   { value: "Offline", label: "No signal needed" },
 ];
 
