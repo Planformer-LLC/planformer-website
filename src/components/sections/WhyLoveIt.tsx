@@ -1,62 +1,56 @@
-import Image from "next/image";
-import { MonitorSmartphone, Smile, Target, Zap } from "lucide-react";
-import Reveal from "@/components/animations/Reveal";
+import { Calculator, Library, Share2 } from "lucide-react";
 
-const items = [
-  { title: "Speed", desc: "Cut takeoff time by up to 90 percent.", Icon: Zap },
-  { title: "Precision", desc: "Fewer manual errors and less repeat work.", Icon: Target },
+/**
+ * Three features the rest of the page doesn't already cover. Kept to what the
+ * app does today (saved items, the concrete/asphalt volume calculator,
+ * sharing the marked-up takeoff).
+ */
+const features = [
   {
-    title: "Multiplatform",
-    desc: "The same takeoff in the office and in the field.",
-    Icon: MonitorSmartphone,
+    title: "Saved items library",
+    desc: "Set up your materials and labor once, with your own costs. Drop them into any project instead of typing them in again.",
+    Icon: Library,
   },
-  { title: "Easy to use", desc: "Easy to pick up, even on the first try.", Icon: Smile },
+  {
+    title: "Volume calculator",
+    desc: "Turn a slab or driveway area into cubic yards of concrete or asphalt. 1,200 sq ft at 4 in is 14.8 cu yd.",
+    Icon: Calculator,
+  },
+  {
+    title: "Share the takeoff",
+    desc: "Send the marked-up plans to your client or crew, so everyone sees exactly what was measured.",
+    Icon: Share2,
+  },
 ];
 
 export default function WhyLoveIt() {
   return (
-    <section aria-labelledby="why-title" className="bg-white py-20 md:py-24">
-      <div className="mx-auto grid max-w-[1200px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14">
-        <Reveal from="left" duration={0.7} className="min-w-0">
-          <Image
-            src="/assets/images/home/whyloveit.webp"
-            alt="Three contractors in hard hats reviewing a floor plan together"
-            width={796}
-            height={804}
-            sizes="(max-width: 1024px) 100vw, 520px"
-            className="mx-auto aspect-[796/804] h-auto w-full max-w-[520px] rounded-[18px] object-cover lg:mx-0"
-          />
-        </Reveal>
+    <section
+      aria-labelledby="why-title"
+      className="border-t border-[#E3ECF8] bg-[#F6F9FE] py-16 md:py-20"
+      style={{
+        backgroundImage:
+          "linear-gradient(#E3ECF8 1px, transparent 1px), linear-gradient(90deg, #E3ECF8 1px, transparent 1px)",
+        backgroundSize: "28px 28px",
+      }}
+    >
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
+        <h2
+          id="why-title"
+          className="max-w-[620px] text-[32px] leading-[1.06] font-extrabold tracking-[-0.03em] text-ink md:text-[46px]"
+        >
+          The tools you&apos;ll use on every job.
+        </h2>
 
-        <div className="flex min-w-0 flex-col gap-7">
-          <Reveal from="right">
-            <div className="flex flex-col gap-3">
-              <p className="text-[13px] font-bold tracking-[0.12em] text-[#0062CC] uppercase">
-                Why Planformer
-              </p>
-              <h2
-                id="why-title"
-                className="text-[28px] leading-[1.12] font-extrabold tracking-[-0.03em] text-ink md:text-[42px]"
-              >
-                Why contractors and estimators love it.
-              </h2>
-            </div>
-          </Reveal>
-
-          <ul className="grid gap-6 sm:grid-cols-2">
-            {items.map(({ title, desc, Icon }, i) => (
-              <li key={title}>
-                <Reveal from="right" delay={i * 0.06}>
-                  <div className="flex flex-col gap-2">
-                    <Icon className="h-7 w-7 text-brand" strokeWidth={2} aria-hidden="true" />
-                    <h3 className="text-lg font-bold text-ink">{title}</h3>
-                    <p className="text-[15px] leading-relaxed text-[#4A5260]">{desc}</p>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="mt-10 grid gap-8 md:grid-cols-3 md:gap-10">
+          {features.map(({ title, desc, Icon }) => (
+            <li key={title} className="border-t-2 border-brand pt-5">
+              <Icon className="h-7 w-7 text-brand" aria-hidden="true" />
+              <h3 className="mt-3 text-xl font-extrabold text-ink">{title}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-[#4A5260]">{desc}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
