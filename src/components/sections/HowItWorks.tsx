@@ -15,7 +15,7 @@ const steps = [
   },
   {
     title: "Measure and price",
-    desc: "Trace areas, walls and counts. Attach your material and labor assemblies, and the costs add up as you go.",
+    desc: "Trace areas, walls and counts, then drop in items from your saved library. Save an item once with your own costs and it's ready on every project.",
   },
   {
     title: "Export the estimate",
