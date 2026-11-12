@@ -245,6 +245,11 @@ export default function LeadOfferPopup() {
                       )}
                     </span>
                   </button>
+                  <p className="mt-2 text-[12px] leading-snug text-ink/55">
+                    Valid only at Stripe checkout when you subscribe on the web
+                    at app.planformer.com. Not valid for App Store or Google Play
+                    subscriptions.
+                  </p>
                   <p className="mt-4 text-[15px] text-ink/80">
                     We&apos;ll text you shortly to book your 1-on-1 training session.
                   </p>
@@ -263,6 +268,9 @@ export default function LeadOfferPopup() {
                       <span>
                         Yearly for <strong className="text-ink">{discountedLabel}</strong>{" "}
                         <span className="text-ink/50 line-through">{yearly.price}</span> in your first year
+                        <span className="block text-[12px] text-ink/55">
+                          Web checkout (Stripe) only
+                        </span>
                       </span>
                     </li>
                     <li className="flex gap-2.5">

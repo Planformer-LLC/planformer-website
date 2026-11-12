@@ -64,7 +64,7 @@ export const leadOffer = {
   promoCode: "YEARLY20",
   percentOff: 20,
   // Seconds on a page before the popup opens (exit intent can open it sooner).
-  delaySeconds: 10,
+  delaySeconds: 8,
   // Days to stay quiet after someone closes it without submitting.
   snoozeDays: 7,
   // Pages where the popup never shows.
