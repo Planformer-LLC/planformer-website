@@ -162,7 +162,9 @@ function MeasurementLayer({
   ftPerUnit,
   selectedId,
   onSelect,
-  showBadges = true,
+  // Off by default: the app's plan view shows shapes only, with the numbers
+  // in the side list.
+  showBadges = false,
 }: {
   measurements: readonly Measurement[];
   ftPerUnit: number;
