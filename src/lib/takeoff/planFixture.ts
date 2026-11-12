@@ -2,23 +2,23 @@ import type { Measurement, MeasurementKind, Pt } from "./types";
 import type { ViewBox } from "./geometry";
 
 /**
- * Synthetic sample plan: a single-storey house.
+ * Synthetic sample plan: a detached garage with a studio and bath.
  *
- * Authored so 1 plan unit = 1/16 ft, i.e. 1 ft = 16 units. That is exactly the
- * 1/4" = 1'-0" architectural scale (one printed inch = 4 ft = 64 units), and
- * it makes every room a whole number of feet, so the seeded quantities are
- * round and read as real takeoff numbers. The scale is preset in the demo.
+ * Authored so 1 plan unit = 1/20 ft, i.e. 1 ft = 20 units. At the
+ * 1/4" = 1'-0" architectural scale one printed inch is 4 ft = 80 units.
+ * Every room is a whole number of feet, so the seeded quantities are round
+ * and read as real takeoff numbers. The scale is preset in the demo.
  */
-export const FT_PER_UNIT_DEFAULT = 0.0625;
-export const UNITS_PER_DRAWING_INCH = 64;
+export const FT_PER_UNIT_DEFAULT = 0.05;
+export const UNITS_PER_DRAWING_INCH = 80;
 export const UNITS_PER_FT = 1 / FT_PER_UNIT_DEFAULT;
 export const SCALE_LABEL = "1/4\u2033 = 1\u2032-0\u2033";
 
 // Taller than the drawing so the floating toolbar sits below the plan, not on it.
 export const VIEWBOX: ViewBox = { x: 0, y: 0, w: 1120, h: 850 };
 
-/** Building envelope: 60 ft x 38 ft. */
-export const ENVELOPE = { x0: 80, y0: 70, x1: 1040, y1: 678 };
+/** Building envelope on the wall centrelines: 40 ft x 24 ft. */
+export const ENVELOPE = { x0: 200, y0: 150, x1: 1000, y1: 630 };
 
 export interface Room {
   id: string;
@@ -29,18 +29,13 @@ export interface Room {
   y1: number;
 }
 
-/** Front row 20 ft deep, back row 18 ft deep. */
 export const ROOMS: Room[] = [
-  { id: "living", label: "LIVING", x0: 80, y0: 70, x1: 464, y1: 390 },
-  { id: "kitchen", label: "KITCHEN", x0: 464, y0: 70, x1: 752, y1: 390 },
-  { id: "dining", label: "DINING", x0: 752, y0: 70, x1: 1040, y1: 390 },
-  { id: "bed-1", label: "BED 1", x0: 80, y0: 390, x1: 304, y1: 678 },
-  { id: "bath", label: "BATH", x0: 304, y0: 390, x1: 432, y1: 678 },
-  { id: "bed-2", label: "BED 2", x0: 432, y0: 390, x1: 656, y1: 678 },
-  { id: "garage", label: "GARAGE", x0: 656, y0: 390, x1: 1040, y1: 678 },
+  { id: "garage", label: "GARAGE", x0: 200, y0: 150, x1: 680, y1: 630 },
+  { id: "studio", label: "STUDIO", x0: 680, y0: 150, x1: 1000, y1: 470 },
+  { id: "bath", label: "BATH", x0: 680, y0: 470, x1: 1000, y1: 630 },
 ];
 
-/** The room the guided first step asks visitors to trace (24 ft x 18 ft). */
+/** The room the guided first step asks visitors to trace (24 ft x 24 ft). */
 export const TARGET_ROOM = ROOMS.find((r) => r.id === "garage")!;
 
 export function ringOf(r: { x0: number; y0: number; x1: number; y1: number }): Pt[] {
@@ -75,8 +70,8 @@ export const SEED_MEASUREMENTS: Measurement[] = [
   {
     id: "seed-area-1",
     kind: "area",
-    name: "Living room",
-    points: ringOf(room("living")),
+    name: "Studio",
+    points: ringOf(room("studio")),
     color: "#E8D44D",
     fillPct: 50,
     borderPx: 2,
@@ -84,8 +79,8 @@ export const SEED_MEASUREMENTS: Measurement[] = [
   {
     id: "seed-area-2",
     kind: "area",
-    name: "Kitchen",
-    points: ringOf(room("kitchen")),
+    name: "Bath",
+    points: ringOf(room("bath")),
     color: "#3FD6DD",
     fillPct: 50,
     borderPx: 2,
@@ -95,11 +90,11 @@ export const SEED_MEASUREMENTS: Measurement[] = [
     kind: "linear",
     name: "Exterior wall",
     points: [
-      { x: 80, y: 678 },
-      { x: 80, y: 70 },
-      { x: 1040, y: 70 },
+      { x: 200, y: 150 },
+      { x: 1000, y: 150 },
+      { x: 1000, y: 630 },
     ],
-    color: "#1A1A1A",
+    color: "#FF7A1A",
     fillPct: 50,
     borderPx: 2,
   },
@@ -108,8 +103,8 @@ export const SEED_MEASUREMENTS: Measurement[] = [
     kind: "count",
     name: "Outlets",
     points: [
-      { x: 140, y: 130 }, { x: 400, y: 130 }, { x: 520, y: 330 },
-      { x: 700, y: 130 }, { x: 150, y: 620 }, { x: 590, y: 620 },
+      { x: 730, y: 200 }, { x: 870, y: 200 }, { x: 975, y: 440 },
+      { x: 250, y: 200 }, { x: 630, y: 580 },
     ],
     color: "#7B2FBE",
     fillPct: 50,
