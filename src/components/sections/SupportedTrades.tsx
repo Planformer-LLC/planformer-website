@@ -30,12 +30,22 @@ const trades: { title: string; photo: string | null; items: [Tool, string][] }[]
     ],
   },
   {
-    title: "Drywall and painting",
+    // No photo yet: shows an icon tile until one is added.
+    title: "Drywall",
     photo: null,
     items: [
       ["linear", "Wall length times height"],
       ["area", "Ceilings"],
       ["count", "Doors and windows"],
+    ],
+  },
+  {
+    title: "Painting",
+    photo: "/assets/images/home/painting.webp",
+    items: [
+      ["area", "Walls and ceilings"],
+      ["linear", "Trim and baseboards"],
+      ["count", "Doors"],
     ],
   },
   {
