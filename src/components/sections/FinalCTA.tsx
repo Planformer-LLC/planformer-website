@@ -7,7 +7,9 @@ function PlanCorner() {
   return (
     <svg
       viewBox="0 0 420 340"
-      className="pointer-events-none absolute right-0 bottom-0 h-[78%] w-auto opacity-90 md:h-full"
+      // Phones: a small corner under the buttons, in the flow so it never sits
+      // behind the text. Desktop: anchored to the right of the panel.
+      className="pointer-events-none mt-2 ml-auto block h-40 w-auto opacity-90 md:absolute md:right-0 md:bottom-0 md:mt-0 md:h-full"
       aria-hidden="true"
     >
       <g fill="none" stroke="#FFFFFF">
@@ -69,8 +71,7 @@ export default function FinalCTA() {
           backgroundSize: "28px 28px",
         }}
       >
-        <PlanCorner />
-        <div className="relative flex max-w-[560px] flex-col gap-[18px] px-6 pt-10 pb-44 sm:pb-52 md:py-16 md:pl-14">
+        <div className="relative flex max-w-[560px] flex-col gap-[18px] px-6 pt-10 md:py-16 md:pl-14">
           <h2
             id="cta-title"
             className="text-[32px] leading-[1.06] font-extrabold tracking-[-0.03em] md:text-[46px]"
@@ -96,6 +97,7 @@ export default function FinalCTA() {
             </Link>
           </div>
         </div>
+        <PlanCorner />
       </div>
     </section>
   );
