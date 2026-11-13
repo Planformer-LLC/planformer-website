@@ -57,6 +57,12 @@ const PLAN_CORNERS: Pt[] = (() => {
   return out;
 })();
 
+/**
+ * Phones work like the app: the crosshair is locked to the middle of the
+ * view and the plan, zoomed in by this much, is dragged underneath it.
+ */
+const MOBILE_ZOOM = 2.5;
+
 /** On-screen snap reach, in CSS px: bigger for fingers. */
 const SNAP_PX_FINE = 12;
 const SNAP_PX_COARSE = 24;
@@ -75,6 +81,8 @@ export default function TakeoffDemo() {
     computeViewport({ left: 0, top: 0, width: 1120, height: 760 }, VIEWBOX),
   );
   const [pxPerUnit, setPxPerUnit] = useState(1);
+  // Height / width of the plan box (square on touch screens).
+  const [boxRatio, setBoxRatio] = useState(VIEWBOX.h / VIEWBOX.w);
   const [coarse, setCoarse] = useState(false);
   const downRef = useRef<{ x: number; y: number; t: number } | null>(null);
 
@@ -106,6 +114,7 @@ export default function TakeoffDemo() {
       setPxPerUnit((prev) =>
         prev === vpRef.current.pxPerUnit ? prev : vpRef.current.pxPerUnit,
       );
+      if (r.width > 0) setBoxRatio(r.height / r.width);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -115,12 +124,26 @@ export default function TakeoffDemo() {
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-  const closePx = coarse ? CLOSE_PX_COARSE : CLOSE_PX_FINE;
-  const closeThresholdUnits = closePx / (pxPerUnit || 1);
-
-  const closeable = canClose(state.draft, cursor, closeThresholdUnits);
   const drawing = state.phase === "drawing" || state.phase === "armed";
   const calibrating = state.phase === "calibrating";
+  // Touch + a tool on: fixed centre crosshair over a zoomed, draggable plan.
+  const mobile = coarse && drawing;
+  const zoom = mobile ? MOBILE_ZOOM : 1;
+  const mobileRef = useRef(false);
+  useEffect(() => {
+    mobileRef.current = mobile;
+  }, [mobile]);
+
+  // Plan point at the middle of the zoomed view (phones only). The aim,
+  // `cursor`, is this point snapped to a nearby corner.
+  const [center, setCenter] = useState<Pt>({ x: 590, y: 390 });
+  const centerRef = useRef(center);
+  const panRef = useRef<{ x: number; y: number } | null>(null);
+
+  const closePx = coarse ? CLOSE_PX_COARSE : CLOSE_PX_FINE;
+  const closeThresholdUnits = closePx / ((pxPerUnit || 1) * zoom);
+
+  const closeable = canClose(state.draft, cursor, closeThresholdUnits);
 
   /* --------------------------------------------------------------- */
   /* Pointer                                                          */
@@ -137,6 +160,25 @@ export default function TakeoffDemo() {
       // this re-rendered the whole canvas on every mouse move over the
       // section, including while merely scrolling past it.
       if (!drawing && !calibrating) return;
+
+      if (mobileRef.current) {
+        // Drag pans the plan under the fixed crosshair.
+        const last = panRef.current;
+        const el = wrapRef.current;
+        if (!last || !el) return;
+        panRef.current = { x: e.clientX, y: e.clientY };
+        const unitsPerPx = VIEWBOX.w / MOBILE_ZOOM / el.clientWidth;
+        const c = centerRef.current;
+        const next = {
+          x: Math.min(VIEWBOX.w, Math.max(0, c.x - (e.clientX - last.x) * unitsPerPx)),
+          y: Math.min(VIEWBOX.h, Math.max(0, c.y - (e.clientY - last.y) * unitsPerPx)),
+        };
+        centerRef.current = next;
+        setCenter(next);
+        cursorRef.current = snapRef.current(next);
+        setCursor(cursorRef.current);
+        return;
+      }
 
       clientRef.current = { x: e.clientX, y: e.clientY };
       const el = wrapRef.current;
@@ -162,7 +204,9 @@ export default function TakeoffDemo() {
   /** Snap to the nearest wall corner or existing point within reach. */
   const snap = useCallback(
     (p: Pt): Pt => {
-      const reach = (coarse ? SNAP_PX_COARSE : SNAP_PX_FINE) / (vpRef.current.pxPerUnit || 1);
+      const reach =
+        (coarse ? SNAP_PX_COARSE : SNAP_PX_FINE) /
+        ((vpRef.current.pxPerUnit || 1) * (mobileRef.current ? MOBILE_ZOOM : 1));
       let best: Pt | null = null;
       let bestD = reach;
       const consider = (q: Pt) => {
@@ -197,6 +241,13 @@ export default function TakeoffDemo() {
     snapRef.current = snap;
   }, [snap]);
 
+  useEffect(() => {
+    if (!mobile) return;
+    const aim = snapRef.current(centerRef.current);
+    cursorRef.current = aim;
+    setCursor(aim);
+  }, [mobile]);
+
   const commitAt = useCallback(
     (at: Pt) => dispatch({ type: "COMMIT_POINT", at, closeThresholdUnits }),
     [closeThresholdUnits],
@@ -204,12 +255,21 @@ export default function TakeoffDemo() {
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     downRef.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+    if (mobileRef.current) {
+      panRef.current = { x: e.clientX, y: e.clientY };
+      (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+    }
   }, []);
 
   const onPointerUp = useCallback(
     (e: React.PointerEvent) => {
       const d = downRef.current;
       downRef.current = null;
+      if (mobileRef.current) {
+        // Phones place points with the Add point button, never by tapping.
+        panRef.current = null;
+        return;
+      }
       if (!d) return;
       // A drag is a pan, not a vertex. Fingers wobble more than mice.
       if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > (coarse ? 12 : 4)) return;
@@ -314,14 +374,19 @@ export default function TakeoffDemo() {
     if (state.pending) return "Save it to add it to your list.";
     const kind = state.draft?.kind;
     if (kind === "area") {
-      if (coarse) return draftPoints.length > 2 ? "Tap the first point to close the shape." : "Tap each corner of the area.";
+      if (coarse)
+        return closeable
+          ? "Tap Close shape to finish."
+          : "Drag the plan to put the crosshair on a corner, then tap Add point.";
       return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
     }
     if (kind === "linear") {
-      return coarse ? "Tap along the line. Tap Done to finish." : "Click along the line. Click Done to finish.";
+      return coarse
+        ? "Drag the plan, tap Add point at each point. Tap Done to finish."
+        : "Click along the line. Click Done to finish.";
     }
     if (kind === "count") {
-      return coarse ? "Tap each item to count it." : "Click each item to count it.";
+      return coarse ? "Drag the plan onto each item and tap Add count." : "Click each item to count it.";
     }
     return null;
   })();
@@ -359,11 +424,16 @@ export default function TakeoffDemo() {
             <div
               ref={wrapRef}
               // Let the page scroll over the plan until a tool is on.
-              className={`relative w-full select-none ${drawing ? "touch-none" : "touch-pan-y"}`}
-              style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
+              // Square on touch screens for more room to drag; set in CSS so
+              // the static skeleton matches and nothing jumps on hydration.
+              className={`relative aspect-[1120/850] w-full select-none pointer-coarse:aspect-square ${drawing ? "touch-none" : "touch-pan-y"}`}
             >
               <svg
-                viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
+                viewBox={
+                  mobile
+                    ? `${center.x - VIEWBOX.w / zoom / 2} ${center.y - (VIEWBOX.w / zoom) * boxRatio / 2} ${VIEWBOX.w / zoom} ${(VIEWBOX.w / zoom) * boxRatio}`
+                    : `${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`
+                }
                 className="h-full w-full"
                 style={{
                   fontFamily: "inherit",
@@ -376,7 +446,7 @@ export default function TakeoffDemo() {
                 onPointerMove={onPointerMove}
                 onPointerDown={onPointerDown}
                 onPointerUp={onPointerUp}
-                onPointerLeave={() => cursor && setCursor(null)}
+                onPointerLeave={() => !mobile && cursor && setCursor(null)}
                 onKeyDown={onKeyDown}
               >
                 <PlanBackdrop />
@@ -445,7 +515,7 @@ export default function TakeoffDemo() {
 
                     {/* Close affordance: translucent green disc on vertex 1,
                         radius exactly equal to the hit zone. */}
-                    {closeable ? (
+                    {closeable || mobile ? (
                       <circle
                         cx={draftPoints[0].x}
                         cy={draftPoints[0].y}
@@ -460,9 +530,9 @@ export default function TakeoffDemo() {
                 {/* Crosshair, red as in the app */}
                 {cursor && drawing ? (
                   <g pointerEvents="none">
-                    <line x1={VIEWBOX.x} y1={cursor.y} x2={VIEWBOX.w} y2={cursor.y} stroke="#E53935" strokeWidth={1.5} />
-                    <line x1={cursor.x} y1={VIEWBOX.y} x2={cursor.x} y2={VIEWBOX.h} stroke="#E53935" strokeWidth={1.5} />
-                    <circle cx={cursor.x} cy={cursor.y} r={9} fill="none" stroke="#E53935" strokeWidth={2} />
+                    <line x1={-VIEWBOX.w} y1={cursor.y} x2={VIEWBOX.w * 2} y2={cursor.y} stroke="#E53935" strokeWidth={1.5 / zoom} />
+                    <line x1={cursor.x} y1={-VIEWBOX.h} x2={cursor.x} y2={VIEWBOX.h * 2} stroke="#E53935" strokeWidth={1.5 / zoom} />
+                    <circle cx={cursor.x} cy={cursor.y} r={9 / zoom * 1.4} fill="none" stroke="#E53935" strokeWidth={2 / zoom} />
                   </g>
                 ) : null}
               </svg>
@@ -505,7 +575,11 @@ export default function TakeoffDemo() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => dispatch({ type: "SAVE_PENDING" })}
+                      onClick={() => {
+                        dispatch({ type: "SAVE_PENDING" });
+                        // Phones go back to the full plan and the toolbar.
+                        if (coarse) dispatch({ type: "SELECT_TOOL", tool: null });
+                      }}
                       className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-hover"
                     >
                       <Check size={16} /> Save
@@ -519,7 +593,7 @@ export default function TakeoffDemo() {
                       <X size={17} />
                     </button>
                   </>
-                ) : midShape ? (
+                ) : midShape || mobile ? (
                   <>
                     {closeable ? (
                       <button
