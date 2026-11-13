@@ -223,6 +223,11 @@ export default function TakeoffDemo() {
   }, [closeable]);
 
   // The colour the reducer will give this shape when it closes (finalize()).
+  // Done/Cancel only while points are being placed. With a tool on but no
+  // points yet (e.g. right after saving), the normal toolbar stays, so the
+  // visitor can keep drawing, switch tools, or tap the tool again to stop.
+  const midShape = drawing && draftPoints.length > 0;
+
   const draftColor = PALETTE[state.measurements.length % PALETTE.length];
 
   const pendingColorIdx = PALETTE.indexOf(
@@ -443,7 +448,7 @@ export default function TakeoffDemo() {
                       <X size={17} />
                     </button>
                   </>
-                ) : drawing ? (
+                ) : midShape ? (
                   <>
                     {coarse || closeable ? (
                       <button
@@ -495,6 +500,17 @@ export default function TakeoffDemo() {
                         </button>
                       );
                     })}
+                    {/* Touch places points with a button; offer it as soon as a tool is on. */}
+                    {coarse && drawing ? (
+                      <button
+                        type="button"
+                        onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
+                        className="ml-1 inline-flex h-10 items-center justify-center gap-1.5 rounded-xl bg-brand px-3 text-sm font-semibold text-white transition hover:bg-brand-hover"
+                      >
+                        <Plus size={16} />
+                        {actionLabel}
+                      </button>
+                    ) : null}
                   </div>
                 )}
               </div>
