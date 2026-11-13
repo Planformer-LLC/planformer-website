@@ -59,9 +59,10 @@ const PLAN_CORNERS: Pt[] = (() => {
 
 /**
  * Phones work like the app: the crosshair is locked to the middle of the
- * view and the plan, zoomed in by this much, is dragged underneath it.
+ * view, one finger drags the plan underneath it, two fingers pinch-zoom.
  */
-const MOBILE_ZOOM = 2.5;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 6;
 
 /** On-screen snap reach, in CSS px: bigger for fingers. */
 const SNAP_PX_FINE = 12;
@@ -128,7 +129,9 @@ export default function TakeoffDemo() {
   const calibrating = state.phase === "calibrating";
   // Touch + a tool on: fixed centre crosshair over a zoomed, draggable plan.
   const mobile = coarse && drawing;
-  const zoom = mobile ? MOBILE_ZOOM : 1;
+  const [userZoom, setUserZoom] = useState(1);
+  const zoomRef = useRef(1);
+  const zoom = mobile ? userZoom : 1;
   const mobileRef = useRef(false);
   useEffect(() => {
     mobileRef.current = mobile;
@@ -139,6 +142,9 @@ export default function TakeoffDemo() {
   const [center, setCenter] = useState<Pt>({ x: 590, y: 390 });
   const centerRef = useRef(center);
   const panRef = useRef<{ x: number; y: number } | null>(null);
+  // Active touches, for telling a one-finger drag from a two-finger pinch.
+  const touchesRef = useRef(new Map<number, { x: number; y: number }>());
+  const pinchRef = useRef<{ d0: number; z0: number } | null>(null);
 
   const closePx = coarse ? CLOSE_PX_COARSE : CLOSE_PX_FINE;
   const closeThresholdUnits = closePx / ((pxPerUnit || 1) * zoom);
@@ -162,12 +168,31 @@ export default function TakeoffDemo() {
       if (!drawing && !calibrating) return;
 
       if (mobileRef.current) {
-        // Drag pans the plan under the fixed crosshair.
-        const last = panRef.current;
         const el = wrapRef.current;
-        if (!last || !el) return;
+        const touches = touchesRef.current;
+        if (!el || !touches.has(e.pointerId)) return;
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        // Two fingers: pinch-zoom around the fixed crosshair.
+        if (touches.size >= 2 && pinchRef.current) {
+          const [a, b] = [...touches.values()];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          const z = Math.min(
+            MAX_ZOOM,
+            Math.max(MIN_ZOOM, (pinchRef.current.z0 * d) / pinchRef.current.d0),
+          );
+          zoomRef.current = z;
+          setUserZoom(z);
+          cursorRef.current = snapRef.current(centerRef.current);
+          setCursor(cursorRef.current);
+          return;
+        }
+
+        // One finger: drag the plan under the crosshair.
+        const last = panRef.current;
+        if (!last) return;
         panRef.current = { x: e.clientX, y: e.clientY };
-        const unitsPerPx = VIEWBOX.w / MOBILE_ZOOM / el.clientWidth;
+        const unitsPerPx = VIEWBOX.w / zoomRef.current / el.clientWidth;
         const c = centerRef.current;
         const next = {
           x: Math.min(VIEWBOX.w, Math.max(0, c.x - (e.clientX - last.x) * unitsPerPx)),
@@ -206,7 +231,7 @@ export default function TakeoffDemo() {
     (p: Pt): Pt => {
       const reach =
         (coarse ? SNAP_PX_COARSE : SNAP_PX_FINE) /
-        ((vpRef.current.pxPerUnit || 1) * (mobileRef.current ? MOBILE_ZOOM : 1));
+        ((vpRef.current.pxPerUnit || 1) * (mobileRef.current ? zoomRef.current : 1));
       let best: Pt | null = null;
       let bestD = reach;
       const consider = (q: Pt) => {
@@ -253,11 +278,28 @@ export default function TakeoffDemo() {
     [closeThresholdUnits],
   );
 
+  /** A finger lifted (or the browser cancelled it): fall back to dragging. */
+  const endTouch = useCallback((id: number) => {
+    const touches = touchesRef.current;
+    touches.delete(id);
+    if (touches.size < 2) pinchRef.current = null;
+    const rest = [...touches.values()][0];
+    panRef.current = rest ? { ...rest } : null;
+  }, []);
+
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     downRef.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
     if (mobileRef.current) {
-      panRef.current = { x: e.clientX, y: e.clientY };
+      const touches = touchesRef.current;
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
       (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+      if (touches.size >= 2) {
+        const [a, b] = [...touches.values()];
+        pinchRef.current = { d0: Math.hypot(a.x - b.x, a.y - b.y) || 1, z0: zoomRef.current };
+        panRef.current = null;
+      } else {
+        panRef.current = { x: e.clientX, y: e.clientY };
+      }
     }
   }, []);
 
@@ -267,7 +309,7 @@ export default function TakeoffDemo() {
       downRef.current = null;
       if (mobileRef.current) {
         // Phones place points with the Add point button, never by tapping.
-        panRef.current = null;
+        endTouch(e.pointerId);
         return;
       }
       if (!d) return;
@@ -281,7 +323,7 @@ export default function TakeoffDemo() {
       setCursor(at);
       commitAt(at);
     },
-    [coarse, drawing, calibrating, commitAt, snap, toPlan],
+    [coarse, drawing, calibrating, commitAt, snap, toPlan, endTouch],
   );
 
   /* --------------------------------------------------------------- */
@@ -377,7 +419,7 @@ export default function TakeoffDemo() {
       if (coarse)
         return closeable
           ? "Tap Close shape to finish."
-          : "Drag the plan to put the crosshair on a corner, then tap Add point.";
+          : "Drag the plan to put the crosshair on a corner, pinch to zoom, then tap Add point.";
       return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
     }
     if (kind === "linear") {
@@ -446,6 +488,7 @@ export default function TakeoffDemo() {
                 onPointerMove={onPointerMove}
                 onPointerDown={onPointerDown}
                 onPointerUp={onPointerUp}
+                onPointerCancel={(e: React.PointerEvent) => endTouch(e.pointerId)}
                 onPointerLeave={() => !mobile && cursor && setCursor(null)}
                 onKeyDown={onKeyDown}
               >
