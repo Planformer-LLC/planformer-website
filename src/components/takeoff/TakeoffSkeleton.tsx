@@ -31,7 +31,7 @@ export default function TakeoffSkeleton() {
 
         <div className="grid lg:grid-cols-[300px_minmax(0,1fr)]">
           <div className="relative lg:order-2">
-            <div className="relative w-full" style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}>
+            <div className="relative aspect-[1120/850] w-full pointer-coarse:aspect-square">
               <svg
                 viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
                 className="h-full w-full"

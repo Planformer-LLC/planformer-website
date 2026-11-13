@@ -32,8 +32,41 @@ import {
   CLOSE_PX_COARSE,
   CLOSE_PX_FINE,
   PALETTE,
+  ROOMS,
   VIEWBOX,
 } from "@/lib/takeoff/planFixture";
+
+/** Wall corners on the sample plan: points snap to these when close. */
+const PLAN_CORNERS: Pt[] = (() => {
+  const seen = new Set<string>();
+  const out: Pt[] = [];
+  for (const r of ROOMS) {
+    for (const p of [
+      { x: r.x0, y: r.y0 },
+      { x: r.x1, y: r.y0 },
+      { x: r.x1, y: r.y1 },
+      { x: r.x0, y: r.y1 },
+    ]) {
+      const k = `${p.x},${p.y}`;
+      if (!seen.has(k)) {
+        seen.add(k);
+        out.push(p);
+      }
+    }
+  }
+  return out;
+})();
+
+/**
+ * Phones work like the app: the crosshair is locked to the middle of the
+ * view, one finger drags the plan underneath it, two fingers pinch-zoom.
+ */
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 6;
+
+/** On-screen snap reach, in CSS px: bigger for fingers. */
+const SNAP_PX_FINE = 12;
+const SNAP_PX_COARSE = 24;
 
 export default function TakeoffDemo() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -49,6 +82,8 @@ export default function TakeoffDemo() {
     computeViewport({ left: 0, top: 0, width: 1120, height: 760 }, VIEWBOX),
   );
   const [pxPerUnit, setPxPerUnit] = useState(1);
+  // Height / width of the plan box (square on touch screens).
+  const [boxRatio, setBoxRatio] = useState(VIEWBOX.h / VIEWBOX.w);
   const [coarse, setCoarse] = useState(false);
   const downRef = useRef<{ x: number; y: number; t: number } | null>(null);
 
@@ -80,6 +115,7 @@ export default function TakeoffDemo() {
       setPxPerUnit((prev) =>
         prev === vpRef.current.pxPerUnit ? prev : vpRef.current.pxPerUnit,
       );
+      if (r.width > 0) setBoxRatio(r.height / r.width);
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -89,16 +125,38 @@ export default function TakeoffDemo() {
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-  const closePx = coarse ? CLOSE_PX_COARSE : CLOSE_PX_FINE;
-  const closeThresholdUnits = closePx / (pxPerUnit || 1);
-
-  const closeable = canClose(state.draft, cursor, closeThresholdUnits);
   const drawing = state.phase === "drawing" || state.phase === "armed";
   const calibrating = state.phase === "calibrating";
+  // Touch + a tool on: fixed centre crosshair over a zoomed, draggable plan.
+  const mobile = coarse && drawing;
+  const [userZoom, setUserZoom] = useState(1);
+  const zoomRef = useRef(1);
+  const zoom = mobile ? userZoom : 1;
+  const mobileRef = useRef(false);
+  useEffect(() => {
+    mobileRef.current = mobile;
+  }, [mobile]);
+
+  // Plan point at the middle of the zoomed view (phones only). The aim,
+  // `cursor`, is this point snapped to a nearby corner.
+  const [center, setCenter] = useState<Pt>({ x: 590, y: 390 });
+  const centerRef = useRef(center);
+  const panRef = useRef<{ x: number; y: number } | null>(null);
+  // Active touches, for telling a one-finger drag from a two-finger pinch.
+  const touchesRef = useRef(new Map<number, { x: number; y: number }>());
+  const pinchRef = useRef<{ d0: number; z0: number } | null>(null);
+
+  const closePx = coarse ? CLOSE_PX_COARSE : CLOSE_PX_FINE;
+  const closeThresholdUnits = closePx / ((pxPerUnit || 1) * zoom);
+
+  const closeable = canClose(state.draft, cursor, closeThresholdUnits);
 
   /* --------------------------------------------------------------- */
   /* Pointer                                                          */
   /* --------------------------------------------------------------- */
+
+  // Latest snap() for the rAF callback, which is created before snap is.
+  const snapRef = useRef<(p: Pt) => Pt>((p) => p);
 
   const clientRef = useRef<{ x: number; y: number } | null>(null);
 
@@ -108,6 +166,44 @@ export default function TakeoffDemo() {
       // this re-rendered the whole canvas on every mouse move over the
       // section, including while merely scrolling past it.
       if (!drawing && !calibrating) return;
+
+      if (mobileRef.current) {
+        const el = wrapRef.current;
+        const touches = touchesRef.current;
+        if (!el || !touches.has(e.pointerId)) return;
+        touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        // Two fingers: pinch-zoom around the fixed crosshair.
+        if (touches.size >= 2 && pinchRef.current) {
+          const [a, b] = [...touches.values()];
+          const d = Math.hypot(a.x - b.x, a.y - b.y);
+          const z = Math.min(
+            MAX_ZOOM,
+            Math.max(MIN_ZOOM, (pinchRef.current.z0 * d) / pinchRef.current.d0),
+          );
+          zoomRef.current = z;
+          setUserZoom(z);
+          cursorRef.current = snapRef.current(centerRef.current);
+          setCursor(cursorRef.current);
+          return;
+        }
+
+        // One finger: drag the plan under the crosshair.
+        const last = panRef.current;
+        if (!last) return;
+        panRef.current = { x: e.clientX, y: e.clientY };
+        const unitsPerPx = VIEWBOX.w / zoomRef.current / el.clientWidth;
+        const c = centerRef.current;
+        const next = {
+          x: Math.min(VIEWBOX.w, Math.max(0, c.x - (e.clientX - last.x) * unitsPerPx)),
+          y: Math.min(VIEWBOX.h, Math.max(0, c.y - (e.clientY - last.y) * unitsPerPx)),
+        };
+        centerRef.current = next;
+        setCenter(next);
+        cursorRef.current = snapRef.current(next);
+        setCursor(cursorRef.current);
+        return;
+      }
 
       clientRef.current = { x: e.clientX, y: e.clientY };
       const el = wrapRef.current;
@@ -123,35 +219,111 @@ export default function TakeoffDemo() {
           { left: r.left, top: r.top, width: r.width, height: r.height },
           VIEWBOX,
         );
-        cursorRef.current = clientToPlan(c.x, c.y, vpRef.current);
+        cursorRef.current = snapRef.current(clientToPlan(c.x, c.y, vpRef.current));
         setCursor(cursorRef.current);
       });
     },
     [drawing, calibrating],
   );
 
+  /** Snap to the nearest wall corner or existing point within reach. */
+  const snap = useCallback(
+    (p: Pt): Pt => {
+      const reach =
+        (coarse ? SNAP_PX_COARSE : SNAP_PX_FINE) /
+        ((vpRef.current.pxPerUnit || 1) * (mobileRef.current ? zoomRef.current : 1));
+      let best: Pt | null = null;
+      let bestD = reach;
+      const consider = (q: Pt) => {
+        const d = dist(p, q);
+        if (d <= bestD) {
+          bestD = d;
+          best = q;
+        }
+      };
+      PLAN_CORNERS.forEach(consider);
+      for (const m of state.measurements) m.points.forEach(consider);
+      state.draft?.points.forEach(consider);
+      return best ?? p;
+    },
+    [coarse, state.measurements, state.draft],
+  );
+
+  /** Fresh plan coordinates for a client point (the page may have scrolled). */
+  const toPlan = useCallback((clientX: number, clientY: number): Pt => {
+    const el = wrapRef.current;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      vpRef.current = computeViewport(
+        { left: r.left, top: r.top, width: r.width, height: r.height },
+        VIEWBOX,
+      );
+    }
+    return clientToPlan(clientX, clientY, vpRef.current);
+  }, []);
+
+  useEffect(() => {
+    snapRef.current = snap;
+  }, [snap]);
+
+  useEffect(() => {
+    if (!mobile) return;
+    const aim = snapRef.current(centerRef.current);
+    cursorRef.current = aim;
+    setCursor(aim);
+  }, [mobile]);
+
   const commitAt = useCallback(
     (at: Pt) => dispatch({ type: "COMMIT_POINT", at, closeThresholdUnits }),
     [closeThresholdUnits],
   );
 
+  /** A finger lifted (or the browser cancelled it): fall back to dragging. */
+  const endTouch = useCallback((id: number) => {
+    const touches = touchesRef.current;
+    touches.delete(id);
+    if (touches.size < 2) pinchRef.current = null;
+    const rest = [...touches.values()][0];
+    panRef.current = rest ? { ...rest } : null;
+  }, []);
+
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     downRef.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+    if (mobileRef.current) {
+      const touches = touchesRef.current;
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
+      if (touches.size >= 2) {
+        const [a, b] = [...touches.values()];
+        pinchRef.current = { d0: Math.hypot(a.x - b.x, a.y - b.y) || 1, z0: zoomRef.current };
+        panRef.current = null;
+      } else {
+        panRef.current = { x: e.clientX, y: e.clientY };
+      }
+    }
   }, []);
 
   const onPointerUp = useCallback(
     (e: React.PointerEvent) => {
       const d = downRef.current;
       downRef.current = null;
+      if (mobileRef.current) {
+        // Phones place points with the Add point button, never by tapping.
+        endTouch(e.pointerId);
+        return;
+      }
       if (!d) return;
-      // A drag is a pan, not a vertex.
-      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 4) return;
-      if (e.timeStamp - d.t > 400) return;
-      if (coarse) return; // touch commits via the Add Point button only
+      // A drag is a pan, not a vertex. Fingers wobble more than mice.
+      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > (coarse ? 12 : 4)) return;
+      if (e.timeStamp - d.t > 600) return;
       if (!drawing && !calibrating) return;
-      commitAt(clientToPlan(e.clientX, e.clientY, vpRef.current));
+      // Tap or click places the point exactly there (snapped to a corner).
+      const at = snap(toPlan(e.clientX, e.clientY));
+      cursorRef.current = at;
+      setCursor(at);
+      commitAt(at);
     },
-    [coarse, drawing, calibrating, commitAt],
+    [coarse, drawing, calibrating, commitAt, snap, toPlan, endTouch],
   );
 
   /* --------------------------------------------------------------- */
@@ -223,6 +395,11 @@ export default function TakeoffDemo() {
   }, [closeable]);
 
   // The colour the reducer will give this shape when it closes (finalize()).
+  // Done/Cancel only while points are being placed. With a tool on but no
+  // points yet (e.g. right after saving), the normal toolbar stays, so the
+  // visitor can keep drawing, switch tools, or tap the tool again to stop.
+  const midShape = drawing && draftPoints.length > 0;
+
   const draftColor = PALETTE[state.measurements.length % PALETTE.length];
 
   const pendingColorIdx = PALETTE.indexOf(
@@ -239,14 +416,19 @@ export default function TakeoffDemo() {
     if (state.pending) return "Save it to add it to your list.";
     const kind = state.draft?.kind;
     if (kind === "area") {
-      if (coarse) return closeable ? "Tap Close shape to finish." : "Drag to a corner, then tap Add point.";
+      if (coarse)
+        return closeable
+          ? "Tap Close shape to finish."
+          : "Drag the plan to put the crosshair on a corner, pinch to zoom, then tap Add point.";
       return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
     }
     if (kind === "linear") {
-      return coarse ? "Drag to a point, tap Add point. Tap Done to finish." : "Click along the line. Click Done to finish.";
+      return coarse
+        ? "Drag the plan, tap Add point at each point. Tap Done to finish."
+        : "Click along the line. Click Done to finish.";
     }
     if (kind === "count") {
-      return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
+      return coarse ? "Drag the plan onto each item and tap Add count." : "Click each item to count it.";
     }
     return null;
   })();
@@ -283,11 +465,17 @@ export default function TakeoffDemo() {
           <div className="relative lg:order-2">
             <div
               ref={wrapRef}
-              className="relative w-full touch-none select-none"
-              style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
+              // Let the page scroll over the plan until a tool is on.
+              // Square on touch screens for more room to drag; set in CSS so
+              // the static skeleton matches and nothing jumps on hydration.
+              className={`relative aspect-[1120/850] w-full select-none pointer-coarse:aspect-square ${drawing ? "touch-none" : "touch-pan-y"}`}
             >
               <svg
-                viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`}
+                viewBox={
+                  mobile
+                    ? `${center.x - VIEWBOX.w / zoom / 2} ${center.y - (VIEWBOX.w / zoom) * boxRatio / 2} ${VIEWBOX.w / zoom} ${(VIEWBOX.w / zoom) * boxRatio}`
+                    : `${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.w} ${VIEWBOX.h}`
+                }
                 className="h-full w-full"
                 style={{
                   fontFamily: "inherit",
@@ -300,7 +488,8 @@ export default function TakeoffDemo() {
                 onPointerMove={onPointerMove}
                 onPointerDown={onPointerDown}
                 onPointerUp={onPointerUp}
-                onPointerLeave={() => cursor && setCursor(null)}
+                onPointerCancel={(e: React.PointerEvent) => endTouch(e.pointerId)}
+                onPointerLeave={() => !mobile && cursor && setCursor(null)}
                 onKeyDown={onKeyDown}
               >
                 <PlanBackdrop />
@@ -369,7 +558,7 @@ export default function TakeoffDemo() {
 
                     {/* Close affordance: translucent green disc on vertex 1,
                         radius exactly equal to the hit zone. */}
-                    {closeable ? (
+                    {closeable || mobile ? (
                       <circle
                         cx={draftPoints[0].x}
                         cy={draftPoints[0].y}
@@ -384,9 +573,9 @@ export default function TakeoffDemo() {
                 {/* Crosshair, red as in the app */}
                 {cursor && drawing ? (
                   <g pointerEvents="none">
-                    <line x1={VIEWBOX.x} y1={cursor.y} x2={VIEWBOX.w} y2={cursor.y} stroke="#E53935" strokeWidth={1.5} />
-                    <line x1={cursor.x} y1={VIEWBOX.y} x2={cursor.x} y2={VIEWBOX.h} stroke="#E53935" strokeWidth={1.5} />
-                    <circle cx={cursor.x} cy={cursor.y} r={9} fill="none" stroke="#E53935" strokeWidth={2} />
+                    <line x1={-VIEWBOX.w} y1={cursor.y} x2={VIEWBOX.w * 2} y2={cursor.y} stroke="#E53935" strokeWidth={1.5 / zoom} />
+                    <line x1={cursor.x} y1={-VIEWBOX.h} x2={cursor.x} y2={VIEWBOX.h * 2} stroke="#E53935" strokeWidth={1.5 / zoom} />
+                    <circle cx={cursor.x} cy={cursor.y} r={9 / zoom * 1.4} fill="none" stroke="#E53935" strokeWidth={2 / zoom} />
                   </g>
                 ) : null}
               </svg>
@@ -429,7 +618,11 @@ export default function TakeoffDemo() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => dispatch({ type: "SAVE_PENDING" })}
+                      onClick={() => {
+                        dispatch({ type: "SAVE_PENDING" });
+                        // Phones go back to the full plan and the toolbar.
+                        if (coarse) dispatch({ type: "SELECT_TOOL", tool: null });
+                      }}
                       className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-hover"
                     >
                       <Check size={16} /> Save
@@ -443,9 +636,9 @@ export default function TakeoffDemo() {
                       <X size={17} />
                     </button>
                   </>
-                ) : drawing ? (
+                ) : midShape || mobile ? (
                   <>
-                    {coarse || closeable ? (
+                    {closeable ? (
                       <button
                         type="button"
                         onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
