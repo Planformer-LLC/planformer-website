@@ -32,8 +32,34 @@ import {
   CLOSE_PX_COARSE,
   CLOSE_PX_FINE,
   PALETTE,
+  ROOMS,
   VIEWBOX,
 } from "@/lib/takeoff/planFixture";
+
+/** Wall corners on the sample plan: points snap to these when close. */
+const PLAN_CORNERS: Pt[] = (() => {
+  const seen = new Set<string>();
+  const out: Pt[] = [];
+  for (const r of ROOMS) {
+    for (const p of [
+      { x: r.x0, y: r.y0 },
+      { x: r.x1, y: r.y0 },
+      { x: r.x1, y: r.y1 },
+      { x: r.x0, y: r.y1 },
+    ]) {
+      const k = `${p.x},${p.y}`;
+      if (!seen.has(k)) {
+        seen.add(k);
+        out.push(p);
+      }
+    }
+  }
+  return out;
+})();
+
+/** On-screen snap reach, in CSS px: bigger for fingers. */
+const SNAP_PX_FINE = 12;
+const SNAP_PX_COARSE = 24;
 
 export default function TakeoffDemo() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -100,6 +126,9 @@ export default function TakeoffDemo() {
   /* Pointer                                                          */
   /* --------------------------------------------------------------- */
 
+  // Latest snap() for the rAF callback, which is created before snap is.
+  const snapRef = useRef<(p: Pt) => Pt>((p) => p);
+
   const clientRef = useRef<{ x: number; y: number } | null>(null);
 
   const onPointerMove = useCallback(
@@ -123,12 +152,50 @@ export default function TakeoffDemo() {
           { left: r.left, top: r.top, width: r.width, height: r.height },
           VIEWBOX,
         );
-        cursorRef.current = clientToPlan(c.x, c.y, vpRef.current);
+        cursorRef.current = snapRef.current(clientToPlan(c.x, c.y, vpRef.current));
         setCursor(cursorRef.current);
       });
     },
     [drawing, calibrating],
   );
+
+  /** Snap to the nearest wall corner or existing point within reach. */
+  const snap = useCallback(
+    (p: Pt): Pt => {
+      const reach = (coarse ? SNAP_PX_COARSE : SNAP_PX_FINE) / (vpRef.current.pxPerUnit || 1);
+      let best: Pt | null = null;
+      let bestD = reach;
+      const consider = (q: Pt) => {
+        const d = dist(p, q);
+        if (d <= bestD) {
+          bestD = d;
+          best = q;
+        }
+      };
+      PLAN_CORNERS.forEach(consider);
+      for (const m of state.measurements) m.points.forEach(consider);
+      state.draft?.points.forEach(consider);
+      return best ?? p;
+    },
+    [coarse, state.measurements, state.draft],
+  );
+
+  /** Fresh plan coordinates for a client point (the page may have scrolled). */
+  const toPlan = useCallback((clientX: number, clientY: number): Pt => {
+    const el = wrapRef.current;
+    if (el) {
+      const r = el.getBoundingClientRect();
+      vpRef.current = computeViewport(
+        { left: r.left, top: r.top, width: r.width, height: r.height },
+        VIEWBOX,
+      );
+    }
+    return clientToPlan(clientX, clientY, vpRef.current);
+  }, []);
+
+  useEffect(() => {
+    snapRef.current = snap;
+  }, [snap]);
 
   const commitAt = useCallback(
     (at: Pt) => dispatch({ type: "COMMIT_POINT", at, closeThresholdUnits }),
@@ -144,14 +211,17 @@ export default function TakeoffDemo() {
       const d = downRef.current;
       downRef.current = null;
       if (!d) return;
-      // A drag is a pan, not a vertex.
-      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 4) return;
-      if (e.timeStamp - d.t > 400) return;
-      if (coarse) return; // touch commits via the Add Point button only
+      // A drag is a pan, not a vertex. Fingers wobble more than mice.
+      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > (coarse ? 12 : 4)) return;
+      if (e.timeStamp - d.t > 600) return;
       if (!drawing && !calibrating) return;
-      commitAt(clientToPlan(e.clientX, e.clientY, vpRef.current));
+      // Tap or click places the point exactly there (snapped to a corner).
+      const at = snap(toPlan(e.clientX, e.clientY));
+      cursorRef.current = at;
+      setCursor(at);
+      commitAt(at);
     },
-    [coarse, drawing, calibrating, commitAt],
+    [coarse, drawing, calibrating, commitAt, snap, toPlan],
   );
 
   /* --------------------------------------------------------------- */
@@ -244,14 +314,14 @@ export default function TakeoffDemo() {
     if (state.pending) return "Save it to add it to your list.";
     const kind = state.draft?.kind;
     if (kind === "area") {
-      if (coarse) return closeable ? "Tap Close shape to finish." : "Drag to a corner, then tap Add point.";
+      if (coarse) return draftPoints.length > 2 ? "Tap the first point to close the shape." : "Tap each corner of the area.";
       return closeable ? "Click the first point to close the shape." : "Click each corner of the area.";
     }
     if (kind === "linear") {
-      return coarse ? "Drag to a point, tap Add point. Tap Done to finish." : "Click along the line. Click Done to finish.";
+      return coarse ? "Tap along the line. Tap Done to finish." : "Click along the line. Click Done to finish.";
     }
     if (kind === "count") {
-      return coarse ? "Drag to an item and tap Add count." : "Click each item to count it.";
+      return coarse ? "Tap each item to count it." : "Click each item to count it.";
     }
     return null;
   })();
@@ -288,7 +358,8 @@ export default function TakeoffDemo() {
           <div className="relative lg:order-2">
             <div
               ref={wrapRef}
-              className="relative w-full touch-none select-none"
+              // Let the page scroll over the plan until a tool is on.
+              className={`relative w-full select-none ${drawing ? "touch-none" : "touch-pan-y"}`}
               style={{ aspectRatio: `${VIEWBOX.w} / ${VIEWBOX.h}` }}
             >
               <svg
@@ -450,7 +521,7 @@ export default function TakeoffDemo() {
                   </>
                 ) : midShape ? (
                   <>
-                    {coarse || closeable ? (
+                    {closeable ? (
                       <button
                         type="button"
                         onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
@@ -500,17 +571,6 @@ export default function TakeoffDemo() {
                         </button>
                       );
                     })}
-                    {/* Touch places points with a button; offer it as soon as a tool is on. */}
-                    {coarse && drawing ? (
-                      <button
-                        type="button"
-                        onClick={() => commitAt(cursor ?? { x: 560, y: 380 })}
-                        className="ml-1 inline-flex h-10 items-center justify-center gap-1.5 rounded-xl bg-brand px-3 text-sm font-semibold text-white transition hover:bg-brand-hover"
-                      >
-                        <Plus size={16} />
-                        {actionLabel}
-                      </button>
-                    ) : null}
                   </div>
                 )}
               </div>
